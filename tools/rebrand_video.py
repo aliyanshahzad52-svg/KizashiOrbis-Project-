@@ -22,6 +22,12 @@ WM_START, WM_END = 58, 424       # watermark visible on the city footage
 PURPLE_START = 424               # "EXPLORE UK!" section begins
 REVEAL_START = 547               # end logo starts to appear
 
+# "September 2026" -> "September 2027": the "6" glyph position (Poppins Bold 35px)
+YEAR_6_BOX = (650, 570, 676, 606)     # x0, y0, x1, y1 around the original "6"
+YEAR_2_BOX = (628, 572, 650, 604)     # the "2" before it, used to read text opacity
+YEAR_7_POS = (652, 575)               # top-left of the new "7"
+FONT_POPPINS = __file__.rsplit("/", 1)[0] + "/fonts/Poppins-Bold.ttf"
+
 ADDRESS = ["Iqbal, 8 Allama,", "Raza Block Town, Lahore, Pakistan"]
 PHONES = ["+92 370 0035896", "+92 312 4222204"]
 BLUE = (0, 102, 214)
@@ -122,6 +128,42 @@ def recolor_blue(frame):
     return cv2.cvtColor(hsv.astype(np.uint8), cv2.COLOR_HSV2BGR)
 
 
+def _seven():
+    f = ImageFont.truetype(FONT_POPPINS, 35)
+    c = Image.new("L", (60, 60))
+    ImageDraw.Draw(c).text((10, 0), "7", font=f, fill=255)
+    a = np.array(c, np.float32) / 255
+    ys, xs = np.where(a > 0)
+    return a[ys.min():ys.max() + 1, xs.min():xs.max() + 1]
+
+
+SEVEN = _seven()
+
+
+def patch_year(fr):
+    """Replace the final '6' of 2026 with a '7', matching the text's current opacity."""
+    g = cv2.cvtColor(fr, cv2.COLOR_BGR2GRAY).astype(np.float32)
+    x0, y0, x1, y1 = YEAR_6_BOX
+    bg = float(np.median(np.concatenate([g[y0:y1, x0 - 2], g[y0:y1, x1 + 2], g[y0 - 3, x0:x1]])))
+    bx0, by0, bx1, by1 = YEAR_2_BOX
+    peak = float(np.percentile(g[by0:by1, bx0:bx1], 98))
+    a = np.clip((peak - bg) / max(250 - bg, 1), 0, 1)
+    if a < 0.03:
+        return fr
+    # erase the "6": the background there is a smooth gradient, so rebuild it
+    # by blending the clean rows just above and below the glyph
+    top = fr[y0 - 1, x0:x1].astype(np.float32)
+    bot = fr[y1, x0:x1].astype(np.float32)
+    k = np.linspace(0, 1, y1 - y0, dtype=np.float32)[:, None, None]
+    fr[y0:y1, x0:x1] = (top[None] * (1 - k) + bot[None] * k).astype(np.uint8)
+    x, y = YEAR_7_POS
+    h, w = SEVEN.shape
+    al = (SEVEN * a)[..., None]
+    roi = fr[y:y + h, x:x + w].astype(np.float32)
+    fr[y:y + h, x:x + w] = (roi * (1 - al) + 255 * al).astype(np.uint8)
+    return fr
+
+
 def ease(x):
     x = min(max(x, 0.0), 1.0)
     return 1 - (1 - x) ** 3
@@ -166,6 +208,8 @@ while True:
             ms = cv2.resize(m, (W // 2, H // 2), interpolation=cv2.INTER_NEAREST)
             filled = cv2.resize(cv2.inpaint(small, ms, 9, cv2.INPAINT_TELEA), (W, H))
             fr = np.where(m[..., None] > 0, filled, fr)
+        if i < REVEAL_START - 30:
+            fr = patch_year(fr)
         fr = recolor_blue(fr)
         if i >= REVEAL_START:
             t = (i - REVEAL_START) / FPS
