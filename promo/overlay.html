@@ -1,0 +1,199 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Italy Promo Overlay</title>
+<style>
+  @font-face { font-family: P; font-weight: 500; src: url(assets/poppins-latin-500-normal.woff2); }
+  @font-face { font-family: P; font-weight: 600; src: url(assets/poppins-latin-600-normal.woff2); }
+  @font-face { font-family: P; font-weight: 700; src: url(assets/poppins-latin-700-normal.woff2); }
+  @font-face { font-family: P; font-weight: 800; src: url(assets/poppins-latin-800-normal.woff2); }
+  :root { --navy: #0c1b3d; --blue: #0066d6; --sky: #1f7ae8; --slate: #4a5878; }
+  html, body { margin: 0; background: transparent; }
+  #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; font-family: P, sans-serif; }
+  .abs { position: absolute; }
+
+  /* ---------------- captions */
+  #cap { left: 60px; width: 960px; top: 1168px; text-align: center; line-height: 1.22; }
+  #cap .chunk { position: absolute; left: 0; width: 960px; top: 0; }
+  #cap .w { display: inline-block; font-size: 64px; font-weight: 800; letter-spacing: -0.5px; color: #fff; margin: 0 9px;
+            text-shadow: 0 3px 4px rgba(0,0,0,.35), 0 6px 26px rgba(0,0,0,.45); position: relative; }
+  #cap .w.key { padding: 0 16px; border-radius: 16px; color: #fff; text-shadow: none; }
+  #cap .w .pill { position: absolute; inset: 6px -2px 2px -2px; border-radius: 16px; z-index: -1;
+                  background: linear-gradient(100deg, #0c1b3d 0%, #0d4aa6 45%, #1f7ae8 100%);
+                  box-shadow: 0 10px 26px rgba(8, 24, 60, .35); transform-origin: 50% 60%; }
+
+  /* ---------------- info card (one consistent slot above the speaker) */
+  .card { position: absolute; left: 540px; top: 300px; transform: translateX(-50%); display: flex; align-items: center; gap: 26px;
+          padding: 22px 40px 22px 24px; border-radius: 34px; background: rgba(255,255,255,.96);
+          box-shadow: 0 22px 50px rgba(8, 20, 52, .28), 0 2px 8px rgba(8, 20, 52, .12); white-space: nowrap; opacity: 0; }
+  .card .ic { width: 104px; height: 104px; border-radius: 28px; flex: none; display: flex; align-items: center; justify-content: center;
+              background: linear-gradient(140deg, #0c1b3d, #0d4aa6 55%, #1f7ae8); }
+  .card .ic svg { width: 58px; height: 58px; stroke: #fff; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  .card .ic.flag { background: none; width: 150px; height: 100px; border-radius: 14px; box-shadow: 0 8px 18px rgba(8,20,52,.25); }
+  .card .ic.flag canvas { width: 150px; height: 100px; border-radius: 14px; }
+  .card .tx .big { font-size: 50px; font-weight: 800; color: var(--navy); line-height: 1.05; letter-spacing: -0.5px; }
+  .card .tx .small { font-size: 31px; font-weight: 500; color: var(--slate); margin-top: 6px; }
+  .card .tx .eyebrow { font-size: 24px; font-weight: 700; color: var(--blue); letter-spacing: 5px; margin-bottom: 6px; }
+  .card .items { display: flex; gap: 22px; margin-top: 10px; }
+  .card .item { display: flex; align-items: center; gap: 12px; font-size: 38px; font-weight: 700; color: var(--navy); }
+  .card .item .mini { width: 58px; height: 58px; border-radius: 16px; display: flex; align-items: center; justify-content: center;
+                      background: linear-gradient(140deg, #0d4aa6, #1f7ae8); }
+  .card .item .mini svg { width: 34px; height: 34px; stroke: #fff; fill: none; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+  .live-dot { width: 22px; height: 22px; border-radius: 50%; background: #20c06a; display: inline-block; margin-right: 14px; vertical-align: 6px;
+              box-shadow: 0 0 0 0 rgba(32,192,106,.5); }
+
+  /* ---------------- end card */
+  #end { inset: 0; opacity: 0; background: linear-gradient(180deg, #ffffff 0%, #f3f7fd 50%, #e3edfb 100%); }
+  #endGlow { inset: 0; background: radial-gradient(900px 700px at 50% 38%, rgba(31,122,232,.10), transparent 70%); }
+  #endLogo { left: 250px; top: 430px; width: 580px; }
+  #endLine { left: 390px; top: 1012px; width: 300px; height: 4px; border-radius: 2px; background: linear-gradient(90deg, transparent, #1f7ae8, transparent); }
+  #endEyebrow { left: 0; width: 1080px; top: 1050px; text-align: center; font-size: 30px; font-weight: 700; letter-spacing: 9px; color: var(--blue); }
+  .ph { left: 0; width: 1080px; text-align: center; font-size: 62px; font-weight: 800; color: var(--navy); letter-spacing: -0.5px; }
+  .ph svg { width: 52px; height: 52px; vertical-align: -6px; margin-right: 18px; fill: var(--blue); }
+  #ph1 { top: 1110px; } #ph2 { top: 1196px; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="cards"></div>
+  <div id="cap" class="abs"></div>
+  <div id="end" class="abs">
+    <div id="endGlow" class="abs"></div>
+    <img id="endLogo" class="abs" src="assets/logo.png">
+    <div id="endLine" class="abs"></div>
+    <div id="endEyebrow" class="abs">CONTACT US</div>
+    <div id="ph1" class="abs ph"><svg viewBox="0 0 24 24"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1z"/></svg>+92 370 0035896</div>
+    <div id="ph2" class="abs ph"><svg viewBox="0 0 24 24"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1z"/></svg>+92 312 4222204</div>
+  </div>
+</div>
+
+<script src="assets/gsap.min.js"></script>
+<script>
+const ICONS = {
+  fee:   '<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M14.5 9.5a3 3 0 1 0 0 5M9.5 11h4M9.5 13h4"/>',
+  home:  '<path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5h13V10"/><path d="M10 19.5v-5h4v5"/>',
+  food:  '<path d="M7 3v8M5 3v5a2 2 0 0 0 4 0V3M7 11v10"/><path d="M17 3c-2 1.5-3 4-3 7h3v11"/>',
+  uni:   '<path d="M3 9 12 4l9 5"/><path d="M5 10v8M9.5 10v8M14.5 10v8M19 10v8"/><path d="M3 20h18"/>',
+  cap:   '<path d="M2 9 12 5l10 4-10 4z"/><path d="M6.5 11v4.5c0 1.5 2.5 3 5.5 3s5.5-1.5 5.5-3V11"/><path d="M22 9v5"/>',
+  doc:   '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="m9 14 2 2 4-4"/>',
+  search:'<circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/><path d="m8.5 11 1.8 1.8 3.2-3.3"/>',
+  cal:   '<rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/><path d="M8 14h2M12 14h2M16 14h.5M8 17h2M12 17h2"/>',
+  live:  '<path d="M4 12a8 8 0 0 1 16 0"/><path d="M7.5 12a4.5 4.5 0 0 1 9 0"/><circle cx="12" cy="12" r="1.6"/><path d="M12 13.6V20"/>',
+  clock: '<circle cx="12" cy="13" r="7.5"/><path d="M12 9v4l2.5 2.5"/><path d="M9.5 3h5M12 3v2.5"/>',
+  user:  '<circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20.5c1.2-3.8 4-5.5 7.5-5.5s6.3 1.7 7.5 5.5"/>',
+  coin:  '<circle cx="12" cy="12" r="8.5"/><path d="M15 8.8a4 4 0 1 0 0 6.4M8 11h5M8 13.2h5"/>',
+};
+const svg = (k, cls = '') => `<svg viewBox="0 0 24 24" class="${cls}">${ICONS[k]}</svg>`;
+
+const W = 1080, H = 1920, FPS = 30;
+let EDIT = null, tl = null;
+const flagSrc = {}, flagCanvases = [];
+function loadImg(src) { return new Promise(r => { const i = new Image(); i.onload = () => r(i); i.src = src; }); }
+
+function drawFlag(cv, code, t) {
+  const ctx = cv.getContext('2d'), w = cv.width, h = cv.height, src = flagSrc[code], amp = 6;
+  ctx.clearRect(0, 0, w, h); ctx.save(); ctx.beginPath(); ctx.roundRect(0, 0, w, h, 26); ctx.clip();
+  for (let x = 0; x < w; x += 2) {
+    const u = x / w, k = 0.3 + 0.7 * u, ph = u * Math.PI * 2.2 - t * Math.PI * 1.9, dy = amp * Math.sin(ph) * k;
+    ctx.drawImage(src, u * src.width, 0, 2 / w * src.width + 1, src.height, x, dy - amp, 2.6, h + 2 * amp);
+    const sh = Math.cos(ph) * 0.12 * k;
+    ctx.fillStyle = sh > 0 ? `rgba(255,255,255,${sh})` : `rgba(0,0,0,${-sh})`; ctx.fillRect(x, 0, 2.6, h);
+  }
+  ctx.restore();
+}
+
+function cardHTML(e) {
+  if (e.type === 'flag') return `<div class="ic flag"><canvas width="300" height="200"></canvas></div>
+      <div class="tx"><div class="eyebrow">STUDY IN</div><div class="big">${e.label === 'EUROPE' ? 'Europe' : 'Italy'}</div></div>`;
+  if (e.type === 'name') return `<div class="ic">${svg('user')}</div>
+      <div class="tx"><div class="big">${e.name}</div><div class="small">${e.role}</div></div>`;
+  if (e.type === 'badge') return `<div class="ic">${svg(e.icon)}</div>
+      <div class="tx"><div class="big">${e.icon === 'live' ? '<span class="live-dot"></span>' : ''}${e.big}</div><div class="small">${e.small}</div></div>`;
+  if (e.type === 'stat') return `<div class="ic">${svg('coin')}</div>
+      <div class="tx"><div class="small" style="margin:0 0 2px">up to</div><div class="big"><span class="num">€0</span></div><div class="small sm">${e.smalls[0][1]}</div></div>`;
+  if (e.type === 'list') return `<div class="tx"><div class="eyebrow">${e.title.toUpperCase()}</div>
+      <div class="items">${e.items.map(([ic, txt]) => `<div class="item"><div class="mini">${svg(ic)}</div>${txt}</div>`).join('')}</div></div>`;
+}
+
+function build() {
+  // ---------------- info cards
+  const cards = document.getElementById('cards');
+  EDIT.events.forEach(e => {
+    const d = document.createElement('div'); d.className = 'card'; d.innerHTML = cardHTML(e); cards.appendChild(d); e.el = d;
+    if (e.type === 'flag') { const cv = d.querySelector('canvas'); flagCanvases.push({ cv, code: e.code, t0: e.t0, t1: e.t1 }); }
+  });
+  // ---------------- captions
+  const cap = document.getElementById('cap');
+  EDIT.captions.forEach(c => {
+    const d = document.createElement('div'); d.className = 'chunk';
+    d.innerHTML = c.words.map(w => `<span class="w${w.key ? ' key' : ''}">${w.key ? '<span class="pill"></span>' : ''}${w.text}</span>`).join(' ');
+    cap.appendChild(d); c.el = d; c.ws = [...d.querySelectorAll('.w')];
+    gsap.set(d, { opacity: 0 });
+  });
+
+  tl = gsap.timeline({ paused: true });
+  // cards: drop in, settle, lift out
+  EDIT.events.forEach(e => {
+    tl.fromTo(e.el, { opacity: 0, y: -36, scale: .94 }, { opacity: 1, y: 0, scale: 1, duration: .5, ease: 'power3.out' }, e.t0);
+    const ic = e.el.querySelector('.ic, .items');
+    if (ic) tl.fromTo(ic, { scale: .6, rotation: -8 }, { scale: 1, rotation: 0, duration: .55, ease: 'back.out(2)' }, e.t0 + .08);
+    const tx = e.el.querySelectorAll('.tx > *, .item');
+    tl.fromTo(tx, { opacity: 0, x: 18 }, { opacity: 1, x: 0, duration: .4, ease: 'power2.out', stagger: .06 }, e.t0 + .04);
+    tl.to(e.el, { opacity: 0, y: -24, scale: .97, duration: .32, ease: 'power2.in' }, e.t1 - .3);
+    if (e.type === 'stat') {
+      const num = e.el.querySelector('.num'), sm = e.el.querySelector('.sm'), o = { v: 0 };
+      tl.to(o, { v: e.values[0][1], duration: 1.1, ease: 'power2.out', onUpdate: () => num.textContent = '€' + Math.round(o.v).toLocaleString('en-US') }, e.values[0][0]);
+      tl.to(o, { v: e.values[1][1], duration: 1.0, ease: 'power2.out', onUpdate: () => num.textContent = '€' + Math.round(o.v).toLocaleString('en-US') }, e.values[1][0]);
+      tl.to(sm, { opacity: 0, duration: .15 }, e.smalls[1][0]);
+      tl.call(() => {}, [], e.smalls[1][0] + .15);
+      tl.to(sm, { opacity: 1, duration: .25 }, e.smalls[1][0] + .16);
+      e.smallSwitch = e.smalls[1][0] + .15; e.smEl = sm;
+    }
+  });
+  // captions: chunk pops in, words light up as spoken, key words get the brand pill
+  EDIT.captions.forEach(c => {
+    tl.fromTo(c.el, { opacity: 0, y: 18, scale: .94 }, { opacity: 1, y: 0, scale: 1, duration: .16, ease: 'power2.out' }, c.t0 - .04);
+    tl.set(c.el, { opacity: 0 }, c.t1);
+    c.words.forEach((w, k) => {
+      const el = c.ws[k];
+      tl.fromTo(el, { opacity: .5 }, { opacity: 1, duration: .08 }, Math.max(w.t0 - .03, c.t0 - .04));
+      if (w.key) tl.fromTo(el.querySelector('.pill'), { scaleX: .3, opacity: 0 }, { scaleX: 1, opacity: 1, duration: .22, ease: 'power3.out' }, Math.max(w.t0 - .05, c.t0 - .04));
+      tl.fromTo(el, { scale: 1 }, { scale: 1.07, duration: .1, yoyo: true, repeat: 1, ease: 'power1.out', immediateRender: false }, Math.max(w.t0 - .03, c.t0));
+    });
+  });
+  // end card
+  const V = EDIT.video_len;
+  tl.fromTo('#end', { opacity: 0 }, { opacity: 1, duration: .7, ease: 'power2.inOut' }, V - .05);
+  tl.fromTo('#endLogo', { opacity: 0, scale: .86, y: 30, filter: 'blur(14px)' }, { opacity: 1, scale: 1, y: 0, filter: 'blur(0px)', duration: .9, ease: 'power3.out' }, V + .25);
+  tl.fromTo('#endLine', { scaleX: 0, opacity: 0 }, { scaleX: 1, opacity: 1, duration: .6, ease: 'power3.out' }, V + .9);
+  tl.fromTo('#endEyebrow', { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: .45, ease: 'power3.out' }, V + 1.0);
+  tl.fromTo(['#ph1', '#ph2'], { opacity: 0, y: 34 }, { opacity: 1, y: 0, duration: .55, ease: 'power3.out', stagger: .12 }, V + 1.15);
+  tl.set({}, {}, EDIT.duration);
+}
+
+window.renderAt = function (t) {
+  tl.seek(t, false);
+  flagCanvases.forEach(f => { if (t > f.t0 - .2 && t < f.t1 + .2) drawFlag(f.cv, f.code, t); });
+  // the stat card's caption line switches text mid-way
+  EDIT.events.forEach(e => { if (e.type === 'stat') e.smEl.textContent = t < e.smallSwitch ? e.smalls[0][1] : e.smalls[1][1]; });
+};
+
+window.ready = (async () => {
+  await document.fonts.ready;
+  EDIT = await (await fetch('edit.json')).json();
+  for (const code of ['eu', 'it']) {
+    const img = await loadImg(`assets/flag_${code}.svg`);
+    const cv = document.createElement('canvas'); cv.width = 600; cv.height = 400;
+    const s = Math.max(600 / img.width, 400 / img.height);
+    cv.getContext('2d').drawImage(img, (600 - img.width * s) / 2, (400 - img.height * s) / 2, img.width * s, img.height * s);
+    flagSrc[code] = cv;
+  }
+  await loadImg('assets/logo.png');
+  build();
+  window.renderAt(0);
+  return true;
+})();
+</script>
+</body>
+</html>
