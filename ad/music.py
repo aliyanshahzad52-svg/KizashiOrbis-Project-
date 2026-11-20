@@ -2,10 +2,10 @@
 
 120 BPM, 1 bar = 2.0 s, key D major, progression D - A - Bm - G (I-V-vi-IV).
 Arrangement is locked to the video timeline:
-  bars 0-1   hook      : impact at 0, plucked arpeggio, claps, building riser
-  bar  2     brand     : big impact + sub boom on the logo reveal
-  bars 3-11  countries : full groove (one country per bar), whoosh into each bar
-  bars 12-13 CTA       : groove eases, final chord rings out
+  bars 0-2   hook      : globe + flight paths; plucked arpeggio, claps, building riser
+  bar  3     brand     : big impact + sub boom on the logo reveal
+  bars 4-12  countries : full groove (one country per bar), whoosh into each bar
+  bars 13-14 CTA       : groove continues, final chord rings out
 
 Usage: python3 music.py out.wav [duration_seconds]
 """
@@ -16,7 +16,7 @@ import numpy as np
 
 SR = 48000
 OUT = sys.argv[1]
-DUR = float(sys.argv[2]) if len(sys.argv) > 2 else 28.0
+DUR = float(sys.argv[2]) if len(sys.argv) > 2 else 30.0
 BEAT = 0.5
 BAR = 2.0
 N = int(SR * (DUR + 1.5))
@@ -182,34 +182,34 @@ kick_times = []
 for b in range(NBARS):
     t0 = b * BAR
     ch = CHORDS[b % 4]
-    full = 3 <= b <= 12
+    full = 4 <= b <= 13
     # pad
-    p = pad(ch, BAR + 0.05, bright=0.35 if b < 2 else 0.55)
-    add_mono(pads, p, t0, 0.55 if b >= 2 else 0.35)
+    p = pad(ch, BAR + 0.05, bright=0.35 if b < 3 else 0.55)
+    add_mono(pads, p, t0, 0.55 if b >= 3 else 0.35)
     # arpeggio plucks (16ths in hook + groove, 8ths in outro)
-    step = 0.25 if b <= 12 else 0.5
+    step = 0.25 if b <= 13 else 0.5
     k = 0
     tt = 0.0
     while tt < BAR - 1e-6:
         if b == NBARS - 1 and tt >= 1.0:
             break
         note = ARP[b % 4][k % 4] + (12 if (k % 8 == 7 and full) else 0)
-        add(pluck(note, 0.55), t0 + tt, 0.16 if b >= 2 else 0.2, pan=(-0.35 if k % 2 else 0.35))
+        add(pluck(note, 0.55), t0 + tt, 0.16 if b >= 3 else 0.2, pan=(-0.35 if k % 2 else 0.35))
         k += 1
         tt += step
     # bass (offbeat 8ths from bar 2)
-    if 2 <= b <= 12:
+    if 3 <= b <= 13:
         for e in range(4):
             add(bass(ROOTS[b % 4], 0.24), t0 + e * BEAT + 0.25, 0.42)
         add(bass(ROOTS[b % 4] , 0.2), t0, 0.3)
     # drums
     for beat in range(4):
         tb = t0 + beat * BEAT
-        if (b >= 2 and b <= 12) or (b == 1 and beat >= 2):
+        if (3 <= b <= 13) or (b == 2 and beat >= 2):
             add_mono(drums_l, kick(0.95), tb)
             add_mono(drums_r, kick(0.95), tb)
             kick_times.append(tb)
-        if b <= 12 and beat in (1, 3) and not (b == 2 and beat == 1):
+        if b <= 13 and beat in (1, 3) and not (b == 3 and beat == 1) and b >= 1:
             c = clap()
             add_mono(drums_l, c, tb, 0.5)
             add_mono(drums_r, c, tb + 0.004, 0.5)
@@ -244,13 +244,15 @@ R += pads * 1.0 + drums_r
 
 # FX: impacts, whooshes, risers
 add(impact(False), 0.0, 0.55)                       # hook opener
-add(riser(1.9), 2.1, 0.55)                          # build into the logo
-add(impact(True), 4.0, 0.95)                        # brand reveal
+add(riser(2.4), 3.6, 0.55)                          # build into the logo
+add(impact(True), 6.0, 0.95)                        # brand reveal
 for k in range(9):                                  # into each country
-    t = 6.0 + 2 * k
+    t = 8.0 + 2 * k
     add(whoosh(0.5), t - 0.38, 0.32, pan=-0.3 if k % 2 else 0.3)
-add(riser(1.6), 22.3, 0.45)                         # into the CTA
-add(impact(False), 24.0, 0.55)
+add(riser(1.6), 24.3, 0.45)                         # into the CTA
+add(impact(False), 26.0, 0.55)
+for k, tw in enumerate((0.35, 1.95, 2.45, 3.0, 3.5)):   # soft swish as each route launches
+    add(whoosh(0.55), tw, 0.16, pan=(-0.4 + 0.2 * k))
 
 # simple stereo reverb (exponential noise IR)
 ir_n = int(SR * 1.8)

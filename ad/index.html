@@ -106,8 +106,8 @@
     <span class="ln grad-line"><span class="w grad-text">has</span> <span class="w grad-text">no</span> <span class="w grad-text">borders.</span></span>
   </div>
   <div id="hook2" class="abs">
-    <span class="ln big"><span class="w">9</span> <span class="w grad-text">Countries.</span></span>
-    <span class="ln small"><span class="w">One</span> <span class="w">trusted</span> <span class="w">partner.</span></span>
+    <span class="ln big"><span class="w">From</span> <span class="w grad-text">Lahore</span></span>
+    <span class="ln small"><span class="w">to</span> <span class="w">the</span> <span class="w">world.</span></span>
   </div>
 
   <!-- COUNTRIES -->
@@ -140,9 +140,13 @@
 </div>
 
 <script src="assets/gsap.min.js"></script>
+<script src="assets/d3-array.min.js"></script>
+<script src="assets/d3-geo.min.js"></script>
+<script src="assets/topojson-client.min.js"></script>
 <script src="landmarks.js"></script>
+<script src="globe.js"></script>
 <script>
-const W = 1080, H = 1920, FPS = 30, DURATION = 28;
+const W = 1080, H = 1920, FPS = 30, DURATION = 30;
 const COUNTRIES = [
   { code: 'us', name: 'USA',            tag: 'World-renowned universities',      c: ['#3c3b6e', '#b22234'] },
   { code: 'gb', name: 'United Kingdom', tag: "One-year Master's programmes",      c: ['#012169', '#c8102e'] },
@@ -154,7 +158,7 @@ const COUNTRIES = [
   { code: 'fi', name: 'Finland',        tag: 'World-class education system',     c: ['#002f6c', '#5b8bd6'] },
   { code: 'se', name: 'Sweden',         tag: 'Innovation-led universities',      c: ['#006aa7', '#fecc02'] },
 ];
-const SCENE0 = 6.0, SCENE_LEN = 2.0, CTA0 = SCENE0 + SCENE_LEN * COUNTRIES.length;   // 24.0
+const SCENE0 = 8.0, SCENE_LEN = 2.0, CTA0 = SCENE0 + SCENE_LEN * COUNTRIES.length;   // 26.0
 
 // ------------------------------------------------------------ assets
 const flagSrc = {};
@@ -242,18 +246,18 @@ const HOOK_SHIFT = 0.3;
 const htl = gsap.timeline({ paused: true });
 htl.fromTo('#hook1 .w', { y: 70, opacity: 0, filter: 'blur(10px)' },
           { y: 0, opacity: 1, filter: 'blur(0px)', duration: .55, ease: 'power3.out', stagger: .09 }, 0);
-htl.to('#hook1 .w', { y: -50, opacity: 0, filter: 'blur(8px)', duration: .3, ease: 'power2.in', stagger: .04 }, 1.86 + HOOK_SHIFT);
+htl.to('#hook1 .w', { y: -50, opacity: 0, filter: 'blur(8px)', duration: .3, ease: 'power2.in', stagger: .04 }, 2.55 + HOOK_SHIFT);
 htl.fromTo('#hook2 .w', { y: 70, opacity: 0, filter: 'blur(10px)' },
-          { y: 0, opacity: 1, filter: 'blur(0px)', duration: .5, ease: 'power3.out', stagger: .08 }, 2.05 + HOOK_SHIFT);
-htl.to('#hook2 .w', { y: -50, opacity: 0, filter: 'blur(8px)', duration: .35, ease: 'power2.in', stagger: .04 }, 3.4 + HOOK_SHIFT);
+          { y: 0, opacity: 1, filter: 'blur(0px)', duration: .5, ease: 'power3.out', stagger: .08 }, 2.75 + HOOK_SHIFT);
+htl.to('#hook2 .w', { y: -50, opacity: 0, filter: 'blur(8px)', duration: .35, ease: 'power2.in', stagger: .04 }, 5.25 + HOOK_SHIFT);
 
 // BRAND INTRO ------------------------------------------------
 tl.fromTo(logo, { opacity: 0, scale: .52, filter: 'blur(18px)' },
-          { opacity: 1, scale: 1, filter: 'blur(0px)', duration: .7, ease: 'power3.out' }, 3.92);
-tl.fromTo('#sheen', { backgroundPosition: '150% 0' }, { backgroundPosition: '-50% 0', duration: .9, ease: 'power2.inOut' }, 4.55);
-tl.fromTo('#introSub', { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: .55, ease: 'power3.out' }, 4.5);
-tl.to('#introSub', { y: -30, opacity: 0, duration: .3, ease: 'power2.in' }, 5.72);
-tl.to(logo, { ...logoAt(540, 402, 300), duration: .75, ease: 'power3.inOut' }, 5.75);
+          { opacity: 1, scale: 1, filter: 'blur(0px)', duration: .7, ease: 'power3.out' }, 5.92);
+tl.fromTo('#sheen', { backgroundPosition: '150% 0' }, { backgroundPosition: '-50% 0', duration: .9, ease: 'power2.inOut' }, 6.55);
+tl.fromTo('#introSub', { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: .55, ease: 'power3.out' }, 6.5);
+tl.to('#introSub', { y: -30, opacity: 0, duration: .3, ease: 'power2.in' }, 7.72);
+tl.to(logo, { ...logoAt(540, 402, 300), duration: .75, ease: 'power3.inOut' }, 7.75);
 
 // COUNTRIES --------------------------------------------------
 scenes.forEach((s, k) => {
@@ -387,140 +391,6 @@ function drawFrame(t) {
   nctx.drawImage(noiseFrames[Math.floor(t * FPS) % 4], 0, 0);
 }
 
-// ------------------------------------------------------------ opening globe
-let LAND = [];
-const D2R = Math.PI / 180;
-const ORIGIN = [74.34, 31.55];                       // Lahore
-const ROUTES = [                                     // [lon, lat, start time]
-  [151.21, -33.87, 0.30], [12.50, 41.90, 0.62], [13.40, 52.52, 0.88], [2.35, 48.86, 1.12],
-  [24.94, 60.17, 1.36], [18.07, 59.33, 1.56], [-0.13, 51.51, 1.82], [-79.38, 43.65, 2.12], [-74.01, 40.71, 2.38],
-];
-const globeCv = document.getElementById('globe');
-const gctx = globeCv.getContext('2d');
-
-function vec(lon, lat) {
-  const cl = Math.cos(lat * D2R);
-  return [cl * Math.cos(lon * D2R), cl * Math.sin(lon * D2R), Math.sin(lat * D2R)];
-}
-function rotate(v, lon0, lat0) {
-  const cL = Math.cos(lon0 * D2R), sL = Math.sin(lon0 * D2R), cP = Math.cos(lat0 * D2R), sP = Math.sin(lat0 * D2R);
-  const x1 = v[0] * cL + v[1] * sL, y1 = -v[0] * sL + v[1] * cL, z1 = v[2];
-  return [x1 * cP + z1 * sP, y1, -x1 * sP + z1 * cP];          // [depth, screen-x, screen-y(up)]
-}
-function slerp(a, b, s) {
-  const d = Math.acos(Math.min(1, Math.max(-1, a[0] * b[0] + a[1] * b[1] + a[2] * b[2])));
-  if (d < 1e-6) return a.slice();
-  const k0 = Math.sin((1 - s) * d) / Math.sin(d), k1 = Math.sin(s * d) / Math.sin(d);
-  return [a[0] * k0 + b[0] * k1, a[1] * k0 + b[1] * k1, a[2] * k0 + b[2] * k1];
-}
-const easeIO = x => (x = Math.min(Math.max(x, 0), 1), x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
-const easeO = x => (x = Math.min(Math.max(x, 0), 1), 1 - Math.pow(1 - x, 3));
-
-function drawGlobe(t) {
-  gctx.clearRect(0, 0, 1080, 1920);
-  if (t > 4.4) return;
-  // camera: hero globe, then a match-cut into the globe of the logo
-  const m = easeIO((t - 3.3) / 0.85);
-  const cx = 540 + (475 - 540) * m, cy = 1080 + (726 - 1080) * m;
-  const R = (385 + 12 * Math.min(t, 3.3) / 3.3) * (1 - m) + 94 * m;
-  const alpha = 1 - easeIO((t - 3.8) / 0.45);
-  if (alpha <= 0.001) return;
-  const lon0 = 115 - 38 * t, lat0 = 22 + 6 * Math.min(t, 3.3) / 3.3;
-  gctx.save();
-  gctx.globalAlpha = alpha;
-
-  // sphere body + soft shadow
-  gctx.save();
-  gctx.shadowColor = 'rgba(13,74,166,0.22)'; gctx.shadowBlur = 90 * R / 390; gctx.shadowOffsetY = 30 * R / 390;
-  const body = gctx.createRadialGradient(cx - R * .35, cy - R * .42, R * .1, cx, cy, R);
-  body.addColorStop(0, '#ffffff'); body.addColorStop(.65, '#eef4fd'); body.addColorStop(1, '#d4e4fa');
-  gctx.fillStyle = body; gctx.beginPath(); gctx.arc(cx, cy, R, 0, Math.PI * 2); gctx.fill();
-  gctx.restore();
-  gctx.strokeStyle = 'rgba(31,122,232,0.20)'; gctx.lineWidth = 2;
-  gctx.beginPath(); gctx.arc(cx, cy, R, 0, Math.PI * 2); gctx.stroke();
-
-  // land dots
-  const ds = 2.5 * R / 390;
-  for (let i = 0; i < LAND.length; i++) {
-    const p = rotate(vec(LAND[i][0], LAND[i][1]), lon0, lat0);
-    if (p[0] <= 0.02) continue;
-    const k = Math.pow(p[0], 0.7);
-    gctx.fillStyle = `rgba(13,${Math.round(40 + 34 * k)},${Math.round(110 + 56 * k)},${(0.18 + 0.72 * k).toFixed(3)})`;
-    gctx.beginPath(); gctx.arc(cx + R * p[1], cy - R * p[2], ds * (0.55 + 0.45 * k), 0, Math.PI * 2); gctx.fill();
-  }
-
-  const proj = (v, h) => {
-    const p = rotate(v, lon0, lat0);
-    const sx = p[1] * (1 + h), sy = p[2] * (1 + h);
-    const hidden = p[0] < 0.01;                     // arcs disappear over the horizon
-    return { x: cx + R * sx, y: cy - R * sy, hidden, depth: p[0] };
-  };
-
-  // routes
-  const o = vec(ORIGIN[0], ORIGIN[1]);
-  const lw = 4.2 * R / 390;
-  ROUTES.forEach(([lon, lat, ts]) => {
-    const p = easeO((t - ts) / 0.75);
-    if (p <= 0) return;
-    const d = vec(lon, lat);
-    const ang = Math.acos(o[0] * d[0] + o[1] * d[1] + o[2] * d[2]);
-    const hMax = 0.06 + 0.22 * ang / Math.PI;
-    const N = 70, pts = [];
-    for (let q = 0; q <= N * p; q++) {
-      const s = q / N;
-      pts.push(proj(slerp(o, d, s), hMax * Math.sin(Math.PI * s)));
-    }
-    const pe = proj(slerp(o, d, p), hMax * Math.sin(Math.PI * p));
-    pts.push(pe);
-    for (const pass of [[lw * 3.2, 'rgba(31,122,232,0.12)'], [lw, null]]) {
-      gctx.lineWidth = pass[0]; gctx.lineCap = 'round';
-      for (let q = 1; q < pts.length; q++) {
-        if (pts[q].hidden || pts[q - 1].hidden) continue;
-        const f = q / Math.max(pts.length - 1, 1);
-        gctx.strokeStyle = pass[1] || `rgba(${Math.round(12 + 19 * f)},${Math.round(60 + 62 * f)},${Math.round(160 + 72 * f)},0.95)`;
-        gctx.globalAlpha = alpha * Math.min(1, Math.min(pts[q].depth, pts[q - 1].depth) * 4);
-        gctx.beginPath(); gctx.moveTo(pts[q - 1].x, pts[q - 1].y); gctx.lineTo(pts[q].x, pts[q].y); gctx.stroke();
-      }
-    }
-    gctx.globalAlpha = alpha;
-    if (p < 1 && !pe.hidden) {                     // travelling head
-      gctx.fillStyle = '#ffffff'; gctx.beginPath(); gctx.arc(pe.x, pe.y, lw * 1.3, 0, Math.PI * 2); gctx.fill();
-      gctx.fillStyle = '#1f7ae8'; gctx.beginPath(); gctx.arc(pe.x, pe.y, lw * 0.8, 0, Math.PI * 2); gctx.fill();
-    }
-    if (p >= 1) {                                  // landing pin + ripple
-      const e = proj(d, 0);
-      if (!e.hidden && e.depth > 0) {
-        const u = (t - ts - 0.75) / 0.9;
-        if (u < 1) {
-          gctx.strokeStyle = `rgba(31,122,232,${(0.5 * (1 - u)).toFixed(3)})`; gctx.lineWidth = 3 * R / 390;
-          gctx.beginPath(); gctx.arc(e.x, e.y, (8 + 26 * u) * R / 390, 0, Math.PI * 2); gctx.stroke();
-        }
-        gctx.fillStyle = '#ffffff'; gctx.beginPath(); gctx.arc(e.x, e.y, 8 * R / 390, 0, Math.PI * 2); gctx.fill();
-        gctx.fillStyle = '#0066d6'; gctx.beginPath(); gctx.arc(e.x, e.y, 5.5 * R / 390, 0, Math.PI * 2); gctx.fill();
-      }
-    }
-  });
-
-  // origin: Lahore
-  const op = proj(o, 0);
-  if (!op.hidden && op.depth > 0) {
-    const u = (t % 1.2) / 1.2;
-    gctx.strokeStyle = `rgba(12,27,61,${(0.45 * (1 - u)).toFixed(3)})`; gctx.lineWidth = 3 * R / 390;
-    gctx.beginPath(); gctx.arc(op.x, op.y, (9 + 30 * u) * R / 390, 0, Math.PI * 2); gctx.stroke();
-    gctx.fillStyle = '#ffffff'; gctx.beginPath(); gctx.arc(op.x, op.y, 10 * R / 390, 0, Math.PI * 2); gctx.fill();
-    gctx.fillStyle = '#0c1b3d'; gctx.beginPath(); gctx.arc(op.x, op.y, 7 * R / 390, 0, Math.PI * 2); gctx.fill();
-    const la = (1 - m) * Math.min(1, op.depth * 3);
-    if (la > 0.02) {
-      gctx.globalAlpha = alpha * la;
-      gctx.font = `600 ${Math.round(24 * R / 390)}px P`; gctx.fillStyle = '#0c1b3d';
-      gctx.textAlign = 'left'; gctx.textBaseline = 'middle';
-      gctx.save(); gctx.letterSpacing = '4px'; gctx.fillText('LAHORE', op.x + 18 * R / 390, op.y + 2); gctx.restore();
-      gctx.globalAlpha = alpha;
-    }
-  }
-  gctx.restore();
-}
-
 window.renderAt = function (t) {
   htl.seek(t + HOOK_SHIFT, false);
   tl.seek(t, false);
@@ -530,7 +400,11 @@ window.renderAt = function (t) {
 window.ready = (async () => {
   await document.fonts.ready;
   await loadFlags();
-  LAND = await (await fetch('assets/land_dots.json')).json();
+  const landTopo = await (await fetch('assets/land-50m.json')).json();
+  const ctyTopo = await (await fetch('assets/countries-50m.json')).json();
+  LAND = topojson.feature(landTopo, landTopo.objects.land);
+  BORDERS = topojson.mesh(ctyTopo, ctyTopo.objects.countries, (a, b) => a !== b);
+  for (const f of topojson.feature(ctyTopo, ctyTopo.objects.countries).features) COUNTRY[f.id] = f;
   await loadImg('assets/logo.png');
   document.getElementById('fb').innerHTML = (await iconSVG('facebook')).replace('<svg', '<svg fill="#fff"');
   document.getElementById('ig').innerHTML = (await iconSVG('instagram')).replace('<svg', '<svg fill="#fff"');
