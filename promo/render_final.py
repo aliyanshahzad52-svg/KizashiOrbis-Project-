@@ -124,7 +124,15 @@ def zoom_blur(f, amount):
 
 # ------------------------------------------------------------------ readers
 class SeqReader:
-    """Sequential frame reader with forward seeking (the edit list only moves forward)."""
+    """Sequential frame reader with forward seeking (the edit list only moves forward).
+
+    A path of the form "first.h264|N|rest.mp4" reads frames 0..N-1 from the first file and
+    N.. from the second (a resumed upscale pass)."""
+
+    def __new__(cls, path):
+        if "|" in path:
+            return _SplitReader(path)
+        return super().__new__(cls)
 
     def __init__(self, path):
         self.cap = cv2.VideoCapture(path)
@@ -142,6 +150,16 @@ class SeqReader:
             self.frame = f
             self.idx += 1
         return self.frame
+
+
+class _SplitReader:
+    def __init__(self, path):
+        a, n, b = path.split("|")
+        self.n = int(n)
+        self.a, self.b = SeqReader(a), SeqReader(b)
+
+    def get(self, i):
+        return self.a.get(i) if i < self.n else self.b.get(i - self.n)
 
 
 def rgba_pipe(path):

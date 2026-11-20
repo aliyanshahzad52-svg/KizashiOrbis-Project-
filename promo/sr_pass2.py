@@ -8,7 +8,7 @@ The camera is locked off, so the wall never changes:
     and stored at 1620x2880 (room for 1.5x punch-ins at 1080x1920 without upsampling).
 Frames cut out of the edit are written as plain Lanczos upscales (never shown).
 
-Usage: python3 sr_pass2.py <source.mov> <matte.mkv> <model.onnx> <out.mp4>
+Usage: python3 sr_pass2.py <source.mov> <matte.mkv> <model.onnx> <out.mp4> [start_frame]
 """
 import json
 import subprocess
@@ -20,6 +20,7 @@ import numpy as np
 import onnxruntime as ort
 
 SRC, MATTE, MODEL, OUT = sys.argv[1:5]
+START = int(sys.argv[5]) if len(sys.argv) > 5 else 0   # resume: write frames START..end only
 E = json.load(open("edit.json"))
 OW, OH = 1620, 2880
 T, O = 128, 10
@@ -92,6 +93,8 @@ for i in range(n):
     okm, m = mcap.read()
     if not ok:
         break
+    if i < START:
+        continue
     if not used(i):
         enc.stdin.write(cv2.resize(f, (OW, OH), interpolation=cv2.INTER_LANCZOS4).tobytes())
         continue
@@ -103,7 +106,7 @@ for i in range(n):
     done_sr += 1
     if done_sr % 25 == 0:
         el = time.time() - t0
-        left = sum(used(j) for j in range(i + 1, n))
+        left = sum(used(j) for j in range(max(i + 1, START), n))
         print(f"sr frame {i}/{n}  {el / done_sr:.2f}s/frame  tiles/frame {tiles_run / done_sr:.1f}  eta {el / done_sr * left / 60:.0f} min", flush=True)
 enc.stdin.close()
 enc.wait()
