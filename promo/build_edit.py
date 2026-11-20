@@ -57,7 +57,7 @@ ROMAN = [
     (53.62, 57.22, "ur", "*September 2027 intake* ke liye agar aap apply karna chahte hain,"),
     (57.76, 59.62, "ur", "universities ki *applications open* hain."),
     (59.62, 62.66, "ur", "So *as soon as possible* apply karein,"),
-    (62.66, 66.22, "ur", "because Italy rule: *first come, first serve.*"),
+    (62.66, 66.22, "ur", "because Italy rule: *first come and first serve.*"),
     (66.22, 66.82, "ur", "Thank you."),
 ]
 
@@ -94,6 +94,17 @@ def tokens(text):
     return out
 
 
+# Roman word -> Urdu word index map where the counts differ:
+#   k = same word, (a, b) = spans Urdu words a..b, (k, j, n) = j-th of n parts of Urdu word k
+UR_MAP = {
+    11.08: [(0, 1), 2, 3, 4, 5, 6, 7, 8],
+    26.86: [0, 1, (2, 3), 4, 5, 6, 7, 8],
+    44.84: [0, (1, 0, 2), (1, 1, 2), (2, 4), 5],
+    53.62: [0, (1, 3), 4, 5, 6, 7, 8, 9, 10, 11, 12],
+    59.62: [0, 1, 2, 3, (4, 5), 6, 7],
+    62.66: [0, 1, 2, 3, 4, 5, (6, 0, 2), (6, 1, 2)],
+    66.22: [(0, 0, 2), (0, 1, 2)],
+}
 ROMAN_TIMES = {(r[0], r[1]): r[4] for r in ROMAN if r[2] == "manual"}
 ROMAN = [r[:4] for r in ROMAN]
 
@@ -115,6 +126,34 @@ for a, b, lang, text in ROMAN:
                 tk["s"] = 4.45
     else:
         src = urdu_words_between(a, b)
+        mp = UR_MAP.get(a)
+        if a == 34.55:                            # "Is ke" sits just before the first Urdu word kept
+            toks[0]["s"], toks[0]["e"] = 34.55, 34.64
+            toks[1]["s"], toks[1]["e"] = 34.64, 34.74
+            for tk, w in zip(toks[2:], src[-13:]):
+                tk["s"], tk["e"] = w["s"], w["e"]
+            words += toks
+            continue
+        if mp:
+            for tk, m in zip(toks, mp):
+                if m is None:
+                    continue
+                if isinstance(m, int):
+                    tk["s"], tk["e"] = src[m]["s"], src[m]["e"]
+                elif len(m) == 2:
+                    tk["s"], tk["e"] = src[m[0]]["s"], src[m[1]]["e"]
+                else:
+                    k, j, n = m
+                    d = (src[k]["e"] - src[k]["s"]) / n
+                    tk["s"], tk["e"] = src[k]["s"] + j * d, src[k]["s"] + (j + 1) * d
+            words += toks
+            continue
+        if len(src) == len(toks):                 # word-for-word transliteration: exact timings
+            for tk, w in zip(toks, src):
+                tk["s"], tk["e"] = w["s"], w["e"]
+            words += toks
+            continue
+        print("proportional timing:", text[:40], len(src), "urdu vs", len(toks), "roman")
         # cumulative character position -> time, along the Urdu words
         cum, tot = [0.0], 0.0
         for w in src:
@@ -195,26 +234,91 @@ def at(src_t):
     return round(src_to_out(src_t), 3)
 
 
-# ------------------------------------------------ supporting visual events
-EVENTS = [
-    {"type": "flag", "code": "eu", "label": "EUROPE", "t0": at(1.85), "t1": at(2.69)},
-    {"type": "list", "title": "The usual worries", "items": [["fee", "Expensive tuition fees"], ["home", "High living costs"]], "t0": at(5.0), "t1": at(8.1)},
-    {"type": "flag", "code": "it", "label": "ITALY", "t0": at(8.85), "t1": at(11.0)},
-    {"type": "name", "name": "Aliyan Shahzad", "role": "OrbisNexa Consultancy", "t0": at(11.6), "t1": at(14.4)},
-    {"type": "badge", "icon": "uni", "big": "No tuition fee", "small": "at public universities", "t0": at(21.6), "t1": at(24.15)},
-    {"type": "badge", "icon": "cap", "big": "Fully funded", "small": "scholarships", "t0": at(24.45), "t1": at(26.8)},
-    {"type": "stat", "values": [[at(27.2), 7000], [at(32.1), 10000]], "unit": "€",
-     "smalls": [[at(27.2), "annual stipend"], [at(32.1), "at some universities"]], "t0": at(27.0), "t1": at(34.1)},
-    {"type": "list", "title": "Offered by some universities", "items": [["home", "Accommodation"], ["food", "Food"]], "t0": at(35.5), "t1": at(38.5)},
-    {"type": "badge", "icon": "doc", "big": "Documents ready?", "small": "we handle the process", "t0": at(39.25), "t1": at(44.7)},
-    {"type": "badge", "icon": "search", "big": "Profile assessment", "small": "eligibility check", "t0": at(47.6), "t1": at(53.5)},
-    {"type": "badge", "icon": "cal", "big": "September 2027", "small": "intake", "t0": at(53.8), "t1": at(57.3)},
-    {"type": "badge", "icon": "live", "big": "Applications open", "small": "apply as soon as possible", "t0": at(57.8), "t1": at(62.6)},
-    {"type": "badge", "icon": "clock", "big": "First come,", "small": "first serve", "t0": at(63.4), "t1": at(66.2)},
+# ------------------------------------------------ v2 design: typography, graphics, sound
+ALLW = words
+
+
+def w_at(text, after=0.0):
+    """Output time of the first spoken word `text` at/after `after` (output seconds)."""
+    for w in ALLW:
+        if w["text"].strip(".,?:").lower() == text.lower() and w["os"] >= after - 1e-6:
+            return w["os"]
+    raise KeyError(text)
+
+
+T = {k: w_at(*v) if isinstance(v, tuple) else w_at(v) for k, v in {
+    "study": "study", "europe": "Europe", "expensive": "expensive", "tuition": ("tuition", 3),
+    "living": "living", "italy1": "Italy", "aliyan": "Aliyan", "excellent": "excellent",
+    "fee": ("fee", 19), "fully": "fully", "seven": "7,000", "ten": "10,000", "accom": "accommodation",
+    "food": ("food", 30), "documents": "documents", "complete": "complete", "contact": ("contact", 39),
+    "orbis2": ("OrbisNexa", 40), "profile": "profile", "eligible": "eligible", "september": "September",
+    "y2027": "2027", "applications": "applications", "open": "open", "soon": "soon",
+    "possible": "possible", "firstcome": ("first", 59), "thank": "Thank"}.items()}
+
+# big kinetic typography placed on the wall BEHIND the speaker (occluded by the person matte)
+BACK = [
+    {"t0": 0.0, "t1": 2.62, "lines": [["STUDY IN", "s"], ["EUROPE?", "xl", T["europe"]]], "flag": ["eu", T["europe"]]},
+    {"t0": T["expensive"] - 0.1, "t1": 6.32, "lines": [["TOO", "m"], ["EXPENSIVE?", "xl", T["expensive"]]]},
+    {"t0": T["italy1"] - 0.08, "t1": 8.78, "lines": [["THEN", "s"], ["ITALY", "xxl", T["italy1"]]], "flag": ["it", T["italy1"]]},
+    {"t0": T["aliyan"] - 0.12, "t1": 12.25, "lines": [["ALIYAN SHAHZAD", "l"], ["ORBISNEXA CONSULTANCY", "s", T["aliyan"] + 0.5]]},
+    {"t0": T["excellent"] - 0.08, "t1": 18.70, "lines": [["EXCELLENT", "l"], ["OPTION", "m", T["excellent"] + 0.35]]},
+    {"t0": T["fee"] - 0.06, "t1": 21.98, "lines": [["TUITION FEE", "s"], ["€0", "xxl", T["fee"]]], "accent": "gold"},
+    {"t0": T["fully"] - 0.06, "t1": 23.36, "lines": [["FULLY", "l"], ["FUNDED", "m", T["fully"] + 0.25]]},
+    {"t0": T["seven"] - 0.25, "t1": 30.62, "lines": [["UP TO", "s"], ["€COUNT", "xxl", T["seven"]]], "accent": "gold",
+     "count": [[T["seven"], 0, 7000, 1.15], [T["ten"], 7000, 10000, 1.0]], "after": [T["ten"], "ANNUAL STIPEND"]},
+    {"t0": T["accom"] - 0.08, "t1": 34.58, "lines": [["+ ACCOMMODATION", "m"], ["+ FOOD", "l", T["food"]]]},
+    {"t0": T["documents"] - 0.08, "t1": 37.0, "lines": [["COMPLETE", "s", T["complete"]], ["DOCUMENTS?", "l"]]},
+    {"t0": T["contact"] - 0.05, "t1": 42.20, "lines": [["CONTACT", "s"], ["ORBISNEXA", "xl", T["orbis2"]]]},
+    {"t0": T["profile"] - 0.08, "t1": 45.95, "lines": [["PROFILE", "l"], ["ASSESSMENT", "m", T["profile"] + 0.5]]},
+    {"t0": T["eligible"] - 0.08, "t1": 48.62, "lines": [["ELIGIBLE?", "xl"]]},
+    {"t0": T["september"] - 0.06, "t1": 52.40, "lines": [["SEPTEMBER", "m"], ["2027", "xxl", T["y2027"]], ["INTAKE", "s", T["y2027"] + 0.5]], "accent": "gold"},
+    {"t0": T["applications"] - 0.08, "t1": 54.38, "lines": [["APPLICATIONS", "m"], ["OPEN", "xxl", T["open"]]], "accent": "green"},
+    {"t0": T["soon"] - 0.25, "t1": 57.40, "lines": [["APPLY", "l"], ["ASAP", "xxl", T["possible"]]]},
+    {"t0": T["firstcome"] - 0.08, "t1": 61.0, "lines": [["FIRST COME,", "l"], ["FIRST SERVE", "m", T["firstcome"] + 0.92]]},
 ]
 
+# animated graphics in FRONT of the speaker (right-hand column over the wall)
+FRONT = [
+    {"kind": "cashout", "t0": T["expensive"], "t1": 6.30},
+    {"kind": "zero", "t0": T["fee"], "t1": 21.95},
+    {"kind": "cap", "t0": T["fully"], "t1": 23.35},
+    {"kind": "coins", "t0": T["seven"] - 0.1, "t1": 30.6, "steps": [[T["seven"], 7000, 1.15], [T["ten"], 10000, 1.0]]},
+    {"kind": "icons", "t0": T["accom"] - 0.05, "t1": 34.55, "items": [["home", T["accom"]], ["food", T["food"]]]},
+    {"kind": "doc", "t0": T["documents"], "t1": 36.95, "check": T["complete"]},
+    {"kind": "scan", "t0": T["profile"], "t1": 45.9},
+    {"kind": "check", "t0": T["eligible"], "t1": 48.6},
+    {"kind": "calendar", "t0": T["september"], "t1": 52.35},
+    {"kind": "live", "t0": T["open"] - 0.1, "t1": 54.35},
+    {"kind": "clock", "t0": T["soon"], "t1": 57.35},
+]
+
+# sound design, synced to the same instants
+SFX = [
+    ["whoosh_in", 0.02, 0.5], ["impact_soft", T["europe"], 0.45],
+    ["whoosh", T["expensive"] - 0.12, 0.45], ["cash_flutter", T["tuition"], 0.55], ["cash_flutter", T["living"], 0.45],
+    ["impact_soft", T["italy1"], 0.55], ["swoosh_up", T["aliyan"] - 0.25, 0.35],
+    ["shimmer", T["excellent"], 0.35],
+    ["stamp", T["fee"] + 0.05, 0.6], ["sparkle", T["fully"], 0.5],
+    ["chaching", T["seven"] + 1.12, 0.6], ["chaching", T["ten"] + 0.98, 0.7], ["rise", T["ten"] - 0.05, 0.35],
+    ["pop", T["accom"], 0.5], ["pop", T["food"], 0.5],
+    ["tick", T["complete"] + 0.05, 0.55], ["whoosh", T["contact"] - 0.1, 0.35], ["impact_soft", T["orbis2"], 0.45],
+    ["scan", T["profile"], 0.35], ["ding", T["eligible"] + 0.15, 0.5],
+    ["page", T["september"], 0.5], ["impact_soft", T["y2027"], 0.4], ["ping", T["open"], 0.55],
+    ["whoosh", T["soon"] - 0.2, 0.35], ["impact_soft", T["firstcome"], 0.4],
+    ["whoosh_in", VIDEO_LEN - 0.25, 0.5], ["shimmer", VIDEO_LEN + 0.5, 0.45],
+]
+for k in range(1, 9):                                      # coins clinking while the counters run
+    SFX.append(["coin", T["seven"] + 0.05 + k * 0.13, 0.28])
+for k in range(1, 7):
+    SFX.append(["coin", T["ten"] + 0.05 + k * 0.15, 0.3])
+
+# zoom-blur "punch" transitions on the emphasis cuts (output time of the cut)
+PUNCH = [round(sh["t0"], 3) for sh in shots if sh["trans"] == "cut" and sh["zoom"] >= 1.24 and sh["t0"] > 0]
+for t in PUNCH:
+    SFX.append(["punch", t - 0.04, 0.22])
+
 json.dump({"edl": EDL, "video_len": round(VIDEO_LEN, 3), "end_card": END_CARD, "duration": DURATION,
-           "shots": shots, "captions": captions, "events": EVENTS},
+           "shots": shots, "captions": captions, "back": BACK, "front": FRONT, "sfx": SFX, "punch": PUNCH, "T": T},
           open("edit.json", "w"), indent=1, ensure_ascii=False)
 print("duration", DURATION, "captions", len(captions), "shots", len(shots))
 for c in captions[:60]:

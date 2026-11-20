@@ -166,12 +166,20 @@ music = np.stack([L * g, R * g], 1)[:end]
 music /= np.abs(music).max() + 1e-9
 write(f"{tmp}/music.wav", music * 0.9)
 
+# ------------------------------------------------------------------ 2b. sound design
+import sfx  # noqa: E402
+fx = sfx.render(E.get("sfx", []), DUR)
+fx /= np.abs(fx).max() + 1e-9
+write(f"{tmp}/sfx.wav", fx * 0.9)
+
 # ------------------------------------------------------------------ 3. mix
 # music sits ~-26 LUFS under the talk (ducked further by the voice), rises for the end card
-run("-i", f"{tmp}/voice.wav", "-i", f"{tmp}/music.wav", "-filter_complex",
+# music ~-27 LUFS ducked under the voice; sound design sits just under the voice, never ducked
+run("-i", f"{tmp}/voice.wav", "-i", f"{tmp}/music.wav", "-i", f"{tmp}/sfx.wav", "-filter_complex",
     f"[1:a]loudnorm=I=-27:TP=-3,volume='if(gte(t,{V - 0.3:.2f}),3.2,1)':eval=frame[m];"
     "[0:a]asplit=2[v][sc];"
     "[m][sc]sidechaincompress=threshold=0.03:ratio=5:attack=20:release=350:makeup=1[md];"
-    "[v][md]amix=inputs=2:duration=first:normalize=0,"
+    "[2:a]volume=0.42,highpass=f=60[fx];"
+    "[v][md][fx]amix=inputs=3:duration=first:normalize=0,"
     "loudnorm=I=-14:TP=-1.0:LRA=9", "-ar", str(SR), "-ac", "2", OUT)
 print("wrote", OUT)
