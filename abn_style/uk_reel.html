@@ -1,0 +1,269 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+  @font-face { font-family: P; font-weight: 400; src: url(assets/poppins-latin-400-normal.woff2); }
+  @font-face { font-family: P; font-weight: 500; src: url(assets/poppins-latin-500-normal.woff2); }
+  @font-face { font-family: P; font-weight: 600; src: url(assets/poppins-latin-600-normal.woff2); }
+  @font-face { font-family: P; font-weight: 700; src: url(assets/poppins-latin-700-normal.woff2); }
+  @font-face { font-family: P; font-weight: 800; src: url(assets/poppins-latin-800-normal.woff2); }
+  :root { --navy: #0c1b3d; --navy2: #0a2a66; --blue: #0b4fb3; --sky: #4fb0ff; --ice: #cfe6ff; }
+  html, body { margin: 0; background: #000; }
+  #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; font-family: P, sans-serif; background: #fff; }
+  .abs { position: absolute; }
+  .full { left: 0; top: 0; width: 1080px; height: 1920px; }
+  .scene { overflow: hidden; visibility: hidden; }
+  .scene > img.bg { position: absolute; left: -108px; top: -192px; width: 1296px; height: 2304px; object-fit: cover; }
+  .ch { display: inline-block; white-space: pre; }
+  .c { left: 0; width: 1080px; text-align: center; white-space: nowrap; }
+  .shade { background: radial-gradient(900px 1100px at 50% 45%, rgba(0,0,0,0) 40%, rgba(4,10,30,.38) 100%); }
+
+  /* S1 */
+  #s1t1 { top: 640px; font-size: 128px; font-weight: 800; letter-spacing: -1px; color: var(--navy); }
+  #s1t1 .in { color: var(--blue); }
+  #s1t2 { top: 740px; font-size: 430px; font-weight: 800; letter-spacing: -14px; line-height: 1; color: var(--navy);
+          background: linear-gradient(180deg, #0c1b3d 30%, #0b4fb3 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  #badge { left: 540px; top: 860px; width: 330px; height: 300px; margin: -150px 0 0 -165px; background: #fff; border-radius: 26px;
+           box-shadow: 0 24px 60px rgba(4,12,40,.35); visibility: hidden; }
+  #badge .a { left: 0; width: 330px; top: 46px; text-align: center; font-size: 46px; font-weight: 800; color: var(--blue); letter-spacing: 1px; }
+  #badge .b { left: 0; width: 330px; top: 84px; text-align: center; font-size: 172px; font-weight: 800; color: var(--navy); letter-spacing: -6px; line-height: 1; }
+  /* square transition */
+  #wsq { left: 540px; top: 960px; width: 0; height: 0; background: #fff; visibility: hidden; }
+  #nsq { left: 540px; top: 960px; width: 0; height: 0; background: var(--navy); visibility: hidden; overflow: hidden; }
+  /* S2 */
+  #s2t { top: 880px; font-size: 190px; font-weight: 800; color: #fff; letter-spacing: 2px; text-shadow: 0 10px 40px rgba(0,0,0,.35); }
+  /* S3 */
+  #s3 { background: radial-gradient(1200px 1500px at 50% 40%, #f7f9fc 0%, #e6ebf3 70%, #d8dfeb 100%); }
+  #s3t { top: 700px; font-size: 200px; font-weight: 800; line-height: .98; color: var(--navy); letter-spacing: -2px; white-space: normal; }
+  #s3t span { display: block; }
+  #s3t span + span { background: linear-gradient(90deg, #0c1b3d, #0b4fb3); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  /* S4 */
+  #s4box { transform-origin: 50% 50%; }
+  #s4glow { background: linear-gradient(155deg, rgba(31,122,232,.55) 0%, rgba(11,79,179,.15) 45%, rgba(12,27,61,.55) 100%); mix-blend-mode: screen; }
+  #s4get { top: 700px; font-size: 64px; font-weight: 800; color: var(--sky); letter-spacing: 6px; }
+  #s4adm { top: 770px; font-size: 150px; font-weight: 800; color: #fff; letter-spacing: -2px; text-shadow: 0 12px 40px rgba(0,0,0,.35); }
+  #s4top { top: 940px; font-size: 104px; font-weight: 800; color: var(--sky); letter-spacing: -1px; clip-path: inset(100% 0 0 0); }
+  #s4uni { top: 1076px; font-size: 40px; font-weight: 600; color: #fff; letter-spacing: 24px; text-indent: 24px; }
+  /* bar wipe */
+  #bar { left: 540px; top: 960px; width: 0; height: 0; background: var(--navy); visibility: hidden; }
+  #slash { left: 1080px; top: -300px; width: 260px; height: 2600px; background: linear-gradient(90deg, #1f7ae8, #4fb0ff);
+           transform: rotate(14deg); visibility: hidden; }
+  /* S5 */
+  #s5a { top: 780px; font-size: 50px; font-weight: 700; color: #fff; letter-spacing: 14px; text-indent: 14px; }
+  #s5b { top: 840px; font-size: 270px; font-weight: 800; color: #fff; letter-spacing: 4px; line-height: 1.04; text-shadow: 0 14px 50px rgba(0,0,0,.4); }
+  #s5u { left: 340px; top: 1146px; width: 400px; height: 12px; border-radius: 6px; background: linear-gradient(90deg, #1f7ae8, #4fb0ff); transform: scaleX(0); }
+
+  /* END */
+  #end { background: radial-gradient(1200px 1400px at 50% 32%, #ffffff 0%, #f5f8fd 60%, #e9f0fa 100%); }
+  #logoW { left: 260px; top: 380px; width: 560px; height: 510px; }
+  #logoW img { position: absolute; left: 0; top: 0; width: 560px; }
+  .strip { position: absolute; top: 0; height: 510px; overflow: hidden; }
+  .strip img { position: absolute; top: 0; width: 560px; }
+  #sheen { left: 0; top: 0; width: 560px; height: 510px; -webkit-mask-image: url(assets/logo.png); -webkit-mask-size: 560px auto;
+           background: linear-gradient(105deg, rgba(255,255,255,0) 38%, rgba(255,255,255,.75) 50%, rgba(255,255,255,0) 62%);
+           background-size: 300% 100%; background-position: 120% 0; }
+  .tick { position: absolute; width: 6px; height: 26px; border-radius: 3px; background: var(--sky); transform-origin: 50% 100%; opacity: 0; }
+  #rule { left: 390px; top: 952px; width: 300px; height: 4px; border-radius: 2px; transform: scaleX(0);
+          background: linear-gradient(90deg, rgba(31,122,232,0), #1f7ae8, rgba(31,122,232,0)); }
+  #cap { top: 1000px; font-size: 32px; font-weight: 600; color: var(--blue); letter-spacing: 6px; text-indent: 6px; }
+  #nums { left: 0; top: 1062px; width: 1080px; display: flex; flex-direction: column; align-items: center; gap: 18px; }
+  .num { display: flex; align-items: center; gap: 18px; opacity: 0; }
+  .num b { font-size: 68px; font-weight: 700; color: var(--navy); letter-spacing: .5px; line-height: 1; margin-left: 8px; }
+  .ic { width: 66px; height: 66px; border-radius: 50%; position: relative; flex: 0 0 66px;
+        background: linear-gradient(145deg, #1f7ae8 0%, #0b4fb3 55%, #0c3a86 100%);
+        box-shadow: 0 8px 18px rgba(11,79,179,.28), inset 0 1px 0 rgba(255,255,255,.35); }
+  .ic svg { position: absolute; left: 16px; top: 16px; width: 34px; height: 34px; fill: #fff; }
+  #addr { left: 0; top: 1290px; width: 1080px; display: flex; justify-content: center; align-items: center; gap: 22px; opacity: 0; }
+  #addr .t { font-size: 36px; font-weight: 500; color: #2b3a58; line-height: 1.36; }
+  #soc { left: 0; top: 1470px; width: 1080px; display: flex; justify-content: center; align-items: center; gap: 22px; }
+  .s { width: 64px; height: 64px; border-radius: 18px; background: var(--navy); position: relative; opacity: 0; }
+  .s svg { position: absolute; left: 15px; top: 15px; width: 34px; height: 34px; fill: #fff; }
+  #handle { font-size: 44px; font-weight: 700; color: var(--navy); margin-left: 8px; opacity: 0; }
+  #grain { pointer-events: none; mix-blend-mode: overlay; opacity: .16; }
+</style></head>
+<body><div id="stage">
+  <!-- S1: light, faded street; STUDY IN UK -->
+  <div id="s1" class="abs full scene"><img class="bg" id="s1bg" src="bg/booth_grey.jpg">
+    <div id="s1t1" class="abs c split">STUDY <span class="in">IN</span></div>
+    <div id="s1t2" class="abs c">UK</div></div>
+  <!-- S1b: duotone + badge -->
+  <div id="s1b" class="abs full scene"><img class="bg" id="s1bbg" src="bg/booth_duo.jpg"><div class="abs full shade"></div>
+    <div id="badge" class="abs"><div class="abs a">STUDY IN</div><div class="abs b">UK</div></div></div>
+  <!-- S2 -->
+  <div id="s2" class="abs full scene"><img class="bg" id="s2bg" src="bg/library_duo.jpg"><div class="abs full shade"></div>
+    <div id="s2t" class="abs c split">WITH</div></div>
+  <!-- S3 -->
+  <div id="s3" class="abs full scene"><div id="s3t" class="abs c"><span>LOW</span><span>GRADES</span></div></div>
+  <!-- backdrop for the card shrink -->
+  <div id="s4back" class="abs full scene"><img class="bg" src="bg/booth_grey.jpg"></div>
+  <!-- S4 -->
+  <div id="s4box" class="abs full scene"><img class="bg" id="s4bg" src="bg/college_duo.jpg"><div id="s4glow" class="abs full"></div><div class="abs full shade"></div>
+    <div id="s4get" class="abs c">GET</div>
+    <div id="s4adm" class="abs c">ADMISSIONS</div>
+    <div id="s4top" class="abs c">IN TOP RANKED</div>
+    <div id="s4uni" class="abs c split">UNIVERSITIES</div>
+    <div id="s4navy" class="abs full" style="background:#0c1b3d;opacity:0"></div></div>
+  <!-- S5 -->
+  <div id="s5" class="abs full scene"><img class="bg" id="s5bg" src="bg/gate_duo.jpg"><div class="abs full shade"></div>
+    <div id="s5a" class="abs c split">APPLY THROUGH</div>
+    <div id="s5b" class="abs c">UCAS</div>
+    <div id="s5u" class="abs"></div></div>
+  <!-- transitions -->
+  <div id="wsq" class="abs"></div>
+  <div id="nsq" class="abs"><img id="nsqimg" src="bg/library_duo.jpg" style="position:absolute;width:1296px;height:2304px;"></div>
+  <div id="bar" class="abs"></div>
+  <div id="slash" class="abs"></div>
+  <!-- END -->
+  <div id="end" class="abs full scene">
+    <div id="logoW" class="abs"></div>
+    <div id="rule" class="abs"></div>
+    <div id="cap" class="abs c split">FOR DETAILS, CALL OR WHATSAPP</div>
+    <div id="nums" class="abs">
+      <div class="num"><span class="ic"><svg viewBox="0 0 24 24"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1z"/></svg></span><span class="ic wa"></span><b>+92 370 0035896</b></div>
+      <div class="num"><span class="ic"><svg viewBox="0 0 24 24"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1z"/></svg></span><span class="ic wa"></span><b>+92 312 4222204</b></div>
+    </div>
+    <div id="addr" class="abs"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg></span>
+      <span class="t">Iqbal, 8 Allama, Raza Block Town,<br>Lahore, Pakistan</span></div>
+    <div id="soc" class="abs"><span class="s" id="ig"></span><span class="s" id="fb"></span><span id="handle">@orbisnexa</span></div>
+  </div>
+  <canvas id="grain" class="abs full" width="540" height="960"></canvas>
+</div>
+<script src="assets/gsap.min.js"></script>
+<script>
+const $ = s => document.querySelector(s);
+const SVG = { whatsapp: `<svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>`, instagram: `<svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077"/></svg>`, facebook: `<svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z"/></svg>` };
+window.ready = (async () => {
+  const wa = SVG.whatsapp;
+  document.querySelectorAll('.ic.wa').forEach(e => e.innerHTML = wa);
+  $('#ig').innerHTML = SVG.instagram;
+  $('#fb').innerHTML = SVG.facebook;
+  await document.fonts.ready;
+  await Promise.all([...document.images].map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; })));
+  build();
+  return true;
+})();
+
+function split(el) {
+  const walk = node => [...node.childNodes].forEach(n => {
+    if (n.nodeType === 3) {
+      const f = document.createDocumentFragment();
+      for (const c of n.textContent) { const s = document.createElement('span'); s.className = 'ch'; s.textContent = c; f.appendChild(s); }
+      n.replaceWith(f);
+    } else walk(n);
+  });
+  walk(el);
+}
+
+// logo as 5 vertical strips that rise in one after another (the reference builds its mark bar by bar)
+function logoStrips() {
+  const w = $('#logoW'), n = 5, sw = 560 / n;
+  for (let k = 0; k < n; k++) {
+    const d = document.createElement('div'); d.className = 'strip'; d.style.left = (k * sw) + 'px'; d.style.width = (sw + 1) + 'px';
+    const im = document.createElement('img'); im.src = 'assets/logo.png'; im.style.left = (-k * sw) + 'px';
+    d.appendChild(im); w.appendChild(d);
+  }
+  const sh = document.createElement('div'); sh.id = 'sheen'; sh.className = 'abs'; w.appendChild(sh);
+  const ang = [-40, -12, 18];
+  ang.forEach((a, i) => { const t = document.createElement('div'); t.className = 'tick'; t.style.left = (520 + i * 18) + 'px'; t.style.top = '-30px';
+    t.style.transform = `rotate(${a}deg)`; w.appendChild(t); });
+}
+
+const tl = gsap.timeline({ paused: true });
+function show(id, a, b) { tl.set(id, { visibility: 'visible' }, a); if (b !== undefined) tl.set(id, { visibility: 'hidden' }, b); }
+const kb = (sel, a, b, from, to) => tl.fromTo(sel, from, { ...to, duration: b - a, ease: 'none' }, a);
+
+function build() {
+  document.querySelectorAll('.split').forEach(split);
+  logoStrips();
+  tl.set({}, {}, 13.8);
+
+  // ---- S1  0 - 0.86 : faded street, STUDY IN (letters) + UK (big, rises with motion blur)
+  show('#s1', 0, 0.86);
+  kb('#s1bg', 0, 0.86, { scale: 1.08 }, { scale: 1.03 });
+  tl.fromTo('#s1t1 .ch', { opacity: 0, x: -50, filter: 'blur(14px)' }, { opacity: 1, x: 0, filter: 'blur(0px)', duration: 0.22, stagger: 0.05, ease: 'power3.out' }, 0.04);
+  tl.fromTo('#s1t2', { opacity: 0, y: 220, scaleY: 1.5, filter: 'blur(26px)' }, { opacity: 1, y: 0, scaleY: 1, filter: 'blur(0px)', duration: 0.26, ease: 'power3.out' }, 0.5);
+
+  // ---- S1b 0.86 - 1.56 : duotone, the title becomes a white badge
+  show('#s1b', 0.86, 1.72);
+  kb('#s1bbg', 0.86, 1.72, { scale: 1.02 }, { scale: 1.09 });
+  show('#badge', 0.86);
+  tl.fromTo('#badge', { scale: 1.9 }, { scale: 1, duration: 0.24, ease: 'power3.out' }, 0.86);
+  tl.to('#badge', { scale: 0.92, duration: 0.6, ease: 'none' }, 1.1);
+
+  // ---- square transition 1.56 - 2.02
+  show('#wsq', 1.56, 1.98);
+  tl.fromTo('#wsq', { width: 300, height: 276, x: -150, y: -138 }, { width: 1500, height: 1500, x: -750, y: -750, duration: 0.16, ease: 'power2.in' }, 1.56);
+  show('#nsq', 1.72, 2.02);
+  tl.fromTo('#nsq', { width: 34, height: 34, x: -17, y: -17 }, { width: 300, height: 300, x: -150, y: -150, duration: 0.14, ease: 'power2.out' }, 1.72);
+  tl.to('#nsq', { width: 1080, height: 1920, x: -540, y: -960, duration: 0.16, ease: 'power3.in' }, 1.86);
+  tl.fromTo('#nsqimg', { left: -108 + 540 - 17, top: -192 + 960 - 17 }, { left: -108 + 540 - 150, top: -192 + 960 - 150, duration: 0.14, ease: 'power2.out' }, 1.72);
+  tl.to('#nsqimg', { left: -108, top: -192, duration: 0.16, ease: 'power3.in' }, 1.86);
+
+  // ---- S2 2.02 - 2.72 : WITH
+  show('#s2', 2.02, 2.72);
+  kb('#s2bg', 2.02, 2.72, { scale: 1.0, x: 0 }, { scale: 1.06, x: -20 });
+  tl.fromTo('#s2t .ch', { opacity: 0, y: 60, filter: 'blur(12px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.2, stagger: 0.07, ease: 'power3.out' }, 2.06);
+
+  // ---- S3 2.72 - 3.22 : LOW GRADES
+  show('#s3', 2.72, 3.22);
+  tl.fromTo('#s3t', { scale: 1.25, opacity: 0, filter: 'blur(22px)' }, { scale: 1, opacity: 1, filter: 'blur(0px)', duration: 0.2, ease: 'power3.out' }, 2.72);
+  tl.to('#s3t', { scale: 0.96, duration: 0.3, ease: 'none' }, 2.92);
+
+  // ---- S4 3.22 - 4.62 : GET ADMISSIONS IN TOP RANKED UNIVERSITIES
+  show('#s4box', 3.22, 4.98);
+  kb('#s4bg', 3.22, 4.62, { scale: 1.1, y: 30 }, { scale: 1.02, y: 0 });
+  tl.fromTo('#s4adm', { scale: 0.55, opacity: 0, filter: 'blur(14px)' }, { scale: 1, opacity: 1, filter: 'blur(0px)', duration: 0.22, ease: 'power3.out' }, 3.24);
+  tl.fromTo('#s4get', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.18, ease: 'power2.out' }, 3.88);
+  tl.fromTo('#s4adm', { y: 60 }, { y: 0, duration: 0.24, ease: 'power3.out' }, 3.86);
+  tl.to('#s4top', { clipPath: 'inset(0% 0 0 0)', duration: 0.2, ease: 'power2.out' }, 3.94);
+  tl.fromTo('#s4top', { y: 30 }, { y: 0, duration: 0.2, ease: 'power2.out' }, 3.94);
+  tl.fromTo('#s4uni .ch', { opacity: 0 }, { opacity: 1, duration: 0.12, stagger: 0.018 }, 4.08);
+  // card shrink over the faded street, then collapse into a navy square
+  show('#s4back', 4.62, 5.0);
+  tl.to('#s4box', { scale: 0.62, boxShadow: '0 40px 90px rgba(4,12,40,.45)', duration: 0.2, ease: 'power3.inOut' }, 4.62);
+  tl.to('#s4navy', { opacity: 1, duration: 0.1 }, 4.84);
+  tl.to('#s4box', { scaleX: 0.13, scaleY: 0.075, duration: 0.14, ease: 'power3.in' }, 4.84);
+
+  // ---- bar wipe 4.98 - 5.56
+  show('#bar', 4.98, 5.58);
+  tl.set('#bar', { width: 140, height: 144, x: -70, y: -72 }, 4.98);
+  tl.to('#bar', { width: 120, height: 1920, x: -60, y: -960, duration: 0.16, ease: 'power3.inOut' }, 5.12);
+  tl.to('#bar', { width: 1080, x: -540, duration: 0.2, ease: 'power3.in' }, 5.34);
+  show('#slash', 5.36, 5.7);
+  tl.fromTo('#slash', { x: 0 }, { x: -1700, duration: 0.34, ease: 'power2.inOut' }, 5.36);
+
+  // ---- S5 5.56 - 6.9 : APPLY THROUGH UCAS
+  show('#s5', 5.56, 6.9);
+  kb('#s5bg', 5.56, 6.9, { scale: 1.02, x: 20 }, { scale: 1.08, x: -10 });
+  tl.fromTo('#s5b', { x: 700, opacity: 0, filter: 'blur(20px)' }, { x: 0, opacity: 1, filter: 'blur(0px)', duration: 0.26, ease: 'power3.out' }, 5.58);
+  tl.fromTo('#s5a .ch', { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.14, stagger: 0.02 }, 5.7);
+  tl.to('#s5u', { scaleX: 1, duration: 0.3, ease: 'power3.out' }, 5.86);
+
+  // ---- END 6.9 - 13.8
+  show('#end', 6.9);
+  tl.fromTo('.strip', { y: 520, opacity: 0 }, { y: 0, opacity: 1, duration: 0.42, stagger: 0.13, ease: 'power3.out' }, 7.0);
+  tl.fromTo('#logoW', { scale: 0.96 }, { scale: 1, duration: 1.6, ease: 'power2.out' }, 7.0);
+  tl.to('#sheen', { backgroundPosition: '-60% 0', duration: 0.8, ease: 'power2.inOut' }, 8.0);
+  tl.fromTo('.tick', { opacity: 0, scaleY: 0 }, { opacity: 1, scaleY: 1, duration: 0.16, stagger: 0.04, ease: 'power2.out' }, 8.45);
+  tl.to('.tick', { opacity: 0, y: -14, duration: 0.25, stagger: 0.04 }, 8.7);
+  tl.to('#rule', { scaleX: 1, duration: 0.5, ease: 'power3.out' }, 8.4);
+  tl.fromTo('#cap .ch', { opacity: 0, filter: 'blur(8px)' }, { opacity: 1, filter: 'blur(0px)', duration: 0.2, stagger: 0.012 }, 8.75);
+  tl.fromTo('.num', { opacity: 0, y: 40, filter: 'blur(10px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.32, stagger: 0.14, ease: 'power3.out' }, 9.05);
+  tl.fromTo('.num .ic', { scale: 0.3 }, { scale: 1, duration: 0.4, stagger: 0.07, ease: 'back.out(2.4)' }, 9.05);
+  tl.fromTo('#addr', { opacity: 0, y: 30, filter: 'blur(8px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.32, ease: 'power3.out' }, 9.42);
+  tl.fromTo('#addr .ic', { scale: 0.3 }, { scale: 1, duration: 0.4, ease: 'back.out(2.4)' }, 9.42);
+  tl.fromTo('.s', { opacity: 0, y: 26, scale: 0.6 }, { opacity: 1, y: 0, scale: 1, duration: 0.3, stagger: 0.16, ease: 'back.out(2)' }, 9.75);
+  tl.fromTo('#handle', { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.3, ease: 'power2.out' }, 10.1);
+}
+
+// film grain (deterministic per frame)
+const g = $('#grain').getContext('2d');
+const img = g.createImageData(540, 960);
+function grain(t) {
+  let s = Math.floor(t * 30) * 9301 + 49297;
+  const d = img.data;
+  for (let i = 0; i < d.length; i += 4) { s = (s * 1103515245 + 12345) & 0x7fffffff; const v = (s >> 16) & 255; d[i] = d[i + 1] = d[i + 2] = v; d[i + 3] = 255; }
+  g.putImageData(img, 0, 0);
+  $('#grain').style.opacity = t < 6.9 ? .16 : 0;
+}
+window.renderAt = t => { tl.seek(t, false); grain(t); return true; };
+</script></body></html>
