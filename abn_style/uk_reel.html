@@ -15,6 +15,7 @@
   .scene > img.bg { position: absolute; left: -108px; top: -192px; width: 1296px; height: 2304px; object-fit: cover; }
   .ch { display: inline-block; white-space: pre; }
   .c { left: 0; width: 1080px; text-align: center; white-space: nowrap; }
+  .scrim { background: radial-gradient(620px 360px at 50% 52%, rgba(5,12,34,.62) 0%, rgba(5,12,34,.32) 55%, rgba(5,12,34,0) 100%); }
   .shade { background: radial-gradient(900px 1100px at 50% 45%, rgba(0,0,0,0) 40%, rgba(4,10,30,.38) 100%); }
 
   /* S1 */
@@ -95,14 +96,14 @@
   <!-- backdrop for the card shrink -->
   <div id="s4back" class="abs full scene"><img class="bg" src="bg/booth_grey.jpg"></div>
   <!-- S4 -->
-  <div id="s4box" class="abs full scene"><img class="bg" id="s4bg" src="bg/college_duo.jpg"><div id="s4glow" class="abs full"></div><div class="abs full shade"></div>
+  <div id="s4box" class="abs full scene"><img class="bg" id="s4bg" src="bg/college_duo.jpg"><div id="s4glow" class="abs full"></div><div class="abs full shade"></div><div class="abs full scrim" style="opacity:.7"></div>
     <div id="s4get" class="abs c">GET</div>
     <div id="s4adm" class="abs c">ADMISSIONS</div>
     <div id="s4top" class="abs c">IN TOP RANKED</div>
     <div id="s4uni" class="abs c split">UNIVERSITIES</div>
     <div id="s4navy" class="abs full" style="background:#0c1b3d;opacity:0"></div></div>
   <!-- S5 -->
-  <div id="s5" class="abs full scene"><img class="bg" id="s5bg" src="bg/gate_duo.jpg"><div class="abs full shade"></div>
+  <div id="s5" class="abs full scene"><img class="bg" id="s5bg" src="bg/gate_duo.jpg"><div class="abs full shade"></div><div class="abs full scrim"></div>
     <div id="s5a" class="abs c split">APPLY THROUGH</div>
     <div id="s5b" class="abs c">UCAS</div>
     <div id="s5u" class="abs"></div></div>
