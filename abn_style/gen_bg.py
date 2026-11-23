@@ -31,7 +31,10 @@ SCENES = {
 
 so = ort.SessionOptions()
 so.intra_op_num_threads = 4
-so.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
+so.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_BASIC
+so.enable_cpu_mem_arena = False
+so.enable_mem_pattern = False
+so.add_session_config_entry("session.disable_prepacking", "1")       # prepacking would duplicate the 10 GB of weights
 P = ["CPUExecutionProvider"]
 te1 = ort.InferenceSession(f"{MD}/text_encoder/model.onnx", so, providers=P)
 te2 = ort.InferenceSession(f"{MD}/text_encoder_2/model.onnx", so, providers=P)

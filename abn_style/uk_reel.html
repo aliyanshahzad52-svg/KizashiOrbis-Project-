@@ -23,7 +23,7 @@
   #s1t2 { top: 740px; font-size: 430px; font-weight: 800; letter-spacing: -14px; line-height: 1; color: var(--navy);
           background: linear-gradient(180deg, #0c1b3d 30%, #0b4fb3 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
   #badge { left: 540px; top: 860px; width: 330px; height: 300px; margin: -150px 0 0 -165px; background: #fff; border-radius: 26px;
-           box-shadow: 0 24px 60px rgba(4,12,40,.35); visibility: hidden; }
+           box-shadow: 0 24px 60px rgba(4,12,40,.35); }
   #badge .a { left: 0; width: 330px; top: 46px; text-align: center; font-size: 46px; font-weight: 800; color: var(--blue); letter-spacing: 1px; }
   #badge .b { left: 0; width: 330px; top: 84px; text-align: center; font-size: 172px; font-weight: 800; color: var(--navy); letter-spacing: -6px; line-height: 1; }
   /* square transition */
@@ -58,23 +58,22 @@
   #logoW img { position: absolute; left: 0; top: 0; width: 560px; }
   .strip { position: absolute; top: 0; height: 510px; overflow: hidden; }
   .strip img { position: absolute; top: 0; width: 560px; }
-  #sheen { left: 0; top: 0; width: 560px; height: 510px; -webkit-mask-image: url(assets/logo.png); -webkit-mask-size: 560px auto;
-           background: linear-gradient(105deg, rgba(255,255,255,0) 38%, rgba(255,255,255,.75) 50%, rgba(255,255,255,0) 62%);
-           background-size: 300% 100%; background-position: 120% 0; }
+  #sheen { left: 0; top: 0; width: 560px; filter: brightness(1.9) saturate(.8); opacity: .55;
+           clip-path: polygon(-30% 0, -18% 0, -38% 100%, -50% 100%); }
   .tick { position: absolute; width: 6px; height: 26px; border-radius: 3px; background: var(--sky); transform-origin: 50% 100%; opacity: 0; }
   #rule { left: 390px; top: 952px; width: 300px; height: 4px; border-radius: 2px; transform: scaleX(0);
           background: linear-gradient(90deg, rgba(31,122,232,0), #1f7ae8, rgba(31,122,232,0)); }
   #cap { top: 1000px; font-size: 32px; font-weight: 600; color: var(--blue); letter-spacing: 6px; text-indent: 6px; }
-  #nums { left: 0; top: 1062px; width: 1080px; display: flex; flex-direction: column; align-items: center; gap: 18px; }
+  #nums { left: 540px; top: 1066px; transform: translateX(-50%); width: max-content; white-space: nowrap; display: flex; flex-direction: column; align-items: flex-start; gap: 20px; }
   .num { display: flex; align-items: center; gap: 18px; opacity: 0; }
   .num b { font-size: 68px; font-weight: 700; color: var(--navy); letter-spacing: .5px; line-height: 1; margin-left: 8px; }
   .ic { width: 66px; height: 66px; border-radius: 50%; position: relative; flex: 0 0 66px;
         background: linear-gradient(145deg, #1f7ae8 0%, #0b4fb3 55%, #0c3a86 100%);
         box-shadow: 0 8px 18px rgba(11,79,179,.28), inset 0 1px 0 rgba(255,255,255,.35); }
   .ic svg { position: absolute; left: 16px; top: 16px; width: 34px; height: 34px; fill: #fff; }
-  #addr { left: 0; top: 1290px; width: 1080px; display: flex; justify-content: center; align-items: center; gap: 22px; opacity: 0; }
+  #addr { display: flex; align-items: center; gap: 22px; opacity: 0; margin-top: 18px; }
   #addr .t { font-size: 36px; font-weight: 500; color: #2b3a58; line-height: 1.36; }
-  #soc { left: 0; top: 1470px; width: 1080px; display: flex; justify-content: center; align-items: center; gap: 22px; }
+  #soc { left: 0; top: 1436px; width: 1080px; display: flex; justify-content: center; align-items: center; gap: 22px; }
   .s { width: 64px; height: 64px; border-radius: 18px; background: var(--navy); position: relative; opacity: 0; }
   .s svg { position: absolute; left: 15px; top: 15px; width: 34px; height: 34px; fill: #fff; }
   #handle { font-size: 44px; font-weight: 700; color: var(--navy); margin-left: 8px; opacity: 0; }
@@ -120,9 +119,10 @@
     <div id="nums" class="abs">
       <div class="num"><span class="ic"><svg viewBox="0 0 24 24"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1z"/></svg></span><span class="ic wa"></span><b>+92 370 0035896</b></div>
       <div class="num"><span class="ic"><svg viewBox="0 0 24 24"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1z"/></svg></span><span class="ic wa"></span><b>+92 312 4222204</b></div>
-    </div>
-    <div id="addr" class="abs"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg></span>
+  <div id="addr"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg></span>
       <span class="t">Iqbal, 8 Allama, Raza Block Town,<br>Lahore, Pakistan</span></div>
+    </div>
+
     <div id="soc" class="abs"><span class="s" id="ig"></span><span class="s" id="fb"></span><span id="handle">@orbisnexa</span></div>
   </div>
   <canvas id="grain" class="abs full" width="540" height="960"></canvas>
@@ -161,7 +161,7 @@ function logoStrips() {
     const im = document.createElement('img'); im.src = 'assets/logo.png'; im.style.left = (-k * sw) + 'px';
     d.appendChild(im); w.appendChild(d);
   }
-  const sh = document.createElement('div'); sh.id = 'sheen'; sh.className = 'abs'; w.appendChild(sh);
+  const sh = document.createElement('img'); sh.id = 'sheen'; sh.className = 'abs'; sh.src = 'assets/logo.png'; w.appendChild(sh);
   const ang = [-40, -12, 18];
   ang.forEach((a, i) => { const t = document.createElement('div'); t.className = 'tick'; t.style.left = (520 + i * 18) + 'px'; t.style.top = '-30px';
     t.style.transform = `rotate(${a}deg)`; w.appendChild(t); });
@@ -185,7 +185,6 @@ function build() {
   // ---- S1b 0.86 - 1.56 : duotone, the title becomes a white badge
   show('#s1b', 0.86, 1.72);
   kb('#s1bbg', 0.86, 1.72, { scale: 1.02 }, { scale: 1.09 });
-  show('#badge', 0.86);
   tl.fromTo('#badge', { scale: 1.9 }, { scale: 1, duration: 0.24, ease: 'power3.out' }, 0.86);
   tl.to('#badge', { scale: 0.92, duration: 0.6, ease: 'none' }, 1.1);
 
@@ -218,7 +217,7 @@ function build() {
   tl.fromTo('#s4top', { y: 30 }, { y: 0, duration: 0.2, ease: 'power2.out' }, 3.94);
   tl.fromTo('#s4uni .ch', { opacity: 0 }, { opacity: 1, duration: 0.12, stagger: 0.018 }, 4.08);
   // card shrink over the faded street, then collapse into a navy square
-  show('#s4back', 4.62, 5.0);
+  show('#s4back', 4.62, 5.58);
   tl.to('#s4box', { scale: 0.62, boxShadow: '0 40px 90px rgba(4,12,40,.45)', duration: 0.2, ease: 'power3.inOut' }, 4.62);
   tl.to('#s4navy', { opacity: 1, duration: 0.1 }, 4.84);
   tl.to('#s4box', { scaleX: 0.13, scaleY: 0.075, duration: 0.14, ease: 'power3.in' }, 4.84);
@@ -242,7 +241,7 @@ function build() {
   show('#end', 6.9);
   tl.fromTo('.strip', { y: 520, opacity: 0 }, { y: 0, opacity: 1, duration: 0.42, stagger: 0.13, ease: 'power3.out' }, 7.0);
   tl.fromTo('#logoW', { scale: 0.96 }, { scale: 1, duration: 1.6, ease: 'power2.out' }, 7.0);
-  tl.to('#sheen', { backgroundPosition: '-60% 0', duration: 0.8, ease: 'power2.inOut' }, 8.0);
+  tl.to('#sheen', { clipPath: 'polygon(138% 0, 150% 0, 130% 100%, 118% 100%)', duration: 0.8, ease: 'power2.inOut' }, 8.0);
   tl.fromTo('.tick', { opacity: 0, scaleY: 0 }, { opacity: 1, scaleY: 1, duration: 0.16, stagger: 0.04, ease: 'power2.out' }, 8.45);
   tl.to('.tick', { opacity: 0, y: -14, duration: 0.25, stagger: 0.04 }, 8.7);
   tl.to('#rule', { scaleX: 1, duration: 0.5, ease: 'power3.out' }, 8.4);
