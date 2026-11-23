@@ -26,8 +26,8 @@
 <body><div id="stage">
   <div id="white" class="abs"></div>
   <div id="box" class="abs">
-    <svg width="680" height="328"><path id="outline" d="M 160 1.5 H 664 A 14.5 14.5 0 0 1 678.5 16 V 312 A 14.5 14.5 0 0 1 664 326.5 H 1.5"
-      fill="none" stroke="#0b4fb3" stroke-width="3" stroke-linecap="round"/></svg>
+    <svg width="680" height="328"><path id="outline" d="M 340 1.5 H 660.5 A 18 18 0 0 1 678.5 19.5 V 308.5 A 18 18 0 0 1 660.5 326.5 H 19.5 A 18 18 0 0 1 1.5 308.5 V 19.5 A 18 18 0 0 1 19.5 1.5 Z"
+      fill="none" stroke="#0b4fb3" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
     <div id="l1" class="abs ln ph">+92 370 0035896</div>
     <div id="l2" class="abs ln ph">+92 312 4222204</div>
     <div id="l3" class="abs ln">Iqbal, 8 Allama, Raza Block Town,<br>Lahore, Pakistan</div>
@@ -55,6 +55,6 @@ tl.fromTo('.ln', { opacity: 0, filter: 'blur(6px)' }, { opacity: 1, filter: 'blu
 const L = document.getElementById('outline').getTotalLength();
 gsap.set('#outline', { strokeDasharray: L, strokeDashoffset: L, opacity: 0 });
 tl.set('#outline', { opacity: 1 }, T0 + 1.32);
-tl.to('#outline', { strokeDashoffset: 0, duration: 0.55, ease: 'power1.inOut' }, T0 + 1.32);
+tl.to('#outline', { strokeDashoffset: 0, duration: 0.75, ease: 'power1.inOut' }, T0 + 1.32);
 window.renderAt = t => { tl.seek(t, false); return true; };
 </script></body></html>
