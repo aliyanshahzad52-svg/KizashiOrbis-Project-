@@ -1,0 +1,60 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+  @font-face { font-family: P; font-weight: 400; src: url(assets/poppins-latin-400-normal.woff2); }
+  @font-face { font-family: P; font-weight: 500; src: url(assets/poppins-latin-500-normal.woff2); }
+  @font-face { font-family: P; font-weight: 600; src: url(assets/poppins-latin-600-normal.woff2); }
+  @font-face { font-family: P; font-weight: 700; src: url(assets/poppins-latin-700-normal.woff2); }
+  :root { --navy: #0c1b3d; --blue: #0b4fb3; --text: #14213d; }
+  html, body { margin: 0; padding: 0; background: transparent; }
+  #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; font-family: P, sans-serif; }
+  .abs { position: absolute; }
+  #white { left: 0; top: 0; width: 1080px; height: 1920px; background: #fff; opacity: 0; }
+  #logo { left: 34px; top: 26px; width: 250px; }
+  #logo img { width: 100%; display: block; filter: drop-shadow(0 2px 6px rgba(255,255,255,.55)); }
+  #box { left: 200px; top: 868px; width: 680px; height: 328px; }
+  #box svg { position: absolute; left: 0; top: 0; overflow: visible; }
+  .ln { left: 0; width: 680px; text-align: center; color: var(--text); white-space: nowrap; opacity: 0; }
+  .ph { font-size: 56px; font-weight: 500; letter-spacing: .5px; }
+  .ph span { color: var(--blue); font-weight: 600; margin-right: 10px; }
+  #l1 { top: 30px; } #l2 { top: 112px; }
+  #l3 { top: 206px; font-size: 32px; font-weight: 400; line-height: 1.42; color: #33415c; }
+  #pill { left: 540px; top: 1262px; width: 600px; height: 6px; margin-left: -300px; border-radius: 12px;
+          background: var(--blue); transform: scaleX(0); transform-origin: 50% 50%; overflow: hidden; }
+  #pill div { width: 600px; line-height: 76px; text-align: center; font-size: 40px; font-weight: 500; color: #fff; opacity: 0; }
+</style></head>
+<body><div id="stage">
+  <div id="white" class="abs"></div>
+  <div id="box" class="abs">
+    <svg width="680" height="328"><path id="outline" d="M 160 1.5 H 664 A 14.5 14.5 0 0 1 678.5 16 V 312 A 14.5 14.5 0 0 1 664 326.5 H 1.5"
+      fill="none" stroke="#0b4fb3" stroke-width="3" stroke-linecap="round"/></svg>
+    <div id="l1" class="abs ln ph">+92 370 0035896</div>
+    <div id="l2" class="abs ln ph">+92 312 4222204</div>
+    <div id="l3" class="abs ln">Iqbal, 8 Allama, Raza Block Town,<br>Lahore, Pakistan</div>
+  </div>
+  <div id="pill" class="abs"><div>Secure Your Spot Today!</div></div>
+  <div id="logo" class="abs"><img src="assets/logo.png"></div>
+</div>
+<script src="assets/gsap.min.js"></script>
+<script>
+const T0 = 8.13;                                     // reference: logo starts travelling as the footage zoom-blurs out
+const tl = gsap.timeline({ paused: true });
+tl.set({}, {}, 12);
+// footage -> white (the compositor adds the zoom blur underneath)
+tl.to('#white', { opacity: 1, duration: 0.13, ease: 'power1.in' }, T0 + 0.09);
+// logo: top-left -> centre, growing into the hero
+tl.to('#logo', { left: 540 - 260, top: 330, duration: 0.34, ease: 'power2.inOut' }, T0);
+tl.to('#logo', { width: 520, duration: 0.42, ease: 'power3.out' }, T0 + 0.1);
+tl.to('#logo img', { filter: 'drop-shadow(0 0px 0px rgba(255,255,255,0))', duration: 0.2 }, T0 + 0.1);
+// CTA: thin line draws, opens into the pill, label fades in
+tl.to('#pill', { scaleX: 1, duration: 0.14, ease: 'power2.out' }, T0 + 0.47);
+tl.to('#pill', { height: 76, top: 1262 - 35, duration: 0.12, ease: 'power2.out' }, T0 + 0.6);
+tl.to('#pill div', { opacity: 1, duration: 0.2 }, T0 + 0.66);
+// contact lines fade in (soft blur), then the frame draws around them
+tl.fromTo('.ln', { opacity: 0, filter: 'blur(6px)' }, { opacity: 1, filter: 'blur(0px)', duration: 0.24, stagger: 0.06 }, T0 + 0.62);
+const L = document.getElementById('outline').getTotalLength();
+gsap.set('#outline', { strokeDasharray: L, strokeDashoffset: L, opacity: 0 });
+tl.set('#outline', { opacity: 1 }, T0 + 1.32);
+tl.to('#outline', { strokeDashoffset: 0, duration: 0.55, ease: 'power1.inOut' }, T0 + 1.32);
+window.renderAt = t => { tl.seek(t, false); return true; };
+</script></body></html>
