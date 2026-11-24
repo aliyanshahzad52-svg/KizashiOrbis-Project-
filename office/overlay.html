@@ -11,21 +11,26 @@
   @font-face { font-family: P; font-weight: 600; src: url(assets/poppins-latin-600-normal.woff2); }
   @font-face { font-family: P; font-weight: 700; src: url(assets/poppins-latin-700-normal.woff2); }
   @font-face { font-family: P; font-weight: 800; src: url(assets/poppins-latin-800-normal.woff2); }
+  @font-face { font-family: A; font-weight: 400; src: url(assets/anton-latin-400-normal.woff2); }
+  @font-face { font-family: M; font-weight: 800; src: url(assets/montserrat-latin-800-normal.woff2); }
+  @font-face { font-family: M; font-weight: 900; src: url(assets/montserrat-latin-900-normal.woff2); }
   :root { --navy: #0c1b3d; --blue: #0b4fb3; --sky: #2f86ee; }
   html, body { margin: 0; background: transparent; }
   #stage { position: relative; width: 1920px; height: 1080px; overflow: hidden; font-family: P, sans-serif; }
   .abs { position: absolute; }
   .layer { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
   /* background text blocks */
-  .blk { position: absolute; transform: translate(-50%, -50%); text-align: center; white-space: nowrap; opacity: 0; }
-  .ln { display: block; line-height: .92; }
-  .w { display: inline-block; white-space: pre; will-change: transform, filter, opacity; }
-  .s { font-size: 66px; font-weight: 500; color: var(--navy); letter-spacing: -.5px; margin: 6px 0 2px; }
-  .b { font-size: 190px; font-weight: 800; color: var(--navy); letter-spacing: -4px; }
-  .g { font-size: 190px; font-weight: 800; letter-spacing: -4px; }
-  .g .w { background: linear-gradient(180deg, #8fd0ff 0%, #2f86ee 42%, #0b4fb3 72%, #0a347e 100%);
-          -webkit-background-clip: text; background-clip: text; color: transparent; padding: 0 .02em; }
-  .b .w, .s .w { text-shadow: 0 2px 14px rgba(255,255,255,.35); }
+  .blk { position: absolute; white-space: nowrap; opacity: 0; }
+  .ln { display: block; }
+  .c { display: inline-block; white-space: pre; will-change: transform, filter, opacity; }
+  /* big display words (Anton, condensed heavy) */
+  .B, .G { font-family: A, sans-serif; font-size: 560px; line-height: .86; letter-spacing: 4px; text-transform: uppercase; }
+  .B { color: var(--navy); }
+  .G .c { background: linear-gradient(180deg, #6cc0ff 0%, #2a83f0 34%, #0b4fb3 66%, #0a2f74 100%);
+          -webkit-background-clip: text; background-clip: text; color: transparent; padding: 0 .015em; }
+  /* tracked secondary line (Montserrat black, brand royal blue) */
+  .M { font-family: M, sans-serif; font-weight: 900; font-size: 78px; letter-spacing: .26em; color: var(--blue);
+       line-height: 1.25; margin: 10px 0; padding-left: .26em; }
   /* front */
   #logo { left: 44px; top: 30px; width: 230px; filter: drop-shadow(0 0 10px rgba(255,255,255,.55)) drop-shadow(0 2px 6px rgba(0,0,0,.18)); }
   #flash { background: #fff; opacity: 0; }
@@ -80,26 +85,43 @@ async function build(E) {
   E.shots.forEach((s, k) => {
     const T = s.text;
     const blk = document.createElement('div'); blk.className = 'blk';
-    blk.style.left = T.cx + 'px'; blk.style.top = T.cy + 'px';
+    const R = T.x1 !== undefined;
+    blk.style.left = (R ? T.x1 : T.x0) + 'px'; blk.style.top = T.cy + 'px';
+    blk.style.transform = R ? 'translate(-100%, -50%)' : 'translate(0, -50%)';
+    blk.style.textAlign = R ? 'right' : 'left';
+    blk.style.transformOrigin = R ? '100% 50%' : '0% 50%';
     for (const [txt, st] of T.lines) {
       const ln = document.createElement('div'); ln.className = 'ln ' + st;
-      txt.split(' ').forEach((w, i, a) => { const sp = document.createElement('span'); sp.className = 'w'; sp.textContent = w + (i < a.length - 1 ? ' ' : ''); ln.appendChild(sp); });
+      if (st === 'M') { const sp = document.createElement('span'); sp.className = 'c'; sp.textContent = txt; ln.appendChild(sp); }
+      else for (const ch of txt) { const sp = document.createElement('span'); sp.className = 'c'; sp.textContent = ch; ln.appendChild(sp); }
       blk.appendChild(ln);
     }
     back.appendChild(blk);
-    // fit every line inside the free wall area (block centre kept)
-    const maxW = T.mw || Math.min(1000, 2 * Math.min(T.cx - 70, 1850 - T.cx));
+    // fit: secondary lines stay fully in the free wall area; big words may tuck n px behind the person
     blk.querySelectorAll('.ln').forEach(ln => {
+      const big = !ln.classList.contains('M');
+      const lim = T.mw + (big ? T.n : 0);
       const w = ln.scrollWidth;
-      if (w > maxW) ln.style.fontSize = (parseFloat(getComputedStyle(ln).fontSize) * maxW / w) + 'px';
+      if (w > lim) ln.style.fontSize = (parseFloat(getComputedStyle(ln).fontSize) * lim / w) + 'px';
+      if (big) ln.style[R ? 'marginRight' : 'marginLeft'] = (-T.n) + 'px';
     });
-    const a = s.t0 + (k === 0 ? 0.35 : 0.12), b = s.t1 - 0.22;
-    const words = blk.querySelectorAll('.w');
+    const a = s.t0 + (k === 0 ? 0.35 : 0.12), b = s.t1 - 0.2;
     tl.set(blk, { opacity: 1 }, a);
-    tl.fromTo(words, { opacity: 0, y: 26, scale: 1.12, filter: 'blur(14px)' },
-              { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)', duration: 0.42, stagger: 0.11, ease: 'power3.out' }, a);
-    tl.fromTo(blk, { scale: 1 }, { scale: 1.045, duration: b - a, ease: 'none' }, a);
-    tl.to(words, { opacity: 0, filter: 'blur(16px)', y: -14, duration: 0.24, stagger: 0.02, ease: 'power2.in' }, b - 0.06);
+    let at = a;
+    blk.querySelectorAll('.ln').forEach(ln => {
+      const cs = ln.querySelectorAll('.c');
+      if (ln.classList.contains('M')) {
+        tl.fromTo(cs, { opacity: 0, letterSpacing: '.6em', filter: 'blur(10px)' },
+                  { opacity: 1, letterSpacing: '.26em', filter: 'blur(0px)', duration: 0.55, ease: 'power3.out' }, at);
+        at += 0.12;
+      } else {
+        tl.fromTo(cs, { opacity: 0, yPercent: 38, scale: 1.18, filter: 'blur(18px)' },
+                  { opacity: 1, yPercent: 0, scale: 1, filter: 'blur(0px)', duration: 0.5, stagger: 0.045, ease: 'power3.out' }, at);
+        at += 0.1 + cs.length * 0.03;
+      }
+    });
+    tl.fromTo(blk, { scale: 1 }, { scale: 1.05, duration: b - a, ease: 'none' }, a);
+    tl.to(blk.querySelectorAll('.c'), { opacity: 0, filter: 'blur(18px)', yPercent: -12, duration: 0.24, stagger: 0.008, ease: 'power2.in' }, b - 0.08);
     // cut accents
     if (s.tr === 'flash' && k > 0) {
       tl.fromTo('#flash', { opacity: 0 }, { opacity: 0.85, duration: 0.1, ease: 'power2.in' }, s.t0 - 0.1);

@@ -28,10 +28,51 @@ def zoom_blur(f, amount, cx=960, cy=430):
     return acc / (n + 1)
 
 
+HOLD = {}                      # shot index -> solid "keep in front" mask for people the matte misses in places
+
+
+def build_holds(matte_path):
+    """For shots with a 'hold' x-range: union of the person matte over the whole shot inside that range,
+    filled to its convex hull and grown a little - a solid silhouette for that person (e.g. short dark hair
+    against a dark frame edge, where the per-frame matte has holes)."""
+    want = {k: s for k, s in enumerate(E["shots"]) if s.get("hold")}
+    if not want:
+        return
+    acc = {k: np.zeros((H, W), np.uint8) for k in want}
+    p = subprocess.Popen(["ffmpeg", "-loglevel", "error", "-i", matte_path, "-f", "rawvideo", "-pix_fmt", "gray", "-"], stdout=subprocess.PIPE)
+    i = 0
+    while True:
+        b = p.stdout.read(W * H)
+        if len(b) < W * H:
+            break
+        t = i / FPS
+        for k, s in want.items():
+            if s["t0"] <= t < s["t1"]:
+                acc[k] = np.maximum(acc[k], np.frombuffer(b, np.uint8).reshape(H, W))
+        i += 1
+    for k, s in want.items():
+        x0, x1 = s["hold"]
+        m = (acc[k] > 110).astype(np.uint8)
+        m[:, :x0] = 0; m[:, x1:] = 0
+        n, lab, st, _ = cv2.connectedComponentsWithStats(m)
+        if n < 2:
+            continue
+        big = 1 + int(np.argmax(st[1:, cv2.CC_STAT_AREA]))
+        pts = np.column_stack(np.where(lab == big)[::-1]).astype(np.int32)
+        hull = np.zeros((H, W), np.uint8)
+        cv2.fillConvexPoly(hull, cv2.convexHull(pts), 255)
+        hull = cv2.dilate(hull, np.ones((31, 31), np.uint8))
+        HOLD[k] = cv2.GaussianBlur(hull.astype(np.float32) / 255, (0, 0), 6)
+
+
 def compose(t, plate, m, back, front):
     f = plate.astype(np.float32) / 255
     m = cv2.GaussianBlur(m.astype(np.float32) / 255, (0, 0), 1.4)
-    m = np.clip((m - 0.08) / 0.84, 0, 1)[..., None]
+    m = np.clip((m - 0.08) / 0.84, 0, 1)
+    for k, s in enumerate(E["shots"]):
+        if k in HOLD and s["t0"] <= t < s["t1"]:
+            m = np.maximum(m, HOLD[k])
+    m = m[..., None]
     if back is not None:
         a = back[..., 3:4].astype(np.float32) / 255 * (1 - m)
         f = f * (1 - a) + back[..., :3].astype(np.float32) / 255 * a
@@ -71,6 +112,8 @@ def get(p, ch):
     return None if len(b) < W * H * ch else np.frombuffer(b, np.uint8).reshape(H, W, ch) if ch > 1 else np.frombuffer(b, np.uint8).reshape(H, W)
 
 
+build_holds(MT)
+print("hold-out masks:", sorted(HOLD), flush=True)
 pp, pm, pb, pf = pipe(PL, "bgr24"), pipe(MT, "gray"), pipe(BK, "bgra"), pipe(FR, "bgra")
 N = int(round(E["duration"] * FPS))
 enc = subprocess.Popen(["ffmpeg", "-loglevel", "error", "-y", "-f", "rawvideo", "-pix_fmt", "bgr24", "-s", f"{W}x{H}",
