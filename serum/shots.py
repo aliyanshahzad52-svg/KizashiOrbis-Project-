@@ -33,7 +33,7 @@ def grid(name, size, seg, mat, z=0.0):
     return ob
 
 
-def backdrop(dist=0.7, col=(0.02, 0.017, 0.013), h=1.2):
+def backdrop(dist=0.7, col=(0.02, 0.017, 0.013), h=1.2, z0=-0.02):
     """Curved cyclorama so the horizon never shows."""
     bm = bmesh.new()
     prof = []
@@ -43,7 +43,7 @@ def backdrop(dist=0.7, col=(0.02, 0.017, 0.013), h=1.2):
     prof.append((0.0, h))
     rows = []
     for x in (-1.2, 1.2):
-        rows.append([bm.verts.new((x, dist + y, z - 0.02)) for y, z in [(-1.2, 0)] + prof])
+        rows.append([bm.verts.new((x, dist + y, z + z0)) for y, z in [(-1.2, 0)] + prof])
     for j in range(len(rows[0]) - 1):
         bm.faces.new((rows[0][j], rows[1][j], rows[1][j + 1], rows[0][j + 1]))
     return lib.mesh_obj("cyc", bm, lib.mat_backdrop(col, rough=0.8))
@@ -192,7 +192,7 @@ def shot_B():
 def shot_C():
     s = bpy.context.scene; s.frame_start, s.frame_end = 1, SHOTS["C"] + HANDLE
     lib.world_color((0.004, 0.0035, 0.003), 1.0)
-    backdrop(0.5, (0.012, 0.009, 0.006))
+    backdrop(0.6, (0.012, 0.009, 0.006), h=1.5, z0=-0.6)
     b = lib.build_bottle(); root = b["root"]
     droplets_on_glass(root)
     piv = bpy.data.objects.new("pivot", None); lib.link(piv); piv.location = (0, 0, 0.0)
@@ -231,11 +231,12 @@ def shot_C():
 def shot_D():
     s = bpy.context.scene; s.frame_start, s.frame_end = 1, SHOTS["D"] + HANDLE
     lib.world_color((0.004, 0.004, 0.0035), 1.0)
-    backdrop(0.42, (0.05, 0.036, 0.024), h=1.0)
+    backdrop(0.42, (0.022, 0.016, 0.011), h=1.0)
+    lib.area_light("wallglow", (0.0, 0.12, 0.05), (0, 0.42, 0.16), 0.25, 0.25, 2.0, (1, 0.8, 0.55), glossy=False)
     grid("floor", 3.0, 1, lib.mat_glossy_floor((0.012, 0.009, 0.007), 0.08), z=0.0)
     # stone plinth (travertine-like, soft bevel)
     prof = [(0, 0.0), (5.2, 0.0), (5.4, 0.15), (5.4, 2.85), (5.2, 3.0), (0, 3.0)]
-    pl = lib.lathe("plinth", [(r * CM, z * CM) for r, z in prof], 160, lib.mat_stone(0.16, 0.35)); lib.smooth_by_angle(pl, 40)
+    pl = lib.lathe("plinth", [(r * CM, z * CM) for r, z in prof], 160, lib.mat_stone(0.09, 0.3)); lib.smooth_by_angle(pl, 40)
     b = lib.build_bottle(); root = b["root"]; root.location.z = 0.03; root.rotation_euler.z = 0.35
     lib.anim(root, "rotation_euler", [(1, (0, 0, -0.25)), (113, (0, 0, 0.35))])
     # leaf-shadow gobo: leaves between a hard light and the backdrop
