@@ -138,7 +138,8 @@ const sh = m => { m.castShadow = true; m.receiveShadow = true; return m; };
 
 const caseG = new THREE.Group();            // everything that flips at the end
 scene.add(caseG);
-const base = new THREE.Group(); caseG.add(base);
+const body = new THREE.Group(); body.position.y = 2.6; caseG.add(body);
+const base = new THREE.Group(); body.add(base);
 { const m = sh(new THREE.Mesh(new RoundedBoxGeometry(W, HB, D, 6, 2.4), shellMat)); m.position.y = HB / 2; base.add(m); }
 // lining (poster artwork, items removed)
 const lining = new THREE.Mesh(new THREE.PlaneGeometry(W - 2.6, D - 2.6), new THREE.MeshStandardMaterial({ map: tBase, roughness: 0.95 }));
@@ -184,7 +185,7 @@ const plate = new THREE.Group();
 }
 
 // lid (pivot on the hinge line at the back of the base)
-const lidPivot = new THREE.Group(); lidPivot.position.set(0, HB, -D / 2); caseG.add(lidPivot);
+const lidPivot = new THREE.Group(); lidPivot.position.set(0, HB, -D / 2); body.add(lidPivot);
 const lid = new THREE.Group(); lid.position.set(0, 0, D / 2); lidPivot.add(lid);
 { const m = sh(new THREE.Mesh(new RoundedBoxGeometry(W, HL, D, 6, 2.4), shellMat)); m.position.y = HL / 2; lid.add(m); }
 const lidIn = new THREE.Mesh(new THREE.PlaneGeometry(W - 2.6, D - 2.6), new THREE.MeshStandardMaterial({ map: tLid, roughness: 0.9 }));
@@ -195,6 +196,34 @@ for (const x of [-18, 18]) { const m = sh(new THREE.Mesh(new RoundedBoxGeometry(
 for (const sx of [-1, 1]) for (const z of [-8, 6]) { const m = sh(new THREE.Mesh(new RoundedBoxGeometry(1.2, 2.4, 4.2, 2, 0.35), blackMat)); m.position.set(sx * (W / 2 + 0.25), HL / 2, z); lid.add(m); }
 // subtle shell ribs on the lid exterior
 for (const z of [-12, -4, 4, 12]) { const r = new THREE.Mesh(new RoundedBoxGeometry(W - 8, 0.5, 1.6, 2, 0.24), shellMat); r.position.set(0, HL + 0.05, z); lid.add(r); }
+
+// wheels (dual-axle spinners set into the shell corners) and a retractable trolley handle
+const wheelMat = new THREE.MeshStandardMaterial({ color: 0x1b1d22, roughness: 0.55, metalness: 0.05 });
+const hubMat = new THREE.MeshStandardMaterial({ color: 0xb8bec6, roughness: 0.22, metalness: 0.9 });
+const SPIN = [];
+for (const sx of [-1, 1]) for (const sz of [-1, 1]) {
+  const w = new THREE.Group();
+  const spin = new THREE.Group();
+  const tyre = sh(new THREE.Mesh(new THREE.CylinderGeometry(2.2, 2.2, 1.8, 36), wheelMat));
+  tyre.rotation.z = Math.PI / 2; spin.add(tyre);
+  const hub = new THREE.Mesh(new THREE.CylinderGeometry(1.0, 1.0, 1.9, 24), hubMat);
+  hub.rotation.z = Math.PI / 2; spin.add(hub);
+  w.add(spin);
+  const mount = sh(new THREE.Mesh(new RoundedBoxGeometry(4.6, 1.6, 4.2, 2, 0.5), blackMat));
+  mount.position.y = 1.0; w.add(mount);
+  w.position.set(sx * (W / 2 - 7), -0.4, sz * (D / 2 - 6));
+  body.add(w); SPIN.push(spin);
+}
+const trolley = new THREE.Group();
+trolley.position.set(0, HB, -D / 2 - 2.2);
+const alu = new THREE.MeshStandardMaterial({ color: 0xc9ced6, roughness: 0.18, metalness: 1 });
+for (const x of [-9, 9]) {
+  const tube = sh(new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.55, 30, 16), alu));
+  tube.position.set(x, 15, 0); trolley.add(tube);
+}
+{ const grip = sh(new THREE.Mesh(new RoundedBoxGeometry(22, 2.6, 3.6, 3, 1.0), blackMat)); grip.position.set(0, 30.3, 0); trolley.add(grip); }
+trolley.scale.y = 0.02;
+body.add(trolley);
 
 // ------------------------------------------------------------------ items (poster artwork, real thickness)
 // placement measured on the poster: base interior spans px x 158..698, y 754..1113
@@ -283,11 +312,14 @@ tl.to(S, { lid: 0, duration: 0.2, ease: 'bounce.out' }, 9.82);
 // 4. rotation reveal: lift, flip toward camera, settle on the lid, brand plate revealed
 tl.to('#head', { opacity: 0, y: -60, duration: 0.5, ease: 'power2.in' }, 10.3);
 tl.to('#swoosh', { opacity: 0, duration: 0.4 }, 10.3);
-tl.to(caseG.position, { y: 16, duration: 0.6, ease: 'power2.out' }, 10.35);
-tl.to(caseG.rotation, { x: deg(180), duration: 1.5, ease: 'power2.inOut' }, 10.55);
-tl.to(caseG.rotation, { y: deg(-360), duration: 1.5, ease: 'power2.inOut' }, 10.55);
-tl.to(caseG.position, { y: HB + HL, duration: 0.55, ease: 'power2.inOut' }, 11.75);
-tl.to(CAM, { dist: 200, elev: 74, tz: 0, shift: -0.02, duration: 2.0, ease: 'power2.inOut' }, 10.6);
+tl.to(trolley.scale, { y: 1, duration: 0.45, ease: 'power2.out' }, 10.15);
+tl.to(caseG.position, { z: 14, duration: 0.8, ease: 'power2.inOut' }, 10.5);
+tl.to(caseG.position, { y: 16, duration: 0.6, ease: 'power2.out' }, 11.35);
+tl.to(caseG.rotation, { x: deg(180), duration: 1.5, ease: 'power2.inOut' }, 11.35);
+tl.to(caseG.rotation, { y: deg(-360), duration: 1.5, ease: 'power2.inOut' }, 11.35);
+tl.to(caseG.position, { z: 0, duration: 1.5, ease: 'power2.inOut' }, 11.35);
+tl.to(caseG.position, { y: HB + HL, duration: 0.55, ease: 'power2.inOut' }, 12.55);
+tl.to(CAM, { dist: 118, elev: 74, tz: 0, shift: -0.02, duration: 2.0, ease: 'power2.inOut' }, 11.4);
 tl.to(CAM, { dist: 120, duration: 1.2, ease: 'power2.in' }, 12.7);
 // 5. final screen
 tl.to('#flash', { opacity: 1, duration: 0.3, ease: 'power1.in' }, 13.65);
@@ -309,6 +341,7 @@ document.querySelectorAll('.ic.wa').forEach(e => e.innerHTML = wa.replace(/<titl
 function draw() {
   lidPivot.rotation.x = -deg(S.lid);
   contact.position.y = 0.05;
+  for (const sp of SPIN) sp.rotation.x = caseG.position.z / 2.2;
   const lift = caseG.position.y;
   contact.material.opacity = Math.max(0, 1 - lift / 30);
   contact.scale.setScalar(1 + lift / 60);
