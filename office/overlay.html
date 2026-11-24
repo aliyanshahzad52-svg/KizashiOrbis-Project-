@@ -1,0 +1,125 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- OrbisNexa office promo - graphics layers.
+     #back  : large promotional background text (composited BEHIND the people with the person matte),
+              animated like the reference: stacked word clusters (small light word + big bold word),
+              each word blurs/fades in with a slight rise, the block drifts slowly, blurs out at the cut.
+     #front : OrbisNexa logo top-left (travels to the centre at the end), cut flashes, end card. -->
+<style>
+  @font-face { font-family: P; font-weight: 400; src: url(assets/poppins-latin-400-normal.woff2); }
+  @font-face { font-family: P; font-weight: 500; src: url(assets/poppins-latin-500-normal.woff2); }
+  @font-face { font-family: P; font-weight: 600; src: url(assets/poppins-latin-600-normal.woff2); }
+  @font-face { font-family: P; font-weight: 700; src: url(assets/poppins-latin-700-normal.woff2); }
+  @font-face { font-family: P; font-weight: 800; src: url(assets/poppins-latin-800-normal.woff2); }
+  :root { --navy: #0c1b3d; --blue: #0b4fb3; --sky: #2f86ee; }
+  html, body { margin: 0; background: transparent; }
+  #stage { position: relative; width: 1920px; height: 1080px; overflow: hidden; font-family: P, sans-serif; }
+  .abs { position: absolute; }
+  .layer { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+  /* background text blocks */
+  .blk { position: absolute; transform: translate(-50%, -50%); text-align: center; white-space: nowrap; opacity: 0; }
+  .ln { display: block; line-height: .92; }
+  .w { display: inline-block; white-space: pre; will-change: transform, filter, opacity; }
+  .s { font-size: 66px; font-weight: 500; color: var(--navy); letter-spacing: -.5px; margin: 6px 0 2px; }
+  .b { font-size: 190px; font-weight: 800; color: var(--navy); letter-spacing: -4px; }
+  .g { font-size: 190px; font-weight: 800; letter-spacing: -4px; }
+  .g .w { background: linear-gradient(180deg, #8fd0ff 0%, #2f86ee 42%, #0b4fb3 72%, #0a347e 100%);
+          -webkit-background-clip: text; background-clip: text; color: transparent; padding: 0 .02em; }
+  .b .w, .s .w { text-shadow: 0 2px 14px rgba(255,255,255,.35); }
+  /* front */
+  #logo { left: 44px; top: 30px; width: 230px; filter: drop-shadow(0 0 10px rgba(255,255,255,.55)) drop-shadow(0 2px 6px rgba(0,0,0,.18)); }
+  #flash { background: #fff; opacity: 0; }
+  #veil { background: radial-gradient(1400px 900px at 50% 42%, rgba(255,255,255,.93), rgba(240,246,255,.9)); opacity: 0; }
+  #end { opacity: 1; }
+  #rule { left: 760px; top: 600px; width: 400px; height: 5px; border-radius: 3px; transform: scaleX(0);
+          background: linear-gradient(90deg, rgba(31,122,232,0), #1f7ae8, rgba(31,122,232,0)); }
+  #cap { left: 0; width: 1920px; top: 628px; text-align: center; font-size: 30px; font-weight: 600; color: var(--blue);
+         letter-spacing: 9px; text-indent: 9px; opacity: 0; }
+  #nums { left: 0; width: 1920px; top: 690px; display: flex; justify-content: center; gap: 90px; }
+  .num { display: flex; align-items: center; gap: 14px; opacity: 0; }
+  .num b { font-size: 64px; font-weight: 700; color: var(--navy); line-height: 1; margin-left: 8px; letter-spacing: .3px; }
+  .ic { width: 60px; height: 60px; border-radius: 50%; position: relative; flex: 0 0 60px;
+        background: linear-gradient(145deg, #2a7bff 0%, #0b4fb3 60%, #0a3c8c 100%); box-shadow: 0 8px 18px rgba(11,79,179,.25); }
+  .ic svg { position: absolute; left: 15px; top: 15px; width: 30px; height: 30px; fill: #fff; }
+  #addr { left: 0; width: 1920px; top: 812px; display: flex; justify-content: center; align-items: center; gap: 18px; opacity: 0; }
+  #addr .t { font-size: 38px; font-weight: 500; color: #2b3a58; }
+</style></head>
+<body><div id="stage">
+  <div id="back" class="layer"></div>
+  <div id="front" class="layer">
+    <div id="flash" class="layer"></div>
+    <div id="veil" class="layer"></div>
+    <div id="end" class="layer">
+      <div id="rule" class="abs"></div>
+      <div id="cap" class="abs">CALL / WHATSAPP</div>
+      <div id="nums" class="abs">
+        <div class="num"><span class="ic ph"></span><span class="ic wa"></span><b>+92 370 0035896</b></div>
+        <div class="num"><span class="ic ph"></span><span class="ic wa"></span><b>+92 312 4222204</b></div>
+      </div>
+      <div id="addr" class="abs"><span class="ic pin"></span><span class="t">Iqbal, 8 Allama, Raza Block Town, Lahore, Pakistan</span></div>
+    </div>
+    <img id="logo" class="abs" src="assets/logo.png">
+  </div>
+</div>
+<script src="assets/gsap.min.js"></script>
+<script>
+const $ = s => document.querySelector(s);
+const PHONE = '<svg viewBox="0 0 24 24"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1z"/></svg>';
+const PIN = '<svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>';
+let tl;
+
+async function build(E) {
+  document.querySelectorAll('.ic.ph').forEach(e => e.innerHTML = PHONE);
+  document.querySelectorAll('.ic.pin').forEach(e => e.innerHTML = PIN);
+  const wa = await (await fetch('assets/whatsapp.svg')).text();
+  document.querySelectorAll('.ic.wa').forEach(e => e.innerHTML = wa.replace(/<title>.*?<\/title>/, ''));
+  await document.fonts.ready;
+  tl = gsap.timeline({ paused: true });
+  tl.set({}, {}, E.duration);
+  const back = $('#back');
+  E.shots.forEach((s, k) => {
+    const T = s.text;
+    const blk = document.createElement('div'); blk.className = 'blk';
+    blk.style.left = T.cx + 'px'; blk.style.top = T.cy + 'px';
+    for (const [txt, st] of T.lines) {
+      const ln = document.createElement('div'); ln.className = 'ln ' + st;
+      txt.split(' ').forEach((w, i, a) => { const sp = document.createElement('span'); sp.className = 'w'; sp.textContent = w + (i < a.length - 1 ? ' ' : ''); ln.appendChild(sp); });
+      blk.appendChild(ln);
+    }
+    back.appendChild(blk);
+    // fit every line inside the free wall area (block centre kept)
+    const maxW = T.mw || Math.min(1000, 2 * Math.min(T.cx - 70, 1850 - T.cx));
+    blk.querySelectorAll('.ln').forEach(ln => {
+      const w = ln.scrollWidth;
+      if (w > maxW) ln.style.fontSize = (parseFloat(getComputedStyle(ln).fontSize) * maxW / w) + 'px';
+    });
+    const a = s.t0 + (k === 0 ? 0.35 : 0.12), b = s.t1 - 0.22;
+    const words = blk.querySelectorAll('.w');
+    tl.set(blk, { opacity: 1 }, a);
+    tl.fromTo(words, { opacity: 0, y: 26, scale: 1.12, filter: 'blur(14px)' },
+              { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)', duration: 0.42, stagger: 0.11, ease: 'power3.out' }, a);
+    tl.fromTo(blk, { scale: 1 }, { scale: 1.045, duration: b - a, ease: 'none' }, a);
+    tl.to(words, { opacity: 0, filter: 'blur(16px)', y: -14, duration: 0.24, stagger: 0.02, ease: 'power2.in' }, b - 0.06);
+    // cut accents
+    if (s.tr === 'flash' && k > 0) {
+      tl.fromTo('#flash', { opacity: 0 }, { opacity: 0.85, duration: 0.1, ease: 'power2.in' }, s.t0 - 0.1);
+      tl.to('#flash', { opacity: 0, duration: 0.26, ease: 'power2.out' }, s.t0);
+    }
+  });
+  // ---- end: logo travels from the corner to the centre and grows; contacts underneath
+  const V = E.video;
+  tl.to('#veil', { opacity: 1, duration: 0.9, ease: 'power2.inOut' }, V);
+  tl.to('#logo', { left: 960 - 270, top: 70, width: 540, duration: 1.25, ease: 'power3.inOut' }, V + 0.05);
+  tl.to('#logo', { filter: 'drop-shadow(0 0 0px rgba(255,255,255,0)) drop-shadow(0 6px 16px rgba(12,27,61,.12))', duration: 0.8 }, V + 0.3);
+  tl.to('#rule', { scaleX: 1, duration: 0.5, ease: 'power3.out' }, V + 1.3);
+  tl.fromTo('#cap', { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out' }, V + 1.4);
+  tl.fromTo('.num', { opacity: 0, y: 30, filter: 'blur(10px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.4, stagger: 0.16, ease: 'power3.out' }, V + 1.6);
+  tl.fromTo('.num .ic', { scale: 0.3 }, { scale: 1, duration: 0.45, stagger: 0.08, ease: 'back.out(2.2)' }, V + 1.6);
+  tl.fromTo('#addr', { opacity: 0, y: 24, filter: 'blur(8px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.4, ease: 'power3.out' }, V + 2.05);
+  tl.fromTo('#addr .ic', { scale: 0.3 }, { scale: 1, duration: 0.45, ease: 'back.out(2.2)' }, V + 2.05);
+  return true;
+}
+window.init = async E => build(E);
+window.renderAt = t => { tl.seek(t, false); return true; };
+window.showLayer = w => { $('#back').style.visibility = w === 'back' ? 'visible' : 'hidden'; $('#front').style.visibility = w === 'front' ? 'visible' : 'hidden'; return true; };
+</script></body></html>
