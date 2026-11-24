@@ -29,6 +29,9 @@ SCENES = {
             "red brick building behind, trimmed hedges, overcast daylight, cinematic photograph, realistic, detailed",
 }
 
+if os.environ.get("SCENES_JSON"):                          # alternative prompt set
+    import json
+    SCENES = json.load(open(os.environ["SCENES_JSON"]))
 so = ort.SessionOptions()
 so.intra_op_num_threads = 4
 so.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_BASIC

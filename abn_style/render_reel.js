@@ -10,7 +10,7 @@ const fs = require('fs');
   const page = await browser.newPage({ viewport: { width: 1080, height: 1920 }, deviceScaleFactor: 1 });
   page.on('pageerror', e => console.error('PAGE ERROR', e.message));
   page.on('console', m => { if (m.type() === 'error') console.error('CONSOLE', m.text()); });
-  await page.goto('file://' + path.join(__dirname, 'uk_reel.html'), { waitUntil: 'domcontentloaded' });
+  await page.goto('file://' + path.join(__dirname, process.env.PAGE || 'uk_reel.html'), { waitUntil: 'domcontentloaded' });
   await page.evaluate(() => window.ready);
   if (secs === '--stills') {
     fs.mkdirSync(out, { recursive: true });

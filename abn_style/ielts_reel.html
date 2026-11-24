@@ -1,0 +1,211 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- template: build_ielts.py fills the shared end card (logo, call/WhatsApp, address, socials) from uk_reel.html -->
+<style>
+  @font-face { font-family: P; font-weight: 400; src: url(assets/poppins-latin-400-normal.woff2); }
+  @font-face { font-family: P; font-weight: 500; src: url(assets/poppins-latin-500-normal.woff2); }
+  @font-face { font-family: P; font-weight: 600; src: url(assets/poppins-latin-600-normal.woff2); }
+  @font-face { font-family: P; font-weight: 700; src: url(assets/poppins-latin-700-normal.woff2); }
+  @font-face { font-family: P; font-weight: 800; src: url(assets/poppins-latin-800-normal.woff2); }
+  @font-face { font-family: X; font-weight: 900; src: url(assets/InterDisplay-Black.otf); }
+  :root { --navy: #0c1b3d; --navy2: #0a2a66; --blue: #0b4fb3; --sky: #4fb0ff; --ice: #cfe6ff; }
+  html, body { margin: 0; background: #000; }
+  #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; font-family: P, sans-serif; background: #fff; }
+  .abs { position: absolute; }
+  .full { left: 0; top: 0; width: 1080px; height: 1920px; }
+  .scene { overflow: hidden; visibility: hidden; }
+  .scene > img.bg { position: absolute; left: -108px; top: -192px; width: 1296px; height: 2304px; object-fit: cover; }
+  .ch { display: inline-block; white-space: pre; }
+  .c { left: 0; width: 1080px; text-align: center; white-space: nowrap; }
+
+  /* diagonal OrbisNexa bands (translucent layers, darker toward the bottom-left) */
+  .band { left: 0; top: 0; width: 1080px; height: 1920px; }
+  .b1 { background: rgba(31,122,232,.50); clip-path: polygon(0 640px, 1080px 1650px, 1080px 1920px, 0 1920px); }
+  .b2 { background: rgba(11,79,179,.55); clip-path: polygon(0 830px, 1080px 1840px, 1080px 1920px, 0 1920px); }
+  .b3 { background: rgba(10,42,102,.62); clip-path: polygon(0 1020px, 1080px 2030px, 1080px 2100px, 0 2100px); }
+  .b4 { background: rgba(8,22,56,.70);  clip-path: polygon(0 1230px, 1080px 2240px, 1080px 2300px, 0 2300px); }
+  .edge { left: 0; top: 0; width: 1080px; height: 1920px; background: rgba(79,176,255,.9);
+          clip-path: polygon(0 636px, 1080px 1646px, 1080px 1652px, 0 642px); }
+  /* headline block, bottom-left (extended heavy type) */
+  .txt { left: 112px; top: 1380px; width: 900px; }
+  .ln { display: block; font-family: X, sans-serif; font-weight: 900; color: #fff; white-space: nowrap; line-height: .98;
+        transform-origin: 0 50%; letter-spacing: .5px; text-shadow: 0 6px 24px rgba(4,10,30,.35); }
+  .ln span { display: inline-block; transform: scaleX(1.2); transform-origin: 0 50%; }
+  .L { font-size: 168px; }  .M { font-size: 104px; } .S { font-size: 66px; }
+  .acc { color: var(--sky); }
+  /* stripe transition */
+  #tr { left: 0; top: 0; width: 1080px; height: 1920px; visibility: hidden; }
+  .row { position: absolute; left: 0; width: 1080px; overflow: hidden; }
+  .row i { position: absolute; left: 0; top: 0; width: 1080px; height: 100%; transform: scaleX(0); transform-origin: 0 50%; }
+  .row .k1 { background: #4fb0ff; } .row .k2 { background: #fbfcfe; } .row .k3 { background: #0b3a8c; }
+  #grain { pointer-events: none; mix-blend-mode: overlay; opacity: .14; }
+  /* END */
+  #end { background: radial-gradient(1200px 1400px at 50% 32%, #ffffff 0%, #f5f8fd 60%, #e9f0fa 100%); }
+  #logoW { left: 260px; top: 380px; width: 560px; height: 510px; }
+  #logoW img { position: absolute; left: 0; top: 0; width: 560px; }
+  .strip { position: absolute; top: 0; height: 510px; overflow: hidden; }
+  .strip img { position: absolute; top: 0; width: 560px; }
+  #sheen { left: 0; top: 0; width: 560px; filter: brightness(1.9) saturate(.8); opacity: .55;
+           clip-path: polygon(-30% 0, -18% 0, -38% 100%, -50% 100%); }
+  .tick { position: absolute; width: 6px; height: 26px; border-radius: 3px; background: var(--sky); transform-origin: 50% 100%; opacity: 0; }
+  #rule { left: 390px; top: 952px; width: 300px; height: 4px; border-radius: 2px; transform: scaleX(0);
+          background: linear-gradient(90deg, rgba(31,122,232,0), #1f7ae8, rgba(31,122,232,0)); }
+  #cap { top: 1000px; font-size: 32px; font-weight: 600; color: var(--blue); letter-spacing: 6px; text-indent: 6px; }
+  #nums { left: 540px; top: 1066px; transform: translateX(-50%); width: max-content; white-space: nowrap; display: flex; flex-direction: column; align-items: flex-start; gap: 20px; }
+  .num { display: flex; align-items: center; gap: 18px; opacity: 0; }
+  .num b { font-size: 68px; font-weight: 700; color: var(--navy); letter-spacing: .5px; line-height: 1; margin-left: 8px; }
+  .ic { width: 66px; height: 66px; border-radius: 50%; position: relative; flex: 0 0 66px;
+        background: linear-gradient(145deg, #1f7ae8 0%, #0b4fb3 55%, #0c3a86 100%);
+        box-shadow: 0 8px 18px rgba(11,79,179,.28), inset 0 1px 0 rgba(255,255,255,.35); }
+  .ic svg { position: absolute; left: 16px; top: 16px; width: 34px; height: 34px; fill: #fff; }
+  #addr { display: flex; align-items: center; gap: 22px; opacity: 0; margin-top: 18px; }
+  #addr .t { font-size: 36px; font-weight: 500; color: #2b3a58; line-height: 1.36; }
+  #soc { left: 0; top: 1436px; width: 1080px; display: flex; justify-content: center; align-items: center; gap: 22px; }
+  .s { width: 64px; height: 64px; border-radius: 18px; background: var(--navy); position: relative; opacity: 0; }
+  .s svg { position: absolute; left: 15px; top: 15px; width: 34px; height: 34px; fill: #fff; }
+  #handle { font-size: 44px; font-weight: 700; color: var(--navy); margin-left: 8px; opacity: 0; }
+
+</style></head>
+<body><div id="stage">
+  <div id="sc1" class="abs full scene"><img class="bg" src="bg/ielts_book.jpg"><div class="abs band b1"></div><div class="abs band b2"></div><div class="abs band b3"></div><div class="abs band b4"></div><div class="abs edge"></div><div class="abs txt" style="top:1440px"><div class="ln L"><span>IELTS</span></div><div class="ln M acc"><span>BENEFITS</span></div></div></div>
+  <div id="sc2" class="abs full scene"><img class="bg" src="bg/ielts_grad.jpg"><div class="abs band b1"></div><div class="abs band b2"></div><div class="abs band b3"></div><div class="abs band b4"></div><div class="abs edge"></div><div class="abs txt" style="top:1330px"><div class="ln L"><span>IELTS</span></div><div class="ln M"><span>IS KEY TO</span></div><div class="ln S acc"><span>TOP UNIVERSITIES</span></div></div></div>
+  <div id="sc3" class="abs full scene"><img class="bg" src="bg/ielts_tablet.jpg"><div class="abs band b1"></div><div class="abs band b2"></div><div class="abs band b3"></div><div class="abs band b4"></div><div class="abs edge"></div><div class="abs txt" style="top:1230px"><div class="ln S"><span>BOOST YOUR</span></div><div class="ln L"><span>CAREER</span></div><div class="ln S"><span>BOOST YOUR</span></div><div class="ln L acc"><span>SCORE</span></div></div></div>
+  <div id="sc4" class="abs full scene"><img class="bg" src="bg/ielts_meeting.jpg"><div class="abs band b1"></div><div class="abs band b2"></div><div class="abs band b3"></div><div class="abs band b4"></div><div class="abs edge"></div><div class="abs txt" style="top:1390px"><div class="ln S"><span>OPEN DOORS</span></div><div class="ln L"><span>TO NEW</span></div><div class="ln S acc"><span>OPPORTUNITIES</span></div></div></div>
+  <!-- END -->
+  <div id="end" class="abs full scene">
+    <div id="logoW" class="abs"></div>
+    <div id="rule" class="abs"></div>
+    <div id="cap" class="abs c split">FOR DETAILS, CALL OR WHATSAPP</div>
+    <div id="nums" class="abs">
+      <div class="num"><span class="ic"><svg viewBox="0 0 24 24"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1z"/></svg></span><span class="ic wa"></span><b>+92 370 0035896</b></div>
+      <div class="num"><span class="ic"><svg viewBox="0 0 24 24"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1z"/></svg></span><span class="ic wa"></span><b>+92 312 4222204</b></div>
+  <div id="addr"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg></span>
+      <span class="t">Iqbal, 8 Allama, Raza Block Town,<br>Lahore, Pakistan</span></div>
+    </div>
+
+    <div id="soc" class="abs"><span class="s" id="ig"></span><span class="s" id="fb"></span><span id="handle">@orbisnexa</span></div>
+  </div>
+
+  <div id="tr" class="abs"></div>
+  <canvas id="grain" class="abs full" width="540" height="960"></canvas>
+</div>
+<script src="assets/gsap.min.js"></script>
+<script>
+const $ = s => document.querySelector(s);
+const SVG = { whatsapp: `<svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>`, instagram: `<svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077"/></svg>`, facebook: `<svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z"/></svg>` };
+window.ready = (async () => {
+  document.querySelectorAll('.ic.wa').forEach(e => e.innerHTML = SVG.whatsapp);
+  $('#ig').innerHTML = SVG.instagram;
+  $('#fb').innerHTML = SVG.facebook;
+  await document.fonts.ready;
+  await Promise.all([...document.images].map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; })));
+  build();
+  return true;
+})();
+
+function split(el) {
+  const walk = node => [...node.childNodes].forEach(n => {
+    if (n.nodeType === 3) {
+      const f = document.createDocumentFragment();
+      for (const c of n.textContent) { const s = document.createElement('span'); s.className = 'ch'; s.textContent = c; f.appendChild(s); }
+      n.replaceWith(f);
+    } else walk(n);
+  });
+  walk(el);
+}
+
+
+// logo as 5 vertical strips that rise in one after another (the reference builds its mark bar by bar)
+function logoStrips() {
+  const w = $('#logoW'), n = 5, sw = 560 / n;
+  for (let k = 0; k < n; k++) {
+    const d = document.createElement('div'); d.className = 'strip'; d.style.left = (k * sw) + 'px'; d.style.width = (sw + 1) + 'px';
+    const im = document.createElement('img'); im.src = 'assets/logo.png'; im.style.left = (-k * sw) + 'px';
+    d.appendChild(im); w.appendChild(d);
+  }
+  const sh = document.createElement('img'); sh.id = 'sheen'; sh.className = 'abs'; sh.src = 'assets/logo.png'; w.appendChild(sh);
+  const ang = [-40, -12, 18];
+  ang.forEach((a, i) => { const t = document.createElement('div'); t.className = 'tick'; t.style.left = (520 + i * 18) + 'px'; t.style.top = '-30px';
+    t.style.transform = `rotate(${a}deg)`; w.appendChild(t); });
+}
+
+
+const tl = gsap.timeline({ paused: true });
+function show(id, a, b) { tl.set(id, { visibility: 'visible' }, a); if (b !== undefined) tl.set(id, { visibility: 'hidden' }, b); }
+
+// deterministic random
+let seed = 7;
+const rnd = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
+
+// horizontal stripe glitch: sky bars -> white -> navy bars that retract to reveal the next shot
+function buildRows() {
+  const tr = $('#tr'); let y = 0;
+  while (y < 1920) {
+    const h = Math.min(1920 - y, Math.round(24 + rnd() * 110));
+    const r = document.createElement('div'); r.className = 'row'; r.style.top = y + 'px'; r.style.height = (h + 1) + 'px';
+    r.innerHTML = '<i class="k1"></i><i class="k2"></i><i class="k3"></i>';
+    tr.appendChild(r); y += h;
+  }
+}
+function stripes(T, swap) {
+  show('#tr', T, T + 0.95);
+  document.querySelectorAll('#tr .row').forEach(r => {
+    const [a, b, c] = r.children;
+    tl.fromTo(a, { scaleX: 0 }, { scaleX: 1, duration: 0.11, ease: 'power2.out' }, T + rnd() * 0.2);
+    tl.fromTo(b, { scaleX: 0 }, { scaleX: 1, duration: 0.11, ease: 'power2.out' }, T + 0.14 + rnd() * 0.2);
+    tl.fromTo(c, { scaleX: 0, transformOrigin: '0 50%' }, { scaleX: 1, duration: 0.1, ease: 'power2.out' }, T + 0.42 + rnd() * 0.12);
+    tl.set([a, b], { scaleX: 0 }, T + 0.56);
+    tl.set(c, { transformOrigin: '100% 50%' }, T + 0.56);
+    tl.to(c, { scaleX: 0, duration: 0.14, ease: 'power2.in' }, T + 0.58 + rnd() * 0.26);
+  });
+  return T + 0.44;                                           // the shot changes under full cover
+}
+
+function scene(id, a, b, dt) {
+  show(id, a, b);
+  tl.fromTo(`${id} img.bg`, { scale: 1.0 }, { scale: 1.08, duration: b - a, ease: 'none' }, a);
+  tl.fromTo(`${id} .band`, { x: -560, y: 560, opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: 0.42, stagger: 0.06, ease: 'power3.out' }, a + dt);
+  tl.fromTo(`${id} .edge`, { x: -560, y: 560, opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: 0.42, ease: 'power3.out' }, a + dt);
+  tl.fromTo(`${id} .ln`, { x: -1000 }, { x: 0, duration: 0.42, stagger: 0.07, ease: 'power3.out' }, a + dt + 0.18);
+  tl.fromTo(`${id} .band`, { yPercent: 0 }, { yPercent: -1.2, duration: b - a - dt - 0.5, ease: 'none' }, a + dt + 0.5);
+}
+
+function build() {
+  document.querySelectorAll('.split').forEach(split);
+  logoStrips();
+  buildRows();
+  tl.set({}, {}, 19.0);
+  const s2 = stripes(2.5), s3 = stripes(5.45), s4 = stripes(8.45), s5 = stripes(12.45);
+  scene('#sc1', 0, s2, 0.35);
+  scene('#sc2', s2, s3, 0.2);
+  scene('#sc3', s3, s4, 0.2);
+  scene('#sc4', s4, s5, 0.2);
+  // ---- END 12.9 - 19.0
+  show('#end', 13.10);
+  tl.fromTo('.strip', { y: 520, opacity: 0 }, { y: 0, opacity: 1, duration: 0.42, stagger: 0.13, ease: 'power3.out' }, 13.20);
+  tl.fromTo('#logoW', { scale: 0.96 }, { scale: 1, duration: 1.6, ease: 'power2.out' }, 13.20);
+  tl.to('#sheen', { clipPath: 'polygon(138% 0, 150% 0, 130% 100%, 118% 100%)', duration: 0.8, ease: 'power2.inOut' }, 14.20);
+  tl.fromTo('.tick', { opacity: 0, scaleY: 0 }, { opacity: 1, scaleY: 1, duration: 0.16, stagger: 0.04, ease: 'power2.out' }, 14.65);
+  tl.to('.tick', { opacity: 0, y: -14, duration: 0.25, stagger: 0.04 }, 14.90);
+  tl.to('#rule', { scaleX: 1, duration: 0.5, ease: 'power3.out' }, 14.60);
+  tl.fromTo('#cap .ch', { opacity: 0, filter: 'blur(8px)' }, { opacity: 1, filter: 'blur(0px)', duration: 0.2, stagger: 0.012 }, 14.95);
+  tl.fromTo('.num', { opacity: 0, y: 40, filter: 'blur(10px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.32, stagger: 0.14, ease: 'power3.out' }, 15.25);
+  tl.fromTo('.num .ic', { scale: 0.3 }, { scale: 1, duration: 0.4, stagger: 0.07, ease: 'back.out(2.4)' }, 15.25);
+  tl.fromTo('#addr', { opacity: 0, y: 30, filter: 'blur(8px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.32, ease: 'power3.out' }, 15.62);
+  tl.fromTo('#addr .ic', { scale: 0.3 }, { scale: 1, duration: 0.4, ease: 'back.out(2.4)' }, 15.62);
+  tl.fromTo('.s', { opacity: 0, y: 26, scale: 0.6 }, { opacity: 1, y: 0, scale: 1, duration: 0.3, stagger: 0.16, ease: 'back.out(2)' }, 15.95);
+  tl.fromTo('#handle', { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.3, ease: 'power2.out' }, 16.30);
+
+}
+
+const g = $('#grain').getContext('2d');
+const gimg = g.createImageData(540, 960);
+function grain(t) {
+  let s = Math.floor(t * 30) * 9301 + 49297;
+  const d = gimg.data;
+  for (let i = 0; i < d.length; i += 4) { s = (s * 1103515245 + 12345) & 0x7fffffff; const v = (s >> 16) & 255; d[i] = d[i + 1] = d[i + 2] = v; d[i + 3] = 255; }
+  g.putImageData(gimg, 0, 0);
+  $('#grain').style.opacity = t < 12.9 ? .14 : 0;
+}
+window.renderAt = t => { tl.seek(t, false); grain(t); return true; };
+</script></body></html>

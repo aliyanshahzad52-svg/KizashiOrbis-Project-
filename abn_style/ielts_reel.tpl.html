@@ -1,0 +1,129 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- template: build_ielts.py fills the shared end card (logo, call/WhatsApp, address, socials) from uk_reel.html -->
+<style>
+  @font-face { font-family: P; font-weight: 400; src: url(assets/poppins-latin-400-normal.woff2); }
+  @font-face { font-family: P; font-weight: 500; src: url(assets/poppins-latin-500-normal.woff2); }
+  @font-face { font-family: P; font-weight: 600; src: url(assets/poppins-latin-600-normal.woff2); }
+  @font-face { font-family: P; font-weight: 700; src: url(assets/poppins-latin-700-normal.woff2); }
+  @font-face { font-family: P; font-weight: 800; src: url(assets/poppins-latin-800-normal.woff2); }
+  @font-face { font-family: X; font-weight: 900; src: url(assets/InterDisplay-Black.otf); }
+  :root { --navy: #0c1b3d; --navy2: #0a2a66; --blue: #0b4fb3; --sky: #4fb0ff; --ice: #cfe6ff; }
+  html, body { margin: 0; background: #000; }
+  #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; font-family: P, sans-serif; background: #fff; }
+  .abs { position: absolute; }
+  .full { left: 0; top: 0; width: 1080px; height: 1920px; }
+  .scene { overflow: hidden; visibility: hidden; }
+  .scene > img.bg { position: absolute; left: -108px; top: -192px; width: 1296px; height: 2304px; object-fit: cover; }
+  .ch { display: inline-block; white-space: pre; }
+  .c { left: 0; width: 1080px; text-align: center; white-space: nowrap; }
+
+  /* diagonal OrbisNexa bands (translucent layers, darker toward the bottom-left) */
+  .band { left: 0; top: 0; width: 1080px; height: 1920px; }
+  .b1 { background: rgba(31,122,232,.50); clip-path: polygon(0 640px, 1080px 1650px, 1080px 1920px, 0 1920px); }
+  .b2 { background: rgba(11,79,179,.55); clip-path: polygon(0 830px, 1080px 1840px, 1080px 1920px, 0 1920px); }
+  .b3 { background: rgba(10,42,102,.62); clip-path: polygon(0 1020px, 1080px 2030px, 1080px 2100px, 0 2100px); }
+  .b4 { background: rgba(8,22,56,.70);  clip-path: polygon(0 1230px, 1080px 2240px, 1080px 2300px, 0 2300px); }
+  .edge { left: 0; top: 0; width: 1080px; height: 1920px; background: rgba(79,176,255,.9);
+          clip-path: polygon(0 636px, 1080px 1646px, 1080px 1652px, 0 642px); }
+  /* headline block, bottom-left (extended heavy type) */
+  .txt { left: 112px; top: 1380px; width: 900px; }
+  .ln { display: block; font-family: X, sans-serif; font-weight: 900; color: #fff; white-space: nowrap; line-height: .98;
+        transform-origin: 0 50%; letter-spacing: .5px; text-shadow: 0 6px 24px rgba(4,10,30,.35); }
+  .ln span { display: inline-block; transform: scaleX(1.2); transform-origin: 0 50%; }
+  .L { font-size: 168px; }  .M { font-size: 104px; } .S { font-size: 66px; }
+  .acc { color: var(--sky); }
+  /* stripe transition */
+  #tr { left: 0; top: 0; width: 1080px; height: 1920px; visibility: hidden; }
+  .row { position: absolute; left: 0; width: 1080px; overflow: hidden; }
+  .row i { position: absolute; left: 0; top: 0; width: 1080px; height: 100%; transform: scaleX(0); transform-origin: 0 50%; }
+  .row .k1 { background: #4fb0ff; } .row .k2 { background: #fbfcfe; } .row .k3 { background: #0b3a8c; }
+  #grain { pointer-events: none; mix-blend-mode: overlay; opacity: .14; }
+{{END_CSS}}
+</style></head>
+<body><div id="stage">
+{{SCENES}}
+{{END_HTML}}
+  <div id="tr" class="abs"></div>
+  <canvas id="grain" class="abs full" width="540" height="960"></canvas>
+</div>
+<script src="assets/gsap.min.js"></script>
+<script>
+const $ = s => document.querySelector(s);
+{{SVG_LINE}}
+window.ready = (async () => {
+  document.querySelectorAll('.ic.wa').forEach(e => e.innerHTML = SVG.whatsapp);
+  $('#ig').innerHTML = SVG.instagram;
+  $('#fb').innerHTML = SVG.facebook;
+  await document.fonts.ready;
+  await Promise.all([...document.images].map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; })));
+  build();
+  return true;
+})();
+
+{{SPLIT_FN}}
+{{LOGO_FN}}
+const tl = gsap.timeline({ paused: true });
+function show(id, a, b) { tl.set(id, { visibility: 'visible' }, a); if (b !== undefined) tl.set(id, { visibility: 'hidden' }, b); }
+
+// deterministic random
+let seed = 7;
+const rnd = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
+
+// horizontal stripe glitch: sky bars -> white -> navy bars that retract to reveal the next shot
+function buildRows() {
+  const tr = $('#tr'); let y = 0;
+  while (y < 1920) {
+    const h = Math.min(1920 - y, Math.round(24 + rnd() * 110));
+    const r = document.createElement('div'); r.className = 'row'; r.style.top = y + 'px'; r.style.height = (h + 1) + 'px';
+    r.innerHTML = '<i class="k1"></i><i class="k2"></i><i class="k3"></i>';
+    tr.appendChild(r); y += h;
+  }
+}
+function stripes(T, swap) {
+  show('#tr', T, T + 0.95);
+  document.querySelectorAll('#tr .row').forEach(r => {
+    const [a, b, c] = r.children;
+    tl.fromTo(a, { scaleX: 0 }, { scaleX: 1, duration: 0.11, ease: 'power2.out' }, T + rnd() * 0.2);
+    tl.fromTo(b, { scaleX: 0 }, { scaleX: 1, duration: 0.11, ease: 'power2.out' }, T + 0.14 + rnd() * 0.2);
+    tl.fromTo(c, { scaleX: 0, transformOrigin: '0 50%' }, { scaleX: 1, duration: 0.1, ease: 'power2.out' }, T + 0.42 + rnd() * 0.12);
+    tl.set([a, b], { scaleX: 0 }, T + 0.56);
+    tl.set(c, { transformOrigin: '100% 50%' }, T + 0.56);
+    tl.to(c, { scaleX: 0, duration: 0.14, ease: 'power2.in' }, T + 0.58 + rnd() * 0.26);
+  });
+  return T + 0.44;                                           // the shot changes under full cover
+}
+
+function scene(id, a, b, dt) {
+  show(id, a, b);
+  tl.fromTo(`${id} img.bg`, { scale: 1.0 }, { scale: 1.08, duration: b - a, ease: 'none' }, a);
+  tl.fromTo(`${id} .band`, { x: -560, y: 560, opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: 0.42, stagger: 0.06, ease: 'power3.out' }, a + dt);
+  tl.fromTo(`${id} .edge`, { x: -560, y: 560, opacity: 0 }, { x: 0, y: 0, opacity: 1, duration: 0.42, ease: 'power3.out' }, a + dt);
+  tl.fromTo(`${id} .ln`, { x: -1000 }, { x: 0, duration: 0.42, stagger: 0.07, ease: 'power3.out' }, a + dt + 0.18);
+  tl.fromTo(`${id} .band`, { yPercent: 0 }, { yPercent: -1.2, duration: b - a - dt - 0.5, ease: 'none' }, a + dt + 0.5);
+}
+
+function build() {
+  document.querySelectorAll('.split').forEach(split);
+  logoStrips();
+  buildRows();
+  tl.set({}, {}, 19.0);
+  const s2 = stripes(2.5), s3 = stripes(5.45), s4 = stripes(8.45), s5 = stripes(12.45);
+  scene('#sc1', 0, s2, 0.35);
+  scene('#sc2', s2, s3, 0.2);
+  scene('#sc3', s3, s4, 0.2);
+  scene('#sc4', s4, s5, 0.2);
+{{END_TL}}
+}
+
+const g = $('#grain').getContext('2d');
+const gimg = g.createImageData(540, 960);
+function grain(t) {
+  let s = Math.floor(t * 30) * 9301 + 49297;
+  const d = gimg.data;
+  for (let i = 0; i < d.length; i += 4) { s = (s * 1103515245 + 12345) & 0x7fffffff; const v = (s >> 16) & 255; d[i] = d[i + 1] = d[i + 2] = v; d[i + 3] = 255; }
+  g.putImageData(gimg, 0, 0);
+  $('#grain').style.opacity = t < 12.9 ? .14 : 0;
+}
+window.renderAt = t => { tl.seek(t, false); grain(t); return true; };
+</script></body></html>

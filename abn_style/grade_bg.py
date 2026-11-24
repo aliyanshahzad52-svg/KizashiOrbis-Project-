@@ -86,5 +86,8 @@ for name, path in SRC.items():
         save("library_duo", gradient_map(f, [(0, "#071331"), (0.45, "#3b4f78"), (0.8, "#aab8d2"), (1, "#eef3fb")], 1.05))
     elif name == "college":
         save("college_duo", gradient_map(f, [(0, "#050f2b"), (0.4, "#0b3c8f"), (0.75, "#2f86ee"), (1, "#cfe8ff")], 1.1))
+    elif name in ("book", "grad", "tablet", "meeting"):
+        # crisp black & white (the IELTS reel), slightly lifted blacks
+        save(f"ielts_{name}", gradient_map(f, [(0, "#121417"), (0.5, "#7d8189"), (1, "#f3f4f6")], 1.12))
     elif name == "gate":
         save("gate_duo", gradient_map(f, [(0, "#081433"), (0.5, "#40527a"), (0.85, "#b3c1da"), (1, "#eef2f9")], 1.05))
