@@ -1,0 +1,322 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- OrbisNexa "Pack your dreams" - 3D packing animation built from the reference poster.
+     Suitcase is a real 3D model (hinged lid, PBR shell, soft shadows); the lining, luggage tag, passport,
+     boarding pass and offer letter are the poster's own artwork; the graduation cap is modelled to match. -->
+<style>
+  @font-face { font-family: P; font-weight: 500; src: url(assets/poppins-latin-500-normal.woff2); }
+  @font-face { font-family: P; font-weight: 600; src: url(assets/poppins-latin-600-normal.woff2); }
+  @font-face { font-family: P; font-weight: 700; src: url(assets/poppins-latin-700-normal.woff2); }
+  @font-face { font-family: P; font-weight: 800; src: url(assets/poppins-latin-800-normal.woff2); }
+  :root { --navy: #0c1b3d; --blue: #0b4fb3; --royal: #1765e8; }
+  html, body { margin: 0; background: #dcefff; }
+  #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; font-family: P, sans-serif;
+           background: linear-gradient(180deg, #e8f4ff 0%, #d6ebff 45%, #c4e0fd 100%); }
+  .abs { position: absolute; }
+  .full { left: 0; top: 0; width: 1080px; height: 1920px; }
+  /* soft diagonal light beams like the poster */
+  .beam { position: absolute; top: -400px; height: 2900px; transform: rotate(28deg); transform-origin: 50% 0;
+          background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.55), rgba(255,255,255,0)); filter: blur(18px); }
+  #gl { position: absolute; left: 0; top: 0; }
+  /* headline (poster typography) */
+  #head { left: 0; width: 1080px; top: 118px; text-align: center; }
+  #h1 { font-size: 132px; font-weight: 800; color: var(--navy); letter-spacing: -2px; line-height: 1; }
+  #h2 { font-size: 196px; font-weight: 800; letter-spacing: -3px; line-height: 1.02;
+        background: linear-gradient(180deg, #2a7bff 0%, #1257e0 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  #h2 .ch { background: linear-gradient(180deg, #2a7bff 0%, #1257e0 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  #swoosh { left: 410px; top: 462px; overflow: visible; }
+  .ch { display: inline-block; white-space: pre; }
+  /* final screen */
+  #final { visibility: hidden; }
+  #fbg { background: linear-gradient(180deg, #eef7ff 0%, #dcefff 55%, #c9e3fe 100%); }
+  #flogo { left: 190px; top: 430px; width: 700px; }
+  #fsw { left: 330px; top: 1120px; overflow: visible; }
+  #fcap { left: 0; width: 1080px; top: 1300px; text-align: center; font-size: 34px; font-weight: 600; color: var(--blue); letter-spacing: 7px; text-indent: 7px; }
+  #fnums { left: 540px; top: 1372px; transform: translateX(-50%); width: max-content; display: flex; flex-direction: column; gap: 22px; }
+  .num { display: flex; align-items: center; gap: 16px; }
+  .num b { font-size: 70px; font-weight: 700; color: var(--navy); line-height: 1; margin-left: 8px; letter-spacing: .5px; }
+  .ic { width: 66px; height: 66px; border-radius: 50%; position: relative; flex: 0 0 66px;
+        background: linear-gradient(145deg, #2a7bff 0%, #0b4fb3 60%, #0a3c8c 100%); box-shadow: 0 8px 18px rgba(11,79,179,.28); }
+  .ic svg { position: absolute; left: 16px; top: 16px; width: 34px; height: 34px; fill: #fff; }
+  #flash { background: #fff; opacity: 0; }
+</style>
+<script type="importmap">{ "imports": { "three": "./node_modules/three/build/three.module.js",
+  "three/addons/": "./node_modules/three/examples/jsm/" } }</script>
+</head>
+<body><div id="stage">
+  <div class="abs full">
+    <div class="beam" style="left:120px;width:170px"></div><div class="beam" style="left:430px;width:110px;opacity:.7"></div>
+    <div class="beam" style="left:760px;width:220px;opacity:.8"></div><div class="beam" style="left:1060px;width:140px;opacity:.6"></div>
+  </div>
+  <canvas id="gl" width="1080" height="1920"></canvas>
+  <div id="head" class="abs"><div id="h1" class="split">PACK YOUR</div><div id="h2" class="split">DREAMS</div></div>
+  <svg id="swoosh" class="abs" width="260" height="40"><path id="swp" d="M6 30 Q 130 2 254 14" fill="none" stroke="#1765e8" stroke-width="9" stroke-linecap="round"/></svg>
+  <!-- final screen -->
+  <div id="final" class="abs full">
+    <div id="fbg" class="abs full">
+      <div class="beam" style="left:120px;width:170px"></div><div class="beam" style="left:760px;width:220px;opacity:.8"></div>
+    </div>
+    <img id="flogo" class="abs" src="assets/logo.png">
+    <svg id="fsw" class="abs" width="420" height="50"><path id="fswp" d="M8 38 Q 210 2 412 20" fill="none" stroke="#1765e8" stroke-width="10" stroke-linecap="round"/></svg>
+    <div id="fcap" class="abs">CALL / WHATSAPP</div>
+    <div id="fnums" class="abs">
+      <div class="num"><span class="ic ph"></span><span class="ic wa"></span><b>+92 370 0035896</b></div>
+      <div class="num"><span class="ic ph"></span><span class="ic wa"></span><b>+92 312 4222204</b></div>
+    </div>
+  </div>
+  <div id="flash" class="abs full"></div>
+</div>
+<script src="assets/gsap.min.js"></script>
+<script type="module">
+import * as THREE from 'three';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+const $ = s => document.querySelector(s);
+const PHONE = '<svg viewBox="0 0 24 24"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1z"/></svg>';
+
+// ------------------------------------------------------------------ renderer / scene
+const renderer = new THREE.WebGLRenderer({ canvas: $('#gl'), antialias: true, alpha: true, preserveDrawingBuffer: true });
+renderer.setSize(1080, 1920, false);
+renderer.setPixelRatio(1);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 0.92;
+const scene = new THREE.Scene();
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(renderer), 0.04).texture;
+scene.environmentIntensity = 0.42;
+
+const camera = new THREE.PerspectiveCamera(30, 1080 / 1920, 1, 1000);
+const CAM = { elev: 60, dist: 238, tx: 0, ty: 6, tz: -6, shift: -0.165 };
+function placeCamera() {
+  const e = THREE.MathUtils.degToRad(CAM.elev);
+  camera.position.set(CAM.tx, CAM.ty + CAM.dist * Math.sin(e), CAM.tz + CAM.dist * Math.cos(e));
+  camera.lookAt(CAM.tx, CAM.ty, CAM.tz);
+  camera.setViewOffset(1080, 1920, 0, 1920 * CAM.shift, 1080, 1920);   // bag sits below the headline
+}
+
+scene.add(new THREE.HemisphereLight(0xeaf4ff, 0x9fbde6, 0.55));
+const key = new THREE.DirectionalLight(0xffffff, 2.2);
+key.position.set(-40, 110, 55);
+key.castShadow = true;
+key.shadow.mapSize.set(2048, 2048);
+key.shadow.camera.left = -70; key.shadow.camera.right = 70; key.shadow.camera.top = 70; key.shadow.camera.bottom = -70;
+key.shadow.camera.near = 10; key.shadow.camera.far = 300;
+key.shadow.radius = 6; key.shadow.bias = -0.0004;
+scene.add(key);
+const rim = new THREE.DirectionalLight(0xcfe4ff, 0.8);
+rim.position.set(60, 40, -80);
+scene.add(rim);
+
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(600, 600), new THREE.ShadowMaterial({ opacity: 0.22 }));
+floor.rotation.x = -Math.PI / 2;
+floor.receiveShadow = true;
+scene.add(floor);
+// contact shadow (soft dark ellipse right under the case)
+const cs = document.createElement('canvas'); cs.width = cs.height = 256;
+{ const g = cs.getContext('2d'); const gr = g.createRadialGradient(128, 128, 10, 128, 128, 128);
+  gr.addColorStop(0, 'rgba(10,30,70,.55)'); gr.addColorStop(1, 'rgba(10,30,70,0)'); g.fillStyle = gr; g.fillRect(0, 0, 256, 256); }
+const contact = new THREE.Mesh(new THREE.PlaneGeometry(80, 56), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(cs), transparent: true, depthWrite: false }));
+contact.rotation.x = -Math.PI / 2; contact.position.y = 0.05;
+scene.add(contact);
+
+// ------------------------------------------------------------------ textures
+const loader = new THREE.TextureLoader();
+const tex = p => new Promise(r => loader.load(p, t => { t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; r(t); }));
+const [tBase, tLid, tPass, tBoard, tLetter, tLogo] = await Promise.all(
+  ['assets/base_empty.png', 'assets/lid_inside.png', 'assets/passport.png', 'assets/boarding.png', 'assets/letter.png', 'assets/logo.png'].map(tex));
+
+// ------------------------------------------------------------------ suitcase
+const W = 60, D = 40, HB = 11, HL = 8;
+const shellMat = new THREE.MeshPhysicalMaterial({ color: 0x0533a3, roughness: 0.26, metalness: 0.0, clearcoat: 1, clearcoatRoughness: 0.12, envMapIntensity: 0.9 });
+const blackMat = new THREE.MeshStandardMaterial({ color: 0x15171b, roughness: 0.55, metalness: 0.1 });
+const tapeMat = new THREE.MeshStandardMaterial({ color: 0x1b1e24, roughness: 0.9 });
+const sh = m => { m.castShadow = true; m.receiveShadow = true; return m; };
+
+const caseG = new THREE.Group();            // everything that flips at the end
+scene.add(caseG);
+const base = new THREE.Group(); caseG.add(base);
+{ const m = sh(new THREE.Mesh(new RoundedBoxGeometry(W, HB, D, 6, 2.4), shellMat)); m.position.y = HB / 2; base.add(m); }
+// lining (poster artwork, items removed)
+const lining = new THREE.Mesh(new THREE.PlaneGeometry(W - 2.6, D - 2.6), new THREE.MeshStandardMaterial({ map: tBase, roughness: 0.95 }));
+lining.rotation.x = -Math.PI / 2; lining.position.y = HB + 0.02; lining.receiveShadow = true;
+base.add(lining);
+// zipper tape around the opening
+function tapeFrame(y, w, d, t, h) {
+  const g = new THREE.Group();
+  for (const [sx, sz, px, pz] of [[w, t, 0, -d / 2 + t / 2], [w, t, 0, d / 2 - t / 2], [t, d, -w / 2 + t / 2, 0], [t, d, w / 2 - t / 2, 0]]) {
+    const m = new THREE.Mesh(new THREE.BoxGeometry(sx, h, sz), tapeMat); m.position.set(px, y, pz); g.add(m);
+  }
+  return g;
+}
+base.add(tapeFrame(HB + 0.05, W - 1.4, D - 1.4, 1.0, 0.25));
+// front: two latches + handle; sides: bumpers; feet
+function latch(x, z, ry = 0) {
+  const g = new THREE.Group();
+  g.add(sh(new THREE.Mesh(new RoundedBoxGeometry(6.5, 3.6, 1.2, 3, 0.4), blackMat)));
+  const inner = new THREE.Mesh(new RoundedBoxGeometry(4.2, 2.0, 0.5, 2, 0.2), new THREE.MeshStandardMaterial({ color: 0x2a2e36, roughness: 0.4, metalness: 0.4 }));
+  inner.position.z = 0.6; g.add(inner);
+  g.position.set(x, HB - 3.2, z); g.rotation.y = ry; return g;
+}
+base.add(latch(-18, D / 2 + 0.2)); base.add(latch(18, D / 2 + 0.2));
+{
+  const curve = new THREE.CatmullRomCurve3([new THREE.Vector3(-8, 0, 0), new THREE.Vector3(-7, 0, 2.6), new THREE.Vector3(0, 0, 3.4),
+                                            new THREE.Vector3(7, 0, 2.6), new THREE.Vector3(8, 0, 0)]);
+  const handle = sh(new THREE.Mesh(new THREE.TubeGeometry(curve, 40, 0.9, 12), blackMat));
+  handle.position.set(0, HB - 4.5, D / 2 + 0.3); base.add(handle);
+  for (const x of [-8.6, 8.6]) { const m = sh(new THREE.Mesh(new RoundedBoxGeometry(2.6, 2.4, 1.4, 2, 0.4), blackMat)); m.position.set(x, HB - 4.5, D / 2 + 0.2); base.add(m); }
+}
+for (const sx of [-1, 1]) for (const z of [-6, 8]) { const m = sh(new THREE.Mesh(new RoundedBoxGeometry(1.2, 2.8, 4.2, 2, 0.35), blackMat)); m.position.set(sx * (W / 2 + 0.25), HB / 2, z); base.add(m); }
+// brand plate on the base underside (revealed by the flip)
+const plate = new THREE.Group();
+{
+  const p = new THREE.Mesh(new RoundedBoxGeometry(30, 0.6, 27.3, 4, 0.3), new THREE.MeshPhysicalMaterial({ color: 0xf7f9fc, roughness: 0.35, clearcoat: 1, clearcoatRoughness: 0.1 }));
+  plate.add(p);
+  const l = new THREE.Mesh(new THREE.PlaneGeometry(26, 23.7), new THREE.MeshStandardMaterial({ map: tLogo, transparent: true, roughness: 0.5 }));
+  l.rotation.x = Math.PI / 2; l.position.y = -0.31; l.rotation.z = 0; plate.add(l);
+  const ring = new THREE.Mesh(new RoundedBoxGeometry(31.4, 0.4, 28.7, 4, 0.2), new THREE.MeshStandardMaterial({ color: 0x0b4fb3, roughness: 0.4 }));
+  ring.position.y = 0.12; plate.add(ring);
+  plate.position.set(0, -0.32, 0);
+  base.add(plate);
+}
+
+// lid (pivot on the hinge line at the back of the base)
+const lidPivot = new THREE.Group(); lidPivot.position.set(0, HB, -D / 2); caseG.add(lidPivot);
+const lid = new THREE.Group(); lid.position.set(0, 0, D / 2); lidPivot.add(lid);
+{ const m = sh(new THREE.Mesh(new RoundedBoxGeometry(W, HL, D, 6, 2.4), shellMat)); m.position.y = HL / 2; lid.add(m); }
+const lidIn = new THREE.Mesh(new THREE.PlaneGeometry(W - 2.6, D - 2.6), new THREE.MeshStandardMaterial({ map: tLid, roughness: 0.9 }));
+lidIn.rotation.x = Math.PI / 2; lidIn.position.y = -0.02; lidIn.receiveShadow = true;
+lid.add(lidIn);
+lid.add(tapeFrame(-0.05, W - 1.4, D - 1.4, 1.0, 0.25));
+for (const x of [-18, 18]) { const m = sh(new THREE.Mesh(new RoundedBoxGeometry(6.5, 2.2, 1.2, 2, 0.4), blackMat)); m.position.set(x, 1.4, D / 2 + 0.2); lid.add(m); }
+for (const sx of [-1, 1]) for (const z of [-8, 6]) { const m = sh(new THREE.Mesh(new RoundedBoxGeometry(1.2, 2.4, 4.2, 2, 0.35), blackMat)); m.position.set(sx * (W / 2 + 0.25), HL / 2, z); lid.add(m); }
+// subtle shell ribs on the lid exterior
+for (const z of [-12, -4, 4, 12]) { const r = new THREE.Mesh(new RoundedBoxGeometry(W - 8, 0.5, 1.6, 2, 0.24), shellMat); r.position.set(0, HL + 0.05, z); lid.add(r); }
+
+// ------------------------------------------------------------------ items (poster artwork, real thickness)
+// placement measured on the poster: base interior spans px x 158..698, y 754..1113
+const PX = (x) => (x - 428) / 540 * (W - 2.6), PZ = (y) => (y - 933.5) / 359 * (D - 2.6);
+function card(t, w, d, th, edge) {
+  const side = new THREE.MeshStandardMaterial({ color: edge, roughness: 0.8 });
+  const top = new THREE.MeshStandardMaterial({ map: t, transparent: true, roughness: 0.6, alphaTest: 0.5 });
+  const g = new THREE.Group();
+  const body = sh(new THREE.Mesh(new RoundedBoxGeometry(w, th, d, 2, Math.min(th / 2, 0.4)), side));
+  g.add(body);
+  const face = new THREE.Mesh(new THREE.PlaneGeometry(w, d), top); face.rotation.x = -Math.PI / 2; face.position.y = th / 2 + 0.01; face.castShadow = true; g.add(face);
+  return g;
+}
+const items = {};
+items.passport = card(tPass, 17.9, 19.6, 1.1, 0x13442a);
+items.passport.userData.home = new THREE.Vector3(PX(296), HB + 0.6, PZ(864));
+items.board = card(tBoard, 28.1, 11.7, 0.08, 0xf2f4f8);
+items.board.userData.home = new THREE.Vector3(PX(528), HB + 0.35, PZ(824));
+items.letter = card(tLetter, 25.0, 23.6, 0.12, 0xf5f6f9);
+items.letter.userData.home = new THREE.Vector3(PX(564), HB + 0.1, PZ(990));
+// graduation cap: modelled (mortarboard, skull, button, cord, tassel)
+{
+  const g = new THREE.Group();
+  const capMat = new THREE.MeshStandardMaterial({ color: 0x1a1c22, roughness: 0.75 });
+  const gold = new THREE.MeshStandardMaterial({ color: 0xf0b428, roughness: 0.35, metalness: 0.55 });
+  const board = sh(new THREE.Mesh(new RoundedBoxGeometry(23, 0.55, 23, 2, 0.2), capMat)); board.position.y = 4.4; g.add(board);
+  const skull = sh(new THREE.Mesh(new THREE.CylinderGeometry(7.6, 8.2, 4.2, 40, 1, true), capMat)); skull.position.y = 2.1; g.add(skull);
+  const btn = sh(new THREE.Mesh(new THREE.SphereGeometry(0.7, 20, 12), gold)); btn.position.y = 4.8; g.add(btn);
+  const cord = new THREE.CatmullRomCurve3([new THREE.Vector3(0, 4.8, 0), new THREE.Vector3(5, 4.85, 3), new THREE.Vector3(10, 4.8, 6.5),
+                                           new THREE.Vector3(11.3, 3.2, 7.4), new THREE.Vector3(11.6, 0.8, 7.8)]);
+  g.add(sh(new THREE.Mesh(new THREE.TubeGeometry(cord, 50, 0.18, 8), gold)));
+  const knot = sh(new THREE.Mesh(new THREE.SphereGeometry(0.9, 16, 12), gold)); knot.position.set(11.6, 0.9, 7.9); g.add(knot);
+  for (let k = 0; k < 26; k++) {                          // tassel fringe lying on the lining
+    const a = (k / 25 - 0.5) * 0.7;
+    const f = sh(new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 6.5, 5), gold));
+    f.rotation.x = Math.PI / 2 - 0.08; f.rotation.y = a;
+    f.position.set(11.6 + Math.sin(a) * 3.2, 0.35, 7.9 + 3.3); g.add(f);
+  }
+  g.rotation.y = THREE.MathUtils.degToRad(40);
+  g.userData.home = new THREE.Vector3(PX(300), HB + 0.15, PZ(1010));
+  g.userData.tilt = new THREE.Euler(THREE.MathUtils.degToRad(-14), THREE.MathUtils.degToRad(38), THREE.MathUtils.degToRad(4));
+  items.cap = g;
+}
+for (const k in items) { base.add(items[k]); items[k].visible = false; }
+
+// ------------------------------------------------------------------ timeline
+// split headline into letters
+for (const el of document.querySelectorAll('.split')) {
+  const t = el.textContent; el.textContent = '';
+  for (const c of t) { const s = document.createElement('span'); s.className = 'ch'; s.textContent = c; el.appendChild(s); }
+}
+const S = { lid: 0, open: 0, fade: 0 };
+const tl = gsap.timeline({ paused: true });
+tl.set({}, {}, 19.6);
+const deg = THREE.MathUtils.degToRad;
+const OPEN = 98;
+// intro
+tl.fromTo(CAM, { dist: 270, elev: 64 }, { dist: 238, elev: 60, duration: 1.6, ease: 'power2.out' }, 0);
+tl.fromTo('#h1 .ch', { opacity: 0, y: 40, filter: 'blur(8px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.35, stagger: 0.035, ease: 'power3.out' }, 0.3);
+tl.fromTo('#h2 .ch', { opacity: 0, scale: 0.6, filter: 'blur(10px)' }, { opacity: 1, scale: 1, filter: 'blur(0px)', duration: 0.42, stagger: 0.05, ease: 'back.out(2)' }, 0.62);
+const swl = document.getElementById('swp').getTotalLength();
+gsap.set('#swp', { strokeDasharray: swl, strokeDashoffset: swl });
+tl.to('#swp', { strokeDashoffset: 0, duration: 0.5, ease: 'power2.out' }, 1.15);
+// 1. lid opens
+tl.to(S, { lid: OPEN + 6, duration: 1.2, ease: 'power2.inOut' }, 1.5);
+tl.to(S, { lid: OPEN, duration: 0.35, ease: 'power1.out' }, 2.7);
+tl.to(CAM, { dist: 224, duration: 2.5, ease: 'power1.inOut' }, 1.6);
+// 2. packing, one by one (from above the case, settling with a soft bounce)
+function pack(it, t, from) {
+  const h = it.userData.home;
+  tl.set(it, { visible: true }, t);
+  tl.fromTo(it.position, { x: h.x + from[0], y: h.y + from[1], z: h.z + from[2] }, { x: h.x, y: h.y, z: h.z, duration: 0.85, ease: 'power3.out' }, t);
+  const r0 = from[3] || [deg(-25), deg(30), deg(12)], r1 = it.userData.tilt || new THREE.Euler(0, it.rotation.y, 0);
+  tl.fromTo(it.rotation, { x: r0[0], y: r0[1], z: r0[2] }, { x: r1.x, y: r1.y, z: r1.z, duration: 0.85, ease: 'power3.out' }, t);
+  tl.fromTo(it.position, { y: h.y + 0.9 }, { y: h.y, duration: 0.18, ease: 'power2.in' }, t + 0.8);
+}
+pack(items.passport, 3.25, [-22, 38, 18, [deg(-30), deg(-25), deg(18)]]);
+pack(items.board, 4.45, [26, 40, 10, [deg(-20), deg(35), deg(-15)]]);
+pack(items.letter, 5.65, [30, 42, 24, [deg(-35), deg(-20), deg(-10)]]);
+pack(items.cap, 6.85, [-24, 44, 26, [deg(-40), deg(140), deg(20)]]);
+tl.to(CAM, { dist: 234, duration: 1.6, ease: 'power1.inOut' }, 7.6);
+// 3. lid closes
+tl.to(S, { lid: 0, duration: 1.25, ease: 'power2.in' }, 8.45);
+tl.to(S, { lid: 2.2, duration: 0.12, ease: 'power1.out' }, 9.7);
+tl.to(S, { lid: 0, duration: 0.2, ease: 'bounce.out' }, 9.82);
+// 4. rotation reveal: lift, flip toward camera, settle on the lid, brand plate revealed
+tl.to('#head', { opacity: 0, y: -60, duration: 0.5, ease: 'power2.in' }, 10.3);
+tl.to('#swoosh', { opacity: 0, duration: 0.4 }, 10.3);
+tl.to(caseG.position, { y: 16, duration: 0.6, ease: 'power2.out' }, 10.35);
+tl.to(caseG.rotation, { x: deg(180), duration: 1.5, ease: 'power2.inOut' }, 10.55);
+tl.to(caseG.rotation, { y: deg(-360), duration: 1.5, ease: 'power2.inOut' }, 10.55);
+tl.to(caseG.position, { y: HB + HL, duration: 0.55, ease: 'power2.inOut' }, 11.75);
+tl.to(CAM, { dist: 200, elev: 74, tz: 0, shift: -0.02, duration: 2.0, ease: 'power2.inOut' }, 10.6);
+tl.to(CAM, { dist: 120, duration: 1.2, ease: 'power2.in' }, 12.7);
+// 5. final screen
+tl.to('#flash', { opacity: 1, duration: 0.3, ease: 'power1.in' }, 13.65);
+tl.set('#final', { visibility: 'visible' }, 13.95);
+tl.to('#flash', { opacity: 0, duration: 0.45, ease: 'power1.out' }, 13.95);
+tl.fromTo('#flogo', { scale: 0.82, opacity: 0, filter: 'blur(12px)' }, { scale: 1, opacity: 1, filter: 'blur(0px)', duration: 0.9, ease: 'power3.out' }, 14.05);
+const fsl = document.getElementById('fswp').getTotalLength();
+gsap.set('#fswp', { strokeDasharray: fsl, strokeDashoffset: fsl });
+tl.to('#fswp', { strokeDashoffset: 0, duration: 0.55, ease: 'power2.out' }, 14.8);
+tl.fromTo('#fcap', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out' }, 15.15);
+tl.fromTo('.num', { opacity: 0, y: 40, filter: 'blur(10px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.4, stagger: 0.16, ease: 'power3.out' }, 15.35);
+tl.fromTo('.num .ic', { scale: 0.3 }, { scale: 1, duration: 0.45, stagger: 0.08, ease: 'back.out(2.4)' }, 15.35);
+tl.fromTo('#flogo', { y: 0 }, { y: -10, duration: 4, ease: 'sine.inOut' }, 15.2);
+
+document.querySelectorAll('.ic.ph').forEach(e => e.innerHTML = PHONE);
+const wa = await (await fetch('assets/whatsapp.svg')).text();
+document.querySelectorAll('.ic.wa').forEach(e => e.innerHTML = wa.replace(/<title>.*?<\/title>/, ''));
+
+function draw() {
+  lidPivot.rotation.x = -deg(S.lid);
+  contact.position.y = 0.05;
+  const lift = caseG.position.y;
+  contact.material.opacity = Math.max(0, 1 - lift / 30);
+  contact.scale.setScalar(1 + lift / 60);
+  placeCamera();
+  renderer.render(scene, camera);
+}
+window.renderAt = t => { tl.seek(t, false); draw(); return true; };
+await document.fonts.ready;
+window.renderAt(0);
+window.ready = true;
+</script></body></html>
