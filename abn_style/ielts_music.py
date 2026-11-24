@@ -28,8 +28,14 @@ BPM = 120
 BEAT = 60 / BPM
 BAR = 4 * BEAT
 
-TRANS = [2.5, 5.45, 8.45, 12.45]            # stripe transitions start
-CUTS = [t + 0.44 for t in TRANS]            # shot changes under full cover
+# PROFILE=ref: timings measured frame-by-frame on the reference edit (used by the faithful re-brand)
+REF = os.environ.get("PROFILE") == "ref"
+TRANS = [2.54, 5.54, 8.51, 12.58] if REF else [2.5, 5.45, 8.45, 12.45]      # stripe transitions start
+CUTS = [t + (0.46 if REF else 0.44) for t in TRANS]                          # shot changes under full cover
+# end-card events: logo build, light/frame, sparkle ticks, contact lines, socials
+EV = (dict(logo=13.25, logo_dt=0.12, shine=14.85, spark=15.5, swoosh=16.25, nums=16.34, addr=16.48, soc=[16.75, 16.95, 17.15])
+      if REF else
+      dict(logo=13.2, logo_dt=0.13, shine=14.15, spark=14.62, swoosh=15.2, nums=15.25, addr=15.62, soc=[15.95, 16.11]))
 END = CUTS[-1]                              # end card from here
 
 
@@ -181,10 +187,10 @@ for a, cut in zip(TRANS, CUTS):
     add(sfx.whoosh(0.45), cut - 0.05, 0.25, 0.2)
 
 # scene accents: band sweep + text slide
-for a, dt in zip([0.0] + CUTS[:3], [0.35, 0.2, 0.2, 0.2]):
+for a, dt in zip([0.0] + CUTS[:3], [0.45, 0.2, 0.2, 0.2] if REF else [0.35, 0.2, 0.2, 0.2]):
     add(sfx.swoosh_up(), a + dt - 0.05, 0.22, -0.3)
     add(sfx.whoosh(0.32), a + dt + 0.12, 0.18, 0.3)
-add(sfx.impact_soft(), 0.35, 0.45)                         # opening downbeat with the first band sweep
+add(sfx.impact_soft(), 0.45 if REF else 0.35, 0.45)                         # opening downbeat with the first band sweep
 
 # ------------------------------------------------------------------ end card (logo + contacts)
 ENDC = [[57, 64, 69, 72], [53, 60, 65, 69], [48, 55, 60, 64], [55, 62, 67, 71]]
@@ -196,16 +202,16 @@ for k in range(24):                                        # soft pluck arpeggio
         break
     c = min(int((t - END - 0.1) / 1.45), 3)
     add(pluck(ENDC[c][k % 4] + 12, 0.6, 3000), t, 0.18, -0.4 if k % 2 else 0.4)
-for k in range(5):                                         # logo strips rising
-    add(sfx.pop(), 13.2 + k * 0.13, 0.12, -0.5 + k * 0.25)
-add(sfx.shimmer(), 14.15, 0.3)                             # light sweep across the logo
-add(sfx.sparkle(), 14.62, 0.25, 0.4)                       # sparkle ticks
-add(sfx.swoosh_up(), 15.2, 0.18)
+for k in range(3 if REF else 5):                           # logo pieces building
+    add(sfx.pop(), EV["logo"] + k * EV["logo_dt"], 0.12, -0.5 + k * 0.25)
+add(sfx.shimmer(), EV["shine"], 0.3)                       # light sweep / frame drawing round the logo
+add(sfx.sparkle(), EV["spark"], 0.25, 0.4)                 # sparkle ticks
+add(sfx.swoosh_up(), EV["swoosh"], 0.18)
 for k in range(2):
-    add(sfx.pop(), 15.25 + k * 0.14, 0.16, -0.2 + 0.4 * k)  # phone numbers
-add(sfx.pop(), 15.62, 0.14)                                # address
-for k in range(2):
-    add(sfx.tick(), 15.95 + k * 0.16, 0.12)                # socials
+    add(sfx.pop(), EV["nums"] + k * 0.14, 0.16, -0.2 + 0.4 * k)   # phone numbers
+add(sfx.pop(), EV["addr"], 0.14)                           # address
+for k, t in enumerate(EV["soc"]):
+    add(sfx.tick(), t, 0.12, -0.3 + 0.3 * k)               # socials
 add(sfx.ding(), DUR - 1.6, 0.18)
 tt = t_(2.5)
 add(np.sin(2 * np.pi * np.cumsum(38 + 50 * np.exp(-tt / 0.1)) / SR) * np.exp(-tt / 0.8), END, 0.4)

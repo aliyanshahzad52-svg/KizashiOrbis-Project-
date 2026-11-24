@@ -19,11 +19,13 @@ const fs = require('fs');
       await page.screenshot({ path: `${out}/s_${t}.png` });
     }
   } else {
-    const n = Math.round(+secs * 30);
-    const ff = spawn('ffmpeg', ['-loglevel', 'error', '-y', '-f', 'image2pipe', '-framerate', '30', '-c:v', 'png', '-i', '-',
+    const fps = +(process.env.FPS || 30);
+    const [f0, f1] = (process.env.FRAMES || `0-${Math.round(+secs * fps) - 1}`).split('-').map(Number);
+    const ff = spawn('ffmpeg', ['-loglevel', 'error', '-y', '-f', 'image2pipe', '-framerate', String(fps), '-c:v', 'png', '-i', '-',
       '-c:v', 'ffv1', '-pix_fmt', 'bgr0', out], { stdio: ['pipe', 'inherit', 'inherit'] });
-    for (let i = 0; i < n; i++) {
-      await page.evaluate(t => window.renderAt(t), i / 30);
+    const n = f1 - f0 + 1;
+    for (let i = f0; i <= f1; i++) {
+      await page.evaluate(t => window.renderAt(t), i / fps);
       const buf = await page.screenshot({ type: 'png' });
       if (!ff.stdin.write(buf)) await new Promise(r => ff.stdin.once('drain', r));
       if (i % 60 === 0) console.log('frame', i, '/', n);
