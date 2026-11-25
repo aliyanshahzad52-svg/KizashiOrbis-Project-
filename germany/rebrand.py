@@ -132,6 +132,8 @@ def end_reader():
 
 cap = cv2.VideoCapture(REF)
 N = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+import os
+KEEP = os.environ.get("KEEP")                     # reuse already-rendered frames before END0 from this file
 if STILLS:
     for i in STILLS:
         cap.set(cv2.CAP_PROP_POS_FRAMES, i); ok, f = cap.read()
@@ -142,21 +144,27 @@ if STILLS:
 enc = subprocess.Popen(["ffmpeg", "-loglevel", "error", "-y", "-f", "rawvideo", "-pix_fmt", "bgr24", "-s", f"{W}x{H}",
                         "-r", "30", "-i", "-", "-c:v", "ffv1", "-pix_fmt", "bgr0", OUT], stdin=subprocess.PIPE)
 ends = end_reader()
+if KEEP:
+    kp = subprocess.Popen(["ffmpeg", "-loglevel", "error", "-i", KEEP, "-frames:v", str(END0), "-f", "rawvideo", "-pix_fmt", "bgr24", "-"], stdout=subprocess.PIPE)
 for i in range(N):
     ok, f = cap.read()
     if not ok:
         break
-    if i < END0:
+    if KEEP and i < END0:
+        g = np.frombuffer(kp.stdout.read(W * H * 3), np.uint8).reshape(H, W, 3)
+    elif i < END0:
         g = place_logo(up(remove_logo(process(i, f))))
     else:
         card = next(ends)
-        # reveal the end card through the reference's own white wipe
-        wht = cv2.resize(np.clip((f.min(2).astype(np.float32) - 225) / 25, 0, 1), (W, H))[..., None]
-        if wht.mean() > 0.995:
+        # reveal the end card through the reference's own white wipe (row by row: rows the wipe has
+        # covered come entirely from our card, so nothing of the reference's own end card shows through)
+        rows = ((f.min(2) > 225).mean(1) > 0.5).astype(np.float32)
+        rows = cv2.resize(rows[:, None], (1, H), interpolation=cv2.INTER_LINEAR)[:, 0][:, None, None]
+        if rows.mean() > 0.995:
             g = card
         else:
-            base = place_logo(up(remove_logo(process(i, f)))) if wht.mean() < 0.9 else up(process(i, f))
-            g = np.clip(base * (1 - wht) + card * wht + .5, 0, 255).astype(np.uint8)
+            base = place_logo(up(remove_logo(process(i, f))))
+            g = np.clip(base * (1 - rows) + card * rows + .5, 0, 255).astype(np.uint8)
     enc.stdin.write(g.tobytes())
     if i % 60 == 0:
         print("frame", i, "/", N, flush=True)
