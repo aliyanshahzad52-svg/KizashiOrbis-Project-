@@ -1,0 +1,122 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- OrbisNexa "Visa Success Stories" - structure and timing of the sample:
+     0-5 s  outlined title box, title types in
+     5.0 s + k*2.47 s  one visa per slot: enters tilted from below-left with motion blur, settles inside a
+     blue rounded border, logo watermark across it; logo at the top and handle line at the bottom throughout.
+     End: the top logo rotates and travels into the centre, growing; contacts and address appear below.
+     White background, OrbisNexa blue accents. All visas are privacy-redacted (redact.py). -->
+<style>
+  @font-face { font-family: P; font-weight: 500; src: url(assets/poppins-latin-500-normal.woff2); }
+  @font-face { font-family: P; font-weight: 600; src: url(assets/poppins-latin-600-normal.woff2); }
+  @font-face { font-family: P; font-weight: 700; src: url(assets/poppins-latin-700-normal.woff2); }
+  @font-face { font-family: P; font-weight: 800; src: url(assets/poppins-latin-800-normal.woff2); }
+  :root { --navy: #0c1b3d; --blue: #0b4fb3; --sky: #2f86ee; }
+  html, body { margin: 0; background: #fff; }
+  #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; font-family: P, sans-serif;
+           background: radial-gradient(1300px 1500px at 50% 45%, #ffffff 0%, #fbfcfe 70%, #f1f5fc 100%); }
+  .abs { position: absolute; }
+  /* intro */
+  #ibox { left: 120px; top: 640px; width: 840px; height: 560px; }
+  #ibox svg { position: absolute; left: 0; top: 0; overflow: visible; }
+  #ititle { left: 0; width: 840px; top: 50px; text-align: center; font-size: 118px; font-weight: 700; color: var(--navy); line-height: 1.04; }
+  #isub { left: 0; width: 840px; top: 452px; text-align: center; font-size: 46px; font-weight: 500; color: var(--blue); }
+  .ch { display: inline-block; white-space: pre; }
+  /* visa slot */
+  #logo { left: 390px; top: 120px; width: 300px; transform-origin: 50% 50%; }
+  .visa { position: absolute; left: 60px; top: 700px; width: 960px; visibility: hidden; transform-origin: 50% 50%; }
+  .visa .card { position: relative; border-radius: 34px; overflow: hidden; border: 9px solid #1f74e6;
+                box-shadow: 0 0 0 3px rgba(255,255,255,.9), 0 26px 50px rgba(12,27,61,.22); background: #fff; }
+  .visa .card img.v { display: block; width: 100%; }
+  .visa .wm { position: absolute; left: 50%; top: 54%; width: 46%; transform: translate(-50%, -50%) rotate(-22deg); opacity: .22; }
+  #handle { left: 0; width: 1080px; top: 1560px; text-align: center; font-size: 46px; font-weight: 700; color: var(--navy); letter-spacing: 1px; opacity: 0; }
+  #handle svg { width: 46px; height: 46px; vertical-align: -9px; margin-right: 14px; fill: var(--blue); }
+  /* end */
+  #rule { left: 340px; top: 1080px; width: 400px; height: 5px; border-radius: 3px; transform: scaleX(0);
+          background: linear-gradient(90deg, rgba(31,122,232,0), #1f7ae8, rgba(31,122,232,0)); }
+  #cap { left: 0; width: 1080px; top: 1116px; text-align: center; font-size: 34px; font-weight: 600; color: var(--blue); letter-spacing: 8px; text-indent: 8px; opacity: 0; }
+  #nums { left: 540px; top: 1186px; transform: translateX(-50%); width: max-content; display: flex; flex-direction: column; gap: 24px; }
+  .num { display: flex; align-items: center; gap: 18px; opacity: 0; }
+  .num b { font-size: 70px; font-weight: 700; color: var(--navy); line-height: 1; letter-spacing: .4px; }
+  .ic { width: 68px; height: 68px; border-radius: 50%; position: relative; flex: 0 0 68px;
+        background: linear-gradient(145deg, #2a7bff 0%, #0b4fb3 60%, #0a3c8c 100%); box-shadow: 0 8px 18px rgba(11,79,179,.25); }
+  .ic svg { position: absolute; left: 17px; top: 17px; width: 34px; height: 34px; fill: #fff; }
+  #addr { left: 0; width: 1080px; top: 1430px; display: flex; justify-content: center; align-items: center; gap: 18px; opacity: 0; }
+  #addr .t { font-size: 38px; font-weight: 500; color: #2b3a58; line-height: 1.35; }
+</style></head>
+<body><div id="stage">
+  <div id="ibox" class="abs">
+    <svg width="840" height="560"><rect id="irect" x="3" y="3" width="834" height="554" rx="40" fill="none" stroke="#1f74e6" stroke-width="7"/></svg>
+    <div id="ititle" class="abs"><div class="split">Visa</div><div class="split">Success</div><div class="split">Stories</div></div>
+    <div id="isub" class="abs split">From OrbisNexa Consultancy</div>
+  </div>
+  <div id="visas"></div>
+  <div id="handle" class="abs"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm6.9 6h-3a15.7 15.7 0 0 0-1.4-3.6A8 8 0 0 1 18.9 8zM12 4c.8 1.2 1.5 2.5 1.9 4h-3.8c.4-1.5 1.1-2.8 1.9-4zM4.3 14a8.2 8.2 0 0 1 0-4h3.4a16.5 16.5 0 0 0 0 4H4.3zm.8 2h3a15.7 15.7 0 0 0 1.4 3.6A8 8 0 0 1 5.1 16zm3-8h-3a8 8 0 0 1 4.4-3.6A15.7 15.7 0 0 0 8.1 8zM12 20c-.8-1.2-1.5-2.5-1.9-4h3.8c-.4 1.5-1.1 2.8-1.9 4zm2.3-6H9.7a14.7 14.7 0 0 1 0-4h4.6a14.7 14.7 0 0 1 0 4zm.3 5.6c.6-1.1 1.1-2.3 1.4-3.6h3a8 8 0 0 1-4.4 3.6zM16.3 14a16.5 16.5 0 0 0 0-4h3.4a8.2 8.2 0 0 1 0 4h-3.4z"/></svg>@orbisnexa</div>
+  <div id="rule" class="abs"></div>
+  <div id="cap" class="abs">CALL / WHATSAPP</div>
+  <div id="nums" class="abs">
+    <div class="num"><span class="ic ph"></span><b>+92 370 0035896</b></div>
+    <div class="num"><span class="ic ph"></span><b>+92 312 4222204</b></div>
+  </div>
+  <div id="addr" class="abs"><span class="ic pin"></span><span class="t">Iqbal, 8 Allama, Raza Block Town,<br>Lahore, Pakistan</span></div>
+  <img id="logo" class="abs" src="assets/logo.png">
+</div>
+<script src="assets/gsap.min.js"></script>
+<script>
+const $ = s => document.querySelector(s);
+const PHONE = '<svg viewBox="0 0 24 24"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1z"/></svg>';
+const PIN = '<svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>';
+const N = 6, T0 = 5.0, SLOT = 2.47, END = T0 + N * SLOT, DUR = END + 4.8;
+let tl;
+function split(el) { const t = el.textContent; el.textContent = ''; for (const c of t) { const s = document.createElement('span'); s.className = 'ch'; s.textContent = c; el.appendChild(s); } }
+
+async function build() {
+  document.querySelectorAll('.ic.ph').forEach(e => e.innerHTML = PHONE);
+  document.querySelectorAll('.ic.pin').forEach(e => e.innerHTML = PIN);
+  document.querySelectorAll('.split').forEach(split);
+  const vs = [];
+  for (let k = 1; k <= N; k++) {
+    const d = document.createElement('div'); d.className = 'visa';
+    d.innerHTML = `<div class="card"><img class="v" src="assets/visa${k}.jpg"><img class="wm" src="assets/logo.png"></div>`;
+    $('#visas').appendChild(d); vs.push(d);
+  }
+  await document.fonts.ready;
+  await Promise.all([...document.images].map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; })));
+  vs.forEach(v => { v.style.top = (960 - v.offsetHeight / 2 + 20) + 'px'; });
+
+  tl = gsap.timeline({ paused: true });
+  tl.set({}, {}, DUR);
+  // ---- intro: logo, box draws, title types, subtitle
+  tl.fromTo('#logo', { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, 0.1);
+  const L = $('#irect').getTotalLength();
+  gsap.set('#irect', { strokeDasharray: L, strokeDashoffset: L });
+  tl.to('#irect', { strokeDashoffset: 0, duration: 0.9, ease: 'power2.inOut' }, 0.1);
+  tl.fromTo('#ititle .ch', { opacity: 0, y: 30, filter: 'blur(8px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.25, stagger: 0.06, ease: 'power2.out' }, 0.3);
+  tl.fromTo('#isub .ch', { opacity: 0 }, { opacity: 1, duration: 0.12, stagger: 0.035 }, 1.7);
+  tl.fromTo('#ibox', { scale: 1 }, { scale: 1.03, duration: 4.5, ease: 'none' }, 0.3);
+  tl.to('#ibox', { opacity: 0, scale: 0.92, filter: 'blur(10px)', duration: 0.25, ease: 'power2.in' }, T0 - 0.22);
+  tl.to('#handle', { opacity: 1, duration: 0.35 }, T0);
+  // ---- visas
+  vs.forEach((v, k) => {
+    const t = T0 + k * SLOT;
+    tl.set(v, { visibility: 'visible' }, t);
+    tl.fromTo(v, { x: -180, y: 260, rotation: -9, scale: 1.08, opacity: 0.4, filter: 'blur(14px)' },
+              { x: 0, y: 0, rotation: 0, scale: 1, opacity: 1, filter: 'blur(0px)', duration: 0.42, ease: 'power3.out' }, t);
+    tl.to(v, { scale: 1.035, duration: SLOT - 0.5, ease: 'none' }, t + 0.42);
+    if (k < N - 1) tl.set(v, { visibility: 'hidden' }, t + SLOT + 0.08);
+    else tl.to(v, { opacity: 0, scale: 0.9, filter: 'blur(10px)', duration: 0.35, ease: 'power2.in' }, t + SLOT - 0.05);
+  });
+  // ---- end: logo rotates into the centre and grows; contacts below
+  tl.to('#handle', { opacity: 0, duration: 0.3 }, END - 0.1);
+  tl.to('#logo', { left: 540 - 290, top: 420, width: 580, rotation: 360, duration: 1.4, ease: 'power3.inOut' }, END + 0.1);
+  tl.to('#rule', { scaleX: 1, duration: 0.5, ease: 'power3.out' }, END + 1.4);
+  tl.fromTo('#cap', { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out' }, END + 1.5);
+  tl.fromTo('.num', { opacity: 0, y: 34, filter: 'blur(10px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.42, stagger: 0.16, ease: 'power3.out' }, END + 1.65);
+  tl.fromTo('.num .ic', { scale: 0.3 }, { scale: 1, duration: 0.45, stagger: 0.08, ease: 'back.out(2.2)' }, END + 1.65);
+  tl.fromTo('#addr', { opacity: 0, y: 28, filter: 'blur(8px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.42, ease: 'power3.out' }, END + 2.1);
+  tl.fromTo('#addr .ic', { scale: 0.3 }, { scale: 1, duration: 0.45, ease: 'back.out(2.2)' }, END + 2.1);
+  return true;
+}
+window.ready = build();
+window.renderAt = t => { tl.seek(t, false); return true; };
+</script></body></html>
