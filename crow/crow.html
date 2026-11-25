@@ -1,0 +1,559 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- KizashiOrbis "crow & fish bowl" 3D animated poster (1080x1920).
+     Same concept and composition as the reference picture: the crow on the rim drops pebbles into the bowl,
+     the water rises, and the crow in the deck chair sips it through a long straw.
+     3D: glass bowl, water with ripples and splashes, river stones, pebbles, straw.  The two crows are the
+     picture's own artwork (cut out, red accents re-coloured to KizashiOrbis green). -->
+<style>
+  @font-face { font-family: P; font-weight: 400; src: url(assets/poppins-latin-400-normal.woff2); }
+  @font-face { font-family: P; font-weight: 500; src: url(assets/poppins-latin-500-normal.woff2); }
+  @font-face { font-family: P; font-weight: 600; src: url(assets/poppins-latin-600-normal.woff2); }
+  @font-face { font-family: P; font-weight: 700; src: url(assets/poppins-latin-700-normal.woff2); }
+  @font-face { font-family: S; font-weight: 400; src: url(assets/script.woff2); }
+  :root { --ink: #161816; --green: #19c46a; --lime: #8ee03c; --deep: #0f7a3c; --black: #020c06; }
+  html, body { margin: 0; background: #f2f3f2; }
+  #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; font-family: P, sans-serif; color: var(--ink); }
+  .abs { position: absolute; }
+  .full { left: 0; top: 0; width: 1080px; height: 1920px; }
+  #gl { position: absolute; left: 0; top: 0; }
+  /* headline, laid out like the reference */
+  #head { left: 0; width: 1080px; top: 196px; text-align: center; }
+  #l1 { font-size: 66px; font-weight: 600; line-height: 1; letter-spacing: -1px; }
+  #l2 { font-size: 196px; font-weight: 600; line-height: .92; letter-spacing: -6px; margin-top: 2px; }
+  #l3 { height: 150px; margin-top: 8px; position: relative; }
+  #the { position: absolute; left: 262px; top: 20px; font-size: 108px; font-weight: 600; letter-spacing: -3px; line-height: 1; }
+  #scr { position: absolute; left: 462px; top: -8px; padding: 0 40px 0 14px; font-family: S; font-size: 142px; color: var(--green); line-height: 1.1; white-space: nowrap; }
+  #und { left: 530px; top: 592px; overflow: visible; }
+  #sub { left: 0; width: 1080px; top: 628px; text-align: center; font-size: 34px; font-weight: 500; letter-spacing: -.2px; }
+  #sub b { font-weight: 500; color: var(--green); }
+  /* services row */
+  #svc { left: 70px; width: 940px; top: 1420px; display: flex; justify-content: space-between; }
+  .sv { width: 180px; text-align: center; }
+  .sv svg { width: 74px; height: 74px; display: block; margin: 0 auto 16px; overflow: visible; }
+  .sv span { font-size: 23px; font-weight: 600; letter-spacing: -.2px; white-space: nowrap; }
+  #rule { left: 138px; top: 1590px; width: 804px; height: 2px; background: #cfd2cf; transform-origin: 0 50%; }
+  /* social row + logo (in place of the reference's handle) */
+  #soc { left: 186px; top: 1630px; display: flex; gap: 22px; align-items: center; }
+  .si { width: 58px; height: 58px; border-radius: 13px; background: #111; display: flex; align-items: center; justify-content: center; }
+  .si svg { width: 32px; height: 32px; fill: #fff; }
+  #bar { left: 700px; top: 1628px; width: 2px; height: 62px; background: #9a9d9a; }
+  #logo { left: 726px; top: 1619px; width: 230px; height: 80px; transform-style: preserve-3d; }
+  #logo .plate { position: absolute; inset: 0; border-radius: 14px; background: var(--black); box-shadow: 0 10px 24px rgba(0,0,0,.18); }
+  #logo img { position: absolute; left: 8px; top: 4px; width: 214px; height: 72.5px; }
+  /* ending */
+  #dark { background: radial-gradient(ellipse 80% 55% at 50% 44%, #0b2a17 0%, #04140a 48%, var(--black) 100%); opacity: 0; }
+  #glow { left: 140px; top: 520px; width: 800px; height: 640px; border-radius: 50%; background: radial-gradient(closest-side, rgba(25,196,106,.32), rgba(25,196,106,0)); opacity: 0; }
+  #contact { left: 0; width: 1080px; top: 1150px; display: flex; flex-direction: column; align-items: center; gap: 30px; }
+  .crow { display: flex; align-items: center; gap: 18px; color: #fff; }
+  .crow b { font-size: 64px; font-weight: 700; letter-spacing: .5px; line-height: 1; margin-left: 6px; }
+  .crow .w { font-size: 46px; font-weight: 500; letter-spacing: .5px; line-height: 1; margin-left: 6px; }
+  .ic { width: 70px; height: 70px; border-radius: 50%; position: relative; flex: 0 0 70px;
+        background: linear-gradient(145deg, #8ee03c 0%, #19c46a 55%, #0f7a3c 100%); box-shadow: 0 0 26px rgba(25,196,106,.45); }
+  .ic svg { position: absolute; left: 17px; top: 17px; width: 36px; height: 36px; fill: #04140a; }
+  #cline { left: 290px; top: 1110px; width: 500px; height: 2px; background: linear-gradient(90deg, rgba(142,224,60,0), #8ee03c, rgba(142,224,60,0)); transform-origin: 50% 50%; }
+</style>
+<script type="importmap">{ "imports": { "three": "./node_modules/three/build/three.module.js",
+  "three/addons/": "./node_modules/three/examples/jsm/" } }</script>
+</head>
+<body><div id="stage">
+  <canvas id="gl" width="1080" height="1920"></canvas>
+  <div id="head" class="abs">
+    <div id="l1">We</div>
+    <div id="l2">Build</div>
+    <div id="l3"><span id="the">the</span><span id="scr">Brand</span></div>
+  </div>
+  <svg id="und" class="abs" width="330" height="40"><path id="undp" d="M4 30 Q 150 6 322 12" fill="none" stroke="#19c46a" stroke-width="9" stroke-linecap="round"/></svg>
+  <div id="sub" class="abs">That Truly <b>Connects</b> With People.</div>
+
+  <div id="svc" class="abs">
+    <div class="sv"><svg viewBox="0 0 64 64"><g fill="none" stroke="#161816" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M33 6h21v21L29 52a4 4 0 0 1-5.6 0L12 40.6a4 4 0 0 1 0-5.6z"/><circle cx="45" cy="15" r="3.6" stroke="#19c46a"/>
+      <path d="M24 33l9 9M28.5 28.5l5 5" stroke="#19c46a"/></g></svg><span>Branding</span></div>
+    <div class="sv"><svg viewBox="0 0 64 64"><g fill="none" stroke="#161816" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round">
+      <rect x="17" y="5" width="30" height="54" rx="5"/><path d="M28 10h8"/><circle cx="32" cy="52" r="1.6"/>
+      <path d="M32 40c-6-4-9-7-9-11a4.5 4.5 0 0 1 9-1.5 4.5 4.5 0 0 1 9 1.5c0 4-3 7-9 11z" stroke="#19c46a"/></g></svg><span>Social Media</span></div>
+    <div class="sv"><svg viewBox="0 0 64 64"><g fill="none" stroke="#161816" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M8 26v12h8l22 12V14L16 26z"/><path d="M14 38l4 14h7l-3-13"/>
+      <path d="M46 24a10 10 0 0 1 0 16M51 18a18 18 0 0 1 0 28" stroke="#19c46a"/></g></svg><span>Digital Ads</span></div>
+    <div class="sv"><svg viewBox="0 0 64 64"><g fill="none" stroke="#161816" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round">
+      <rect x="5" y="9" width="54" height="36" rx="4"/><path d="M24 57h16M32 45v12"/>
+      <rect x="12" y="16" width="16" height="12" rx="2" stroke="#19c46a"/><path d="M34 18h18M34 24h14M12 36h40" stroke="#19c46a"/></g></svg><span>Web Design</span></div>
+    <div class="sv"><svg viewBox="0 0 64 64"><g fill="none" stroke="#161816" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round">
+      <rect x="6" y="14" width="40" height="34" rx="5"/><path d="M46 26l12-7v26l-12-7"/>
+      <path d="M21 24v14l11-7z" stroke="#19c46a"/></g></svg><span>Content Creation</span></div>
+  </div>
+  <div id="rule" class="abs"></div>
+  <div id="soc" class="abs">
+    <div class="si" data-i="facebook"></div><div class="si" data-i="instagram"></div><div class="si" data-i="whatsapp"></div>
+    <div class="si" data-i="tiktok"></div><div class="si" data-i="youtube"></div><div class="si" data-i="x"></div>
+  </div>
+  <div id="bar" class="abs"></div>
+
+  <!-- ending -->
+  <div id="dark" class="abs full"></div>
+  <div id="glow" class="abs"></div>
+  <div id="cline" class="abs"></div>
+  <div id="contact" class="abs">
+    <div class="crow" id="c1"><span class="ic ph"></span><span class="ic wa"></span><b>+92 332 6834984</b></div>
+    <div class="crow" id="c2"><span class="ic gl"></span><span class="w">www.kizashiorbis.com</span></div>
+  </div>
+  <div id="logo" class="abs"><div class="plate"></div><img src="assets/logo_alpha.png"></div>
+</div>
+<script src="assets/gsap.min.js"></script>
+<script type="module">
+import * as THREE from 'three';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js';
+
+const $ = s => document.querySelector(s);
+const deg = THREE.MathUtils.degToRad;
+const S = 1.1;                                 // reference picture px -> video px (scene band enlarged for 9:16)
+const vx = px => (px - 562) * S + 540, vy = py => (py - 462) * S + 690;
+
+// ------------------------------------------------------------------ renderer / scene / camera
+const renderer = new THREE.WebGLRenderer({ canvas: $('#gl'), antialias: true, preserveDrawingBuffer: true });
+renderer.setSize(1080, 1920, false);
+renderer.setPixelRatio(1);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.NoToneMapping;   // keeps the glass and the backdrop the same light grey
+renderer.toneMappingExposure = 1.0;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.localClippingEnabled = true;
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xf2f3f2);
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(renderer), 0.03).texture;
+scene.environmentIntensity = 0.9;
+
+const FOV = 16, D = 960 / Math.tan(deg(FOV / 2));
+const camera = new THREE.PerspectiveCamera(FOV, 1080 / 1920, 50, 20000);
+const TGT_PX = [560, 860];                     // picture point the camera looks at
+const CAM = { elev: 6, az: 0, dist: 1, lift: 0 };
+const TGT = new THREE.Vector3(vx(TGT_PX[0]) - 540, 0, 0);
+function placeCamera() {
+  const e = deg(CAM.elev), a = deg(CAM.az), d = D * CAM.dist;
+  camera.position.set(TGT.x + d * Math.cos(e) * Math.sin(a), TGT.y + d * Math.sin(e) + CAM.lift, TGT.z + d * Math.cos(e) * Math.cos(a));
+  camera.lookAt(TGT);
+  camera.setViewOffset(1080, 1920, 0, 960 - vy(TGT_PX[1]), 1080, 1920);
+  camera.updateMatrixWorld();
+}
+placeCamera();
+// world point that the start camera sees at picture pixel (px,py) at depth z
+const _ray = new THREE.Raycaster();
+function at(px, py, z = 0) {
+  const ndc = new THREE.Vector2(vx(px) / 540 - 1, 1 - vy(py) / 960);
+  _ray.setFromCamera(ndc, camera);
+  const t = (z - _ray.ray.origin.z) / _ray.ray.direction.z;
+  return _ray.ray.origin.clone().addScaledVector(_ray.ray.direction, t);
+}
+
+// lights: soft studio, key from the upper left like the picture
+scene.add(new THREE.HemisphereLight(0xffffff, 0xdfe3df, 0.7));
+const key = new THREE.DirectionalLight(0xffffff, 1.6);
+key.position.set(-900, 1600, 1400); key.castShadow = true;
+key.shadow.mapSize.set(2048, 2048);
+Object.assign(key.shadow.camera, { left: -500, right: 500, top: 500, bottom: -500, near: 100, far: 5000 });
+key.shadow.radius = 5; key.shadow.bias = -0.0006;
+scene.add(key);
+const rim = new THREE.DirectionalLight(0xffffff, 0.7); rim.position.set(900, 500, -900); scene.add(rim);
+
+// ------------------------------------------------------------------ fish bowl (profile measured on the picture)
+const AX = at(441, 840, 0);                                  // bowl axis at the widest ring
+const bowlX = AX.x, wy = py => AX.y - (py - 840) * S;        // picture row -> world height on the axis
+const FLOOR = wy(1056);
+const PROF = [[148, 671], [160, 690], [178, 712], [189, 740], [201, 790], [205, 840], [199, 890], [185, 940], [160, 990], [132, 1030], [113, 1050], [104, 1056]];
+const outer = PROF.map(([r, y]) => new THREE.Vector2(r * S, wy(y))).reverse();
+const curve = new THREE.SplineCurve(outer);
+const outerPts = curve.getPoints(80);
+const T = 3.2;                                               // glass thickness (px)
+function radiusAt(y) {                                       // inner radius of the bowl at world height y
+  let best = outerPts[0];
+  for (const p of outerPts) if (Math.abs(p.y - y) < Math.abs(best.y - y)) best = p;
+  return best.x - T;
+}
+{
+  // closed glass shell: outer wall up to the lip, rolled lip, inner wall back down, glass floor
+  const pts = [new THREE.Vector2(0.01, FLOOR)];
+  for (const p of outerPts) pts.push(new THREE.Vector2(p.x, p.y));
+  const top = outerPts[outerPts.length - 1];
+  for (let k = 0; k <= 10; k++) { const a = Math.PI * k / 10; pts.push(new THREE.Vector2(top.x - T / 2 + Math.cos(a) * T / 2 + T / 2 * 0.0, top.y + Math.sin(a) * 2.6)); }
+  for (let i = outerPts.length - 1; i >= 0; i--) { const p = outerPts[i]; pts.push(new THREE.Vector2(Math.max(p.x - T, 0.5), Math.max(p.y, FLOOR + 6))); }
+  pts.push(new THREE.Vector2(0.01, FLOOR + 6));
+  const g = new THREE.LatheGeometry(pts, 160);
+  // thin-walled glass: clear, with reflections (a thin wall barely refracts, and staying non-transmissive lets the
+  // water, ripples and bubbles inside be seen through it)
+  const glassBack = new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: 0.03, metalness: 0, transparent: true, opacity: 0.05,
+    envMapIntensity: 1.3, side: THREE.BackSide, depthWrite: false });
+  const glass = new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: 0.02, metalness: 0, transparent: true, opacity: 0.04,
+    envMapIntensity: 1.6, specularIntensity: 1, clearcoat: 1, clearcoatRoughness: 0.02, side: THREE.FrontSide, depthWrite: false });
+  const og = new THREE.LatheGeometry(outerPts, 160);
+  const back = new THREE.Mesh(og, glassBack); back.position.set(bowlX, 0, AX.z); back.renderOrder = 3; scene.add(back);
+  var bowl = new THREE.Mesh(og, glass);
+  bowl.position.set(bowlX, 0, AX.z); bowl.renderOrder = 6;
+  scene.add(bowl);
+  // thin-glass edge: darker grey silhouette lines and a faint white sheen, like a studio photograph of a glass bowl
+  const edge = new THREE.ShaderMaterial({ transparent: true, depthWrite: false, side: THREE.FrontSide,
+    uniforms: { uCol: { value: new THREE.Color(0x3b403d) } },
+    vertexShader: `varying vec3 vN; varying vec3 vV; void main(){ vec4 mv = modelViewMatrix * vec4(position,1.0);
+      vN = normalize(normalMatrix * normal); vV = normalize(-mv.xyz); gl_Position = projectionMatrix * mv; }`,
+    fragmentShader: `uniform vec3 uCol; varying vec3 vN; varying vec3 vV; void main(){
+      float ndv = clamp(abs(dot(normalize(vN), normalize(vV))), 0.0, 1.0);
+      float f = pow(1.0 - ndv, 4.0);
+      float a = clamp(f * 0.95, 0.0, 0.78);
+      gl_FragColor = vec4(uCol, a); }` });
+  const eg = new THREE.LatheGeometry(outerPts.map(p => new THREE.Vector2(p.x + 0.3, p.y)), 160);
+  const em = new THREE.Mesh(eg, edge); em.position.copy(bowl.position); em.renderOrder = 7; scene.add(em);
+  // rolled lip highlight ring
+  const lip = new THREE.Mesh(new THREE.TorusGeometry(outerPts[outerPts.length - 1].x - T / 2, 2.2, 10, 160),
+    new THREE.MeshPhysicalMaterial({ color: 0xf4f6f5, roughness: 0.05, transparent: true, opacity: 0.55, envMapIntensity: 1.6, depthWrite: false }));
+  lip.rotation.x = Math.PI / 2; lip.position.set(bowlX, outerPts[outerPts.length - 1].y + 1, AX.z); lip.renderOrder = 3; scene.add(lip);
+  const lipEdge = new THREE.Mesh(new THREE.TorusGeometry(outerPts[outerPts.length - 1].x - T / 2, 2.4, 10, 160), edge.clone());
+  lipEdge.rotation.x = Math.PI / 2; lipEdge.position.copy(lip.position); lipEdge.renderOrder = 7; scene.add(lipEdge);
+}
+
+// ------------------------------------------------------------------ water: clipped volume + rippling surface
+const W = { level: wy(826), ripples: [] };
+const clip = new THREE.Plane(new THREE.Vector3(0, -1, 0), W.level);
+const waterMat = new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: 0.03, transmission: 1, thickness: 30, ior: 1.33,
+  attenuationColor: new THREE.Color(0xd5e2dd), attenuationDistance: 2500, clippingPlanes: [clip], side: THREE.DoubleSide, envMapIntensity: 0.9 });
+{
+  const pts = [new THREE.Vector2(0.01, FLOOR + 6.2)];
+  for (const p of outerPts) if (p.y > FLOOR + 6.2) pts.push(new THREE.Vector2(Math.max(p.x - T - 0.4, 0.5), p.y));
+  var water = new THREE.Mesh(new THREE.LatheGeometry(pts, 128), waterMat);
+  water.position.set(bowlX, 0, AX.z); water.renderOrder = 1;
+  scene.add(water);
+}
+const SR = 56, SA = 160;                                     // surface grid: rings x segments
+const surfGeo = new THREE.BufferGeometry();
+{
+  const pos = [], idx = [];
+  pos.push(0, 0, 0);
+  for (let i = 1; i <= SR; i++) for (let j = 0; j < SA; j++) { const a = j / SA * Math.PI * 2; pos.push(Math.cos(a) * i / SR, 0, Math.sin(a) * i / SR); }
+  for (let j = 0; j < SA; j++) idx.push(0, 1 + (j + 1) % SA, 1 + j);
+  for (let i = 1; i < SR; i++) for (let j = 0; j < SA; j++) {
+    const a = 1 + (i - 1) * SA + j, b = 1 + (i - 1) * SA + (j + 1) % SA, c = 1 + i * SA + j, d = 1 + i * SA + (j + 1) % SA;
+    idx.push(a, b, c, b, d, c);
+  }
+  surfGeo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  surfGeo.userData.base = new Float32Array(pos);
+  surfGeo.setIndex(idx);
+}
+const surfMat = new THREE.MeshPhysicalMaterial({ color: 0xdfe6e3, roughness: 0.03, transparent: true, opacity: 0.5, side: THREE.DoubleSide, envMapIntensity: 1.6, depthWrite: false });
+const surf = new THREE.Mesh(surfGeo, surfMat); surf.renderOrder = 4;
+surf.position.set(bowlX, W.level, AX.z);
+scene.add(surf);
+const menMat = new THREE.MeshBasicMaterial({ color: 0x7d8581, transparent: true, opacity: 0.8, depthWrite: false });
+const men = new THREE.Mesh(new THREE.TorusGeometry(1, 0.006, 6, 200), menMat);
+men.rotation.x = Math.PI / 2; men.renderOrder = 5; scene.add(men);
+function updateSurface(t) {
+  const r = radiusAt(W.level) - 0.4;
+  surf.position.y = W.level; clip.constant = W.level + 0.2;
+  men.position.set(bowlX, W.level + 0.6, AX.z); men.scale.set(r + 0.3, r + 0.3, 210);
+  const P = surfGeo.attributes.position, B = surfGeo.userData.base;
+  for (let i = 0; i < P.count; i++) {
+    const x = B[i * 3] * r, z = B[i * 3 + 2] * r;
+    let h = 0.5 * Math.sin(x * 0.045 + t * 1.3) * Math.sin(z * 0.05 + t * 1.1);       // faint idle movement
+    for (const rp of W.ripples) {
+      const age = t - rp.t; if (age < 0 || age > 3.2) continue;
+      const d = Math.hypot(x - rp.x, z - rp.z), front = age * 150;
+      const env = Math.exp(-age * 1.25) * Math.exp(-Math.pow((d - front) / 34, 2));
+      h += rp.a * env * Math.sin((d - front) * 0.2);
+      if (age < 0.5) h -= rp.a * 1.6 * Math.exp(-age * 7) * Math.exp(-d * d / 300);   // crater where the pebble enters
+    }
+    const edge = Math.min(1, (r - Math.hypot(x, z)) / 6);
+    P.setXYZ(i, x, h * Math.max(edge, 0), z);
+  }
+  P.needsUpdate = true; surfGeo.computeVertexNormals();
+}
+
+// ------------------------------------------------------------------ stones and pebbles
+function hash(n) { const s = Math.sin(n * 127.1) * 43758.5453; return s - Math.floor(s); }
+function stoneGeo(seed, rx, ry, rz) {
+  let g = new THREE.IcosahedronGeometry(1, 4); g.deleteAttribute('normal'); g.deleteAttribute('uv'); g = mergeVertices(g);
+  const p = g.attributes.position, v = new THREE.Vector3();
+  for (let i = 0; i < p.count; i++) {
+    v.fromBufferAttribute(p, i);
+    const n = 1 + 0.05 * Math.sin(v.x * 3.1 + seed) * Math.sin(v.y * 2.7 + seed * 1.7) + 0.03 * Math.sin(v.z * 5.3 + seed * 3.1)
+      + 0.012 * Math.sin(v.x * 11 + v.y * 9 + seed);
+    v.multiplyScalar(n); p.setXYZ(i, v.x * rx, v.y * ry, v.z * rz);
+  }
+  g.computeVertexNormals(); return g;
+}
+function speckleTex(base, seed, spots) {
+  const c = document.createElement('canvas'); c.width = c.height = 256; const g = c.getContext('2d');
+  g.fillStyle = base; g.fillRect(0, 0, 256, 256);
+  for (let i = 0; i < 2200; i++) {
+    const x = hash(seed + i) * 256, y = hash(seed * 2 + i * 1.3) * 256, r = 0.4 + hash(i * 7 + seed) * 1.6;
+    g.fillStyle = `rgba(${spots},${0.05 + 0.12 * hash(i + seed * 5)})`; g.beginPath(); g.arc(x, y, r, 0, 7); g.fill();
+  }
+  for (let i = 0; i < 9; i++) {                                   // soft mottling
+    const x = hash(seed + i * 31) * 256, y = hash(seed + i * 17) * 256, gr = g.createRadialGradient(x, y, 0, x, y, 60 + 60 * hash(i));
+    gr.addColorStop(0, `rgba(${spots},0.12)`); gr.addColorStop(1, `rgba(${spots},0)`); g.fillStyle = gr; g.fillRect(0, 0, 256, 256);
+  }
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.wrapS = t.wrapT = THREE.RepeatWrapping; return t;
+}
+const STONE_LOOKS = [
+  ['#262625', '255,255,255', 0.38], ['#46433f', '10,10,10', 0.4], ['#1d1e20', '220,220,220', 0.36], ['#7d6852', '30,20,10', 0.38],
+  ['#a8957c', '50,35,20', 0.42], ['#55575a', '20,20,20', 0.36], ['#8f765c', '40,25,12', 0.36], ['#38332f', '200,190,180', 0.4]];
+const stoneMats = STONE_LOOKS.map(([b, s, r], i) => new THREE.MeshPhysicalMaterial({ map: speckleTex(b, i * 13 + 3, s), roughness: r, clearcoat: 0.6, clearcoatRoughness: 0.25, envMapIntensity: 0.8 }));
+const pebbleMat = new THREE.MeshPhysicalMaterial({ map: speckleTex('#6b5440', 77, '25,18,10'), roughness: 0.35, clearcoat: 0.8, clearcoatRoughness: 0.2 });
+// bed of river stones (picture: rows 955..1050), arranged in two layers across the bowl floor
+const STONES = [];
+{
+  const layout = [  // [x px, z, rx, ry, rz, look]   x in picture px, z in px from the axis
+    [330, -60, 30, 20, 26, 0], [395, -70, 34, 21, 28, 5], [470, -66, 32, 20, 28, 2], [540, -55, 30, 19, 25, 1], [360, -5, 36, 24, 30, 1],
+    [450, -10, 40, 25, 32, 0], [530, -5, 34, 22, 28, 2], [290, 0, 24, 17, 22, 7], [585, 10, 26, 18, 22, 5],
+    [330, 60, 28, 19, 24, 3], [400, 70, 30, 18, 26, 6], [478, 72, 38, 22, 30, 4], [552, 58, 28, 18, 24, 0], [308, 92, 22, 14, 18, 2],
+    [372, 104, 24, 15, 20, 4], [445, 110, 30, 16, 22, 1], [520, 104, 26, 15, 20, 6], [585, 80, 20, 14, 18, 5],
+    [410, 30, 30, 18, 26, 3], [500, 30, 28, 18, 24, 7], [420, -40, 26, 16, 22, 4]];
+  layout.forEach(([px, z, rx, ry, rz, look], i) => {
+    const m = new THREE.Mesh(stoneGeo(i * 2.3 + 1, rx * S * 1.22, ry * S * 1.2, rz * S * 1.15), stoneMats[look]);
+    const x = vx(px) - 540, ax = x - bowlX, az = z * S;
+    const lay = (Math.abs(z) < 50 && Math.abs(ax) < 120) ? 1 : 0;
+    const yy = FLOOR + 6 + ry * S * 1.0 + lay * 16 + (az > 60 ? -3 : 0);
+    let dx = x - bowlX, dz = az; const lim = radiusAt(yy - ry * S * 0.5) - rx * S * 1.1, rr = Math.hypot(dx, dz);
+    if (rr > lim) { dx *= lim / rr; dz *= lim / rr; }
+    m.position.set(bowlX + dx, yy, AX.z + dz);
+    m.rotation.set(hash(i) * 0.5 - 0.25, hash(i + 9) * 6.28, hash(i + 4) * 0.4 - 0.2);
+    m.castShadow = m.receiveShadow = true; scene.add(m); STONES.push(m);
+  });
+}
+// the four pebbles the crow drops (each comes to rest on top of the bed)
+const DROPS = [2.7, 5.8, 8.9, 11.7];
+const PEB = DROPS.map((t, i) => {
+  const m = new THREE.Mesh(stoneGeo(40 + i * 3.7, 17 * S, 15 * S, 15 * S), pebbleMat);
+  m.castShadow = m.receiveShadow = true; m.visible = false; scene.add(m);
+  m.userData = { t, rest: new THREE.Vector3(at(455 + [0, 30, -28, 12][i], 0).x, FLOOR + 6 + 42 + [6, 2, 8, 14][i], AX.z + [10, -25, 30, 0][i]), spin: hash(i + 3) * 6 };
+  return m;
+});
+
+// ------------------------------------------------------------------ the two crows (picture artwork on cards)
+const loader = new THREE.TextureLoader();
+const tex = p => new Promise(r => loader.load(p, t => { t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; r(t); }));
+const [tC1, tC2] = await Promise.all(['assets/crow1.png', 'assets/crow2.png'].map(tex));
+function card(t, box, pivotPx, z) {
+  const [x0, y0, x1, y1] = box, w = (x1 - x0) * S, h = (y1 - y0) * S;
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ map: t, transparent: true, depthWrite: false, toneMapped: false }));
+  const pv = new THREE.Group(); scene.add(pv);
+  const P0 = at(pivotPx[0], pivotPx[1], z);
+  pv.position.copy(P0);
+  const C = at((x0 + x1) / 2, (y0 + y1) / 2, z);
+  m.position.copy(C).sub(P0);
+  pv.add(m); m.renderOrder = 5;
+  return pv;
+}
+const ZC1 = AX.z + 150 * S;                                   // crow 1 stands on the front of the rim
+const crow1 = card(tC1, [150, 462, 505, 702], [330, 690], ZC1);
+const crow2 = card(tC2, [598, 578, 975, 1068], [790, 1055], AX.z);
+// pebble held in the beak
+const held = new THREE.Mesh(stoneGeo(91, 16 * S, 18 * S, 15 * S), pebbleMat);
+held.castShadow = true;
+const BEAK = crow1.worldToLocal(at(479, 629, ZC1 + 4));
+held.position.copy(BEAK); crow1.add(held);
+
+// ------------------------------------------------------------------ the straw (3D, brand green)
+const strawPx = [[538, 1000, 30], [538, 930, 30], [539, 820, 30], [544, 735, 28], [553, 685, 24], [570, 652, 18], [592, 641, 12],
+  [614, 652, 6], [645, 690, 2], [680, 713, -2], [715, 719, -6], [748, 712, -6], [778, 703, -6], [800, 698, -8]];
+const strawCurve = new THREE.CatmullRomCurve3(strawPx.map(([x, y, z]) => at(x, y, AX.z + z)), false, 'catmullrom', 0.4);
+const strawMat = new THREE.MeshPhysicalMaterial({ color: 0x19c46a, roughness: 0.22, clearcoat: 1, clearcoatRoughness: 0.08, envMapIntensity: 0.9 });
+const straw = new THREE.Mesh(new THREE.TubeGeometry(strawCurve, 260, 3.4, 16), strawMat);
+straw.castShadow = true; scene.add(straw);
+// sips travelling up the straw: brighter slugs of water moving towards the beak
+const sipMat = new THREE.MeshBasicMaterial({ color: 0xc6ff8a, transparent: true, opacity: 0.0, toneMapped: false, depthWrite: false });
+const SIPS = [0, 1, 2].map(() => { const m = new THREE.Mesh(new THREE.SphereGeometry(3.6, 12, 8), sipMat.clone()); m.scale.set(1, 1, 1); scene.add(m); return m; });
+
+// ------------------------------------------------------------------ splash droplets + bubbles
+// water droplets on a white set read as clear beads with grey rims and a white glint
+const dropMat = new THREE.ShaderMaterial({ transparent: true, depthWrite: false, side: THREE.DoubleSide, uniforms: { uFade: { value: 1 } },
+  vertexShader: `varying vec3 vN; varying vec3 vV; void main(){ vec4 mv = modelViewMatrix * vec4(position,1.0);
+    vN = normalize(normalMatrix * normal); vV = normalize(-mv.xyz); gl_Position = projectionMatrix * mv; }`,
+  fragmentShader: `uniform float uFade; varying vec3 vN; varying vec3 vV; void main(){
+    vec3 n = normalize(vN); float ndv = clamp(abs(dot(n, normalize(vV))), 0.0, 1.0);
+    float f = pow(1.0 - ndv, 2.2);
+    float glint = smoothstep(0.86, 0.97, dot(n, normalize(vec3(-0.45, 0.6, 0.65))));
+    vec3 c = mix(vec3(0.93, 0.95, 0.94), vec3(0.30, 0.34, 0.32), f);
+    c = mix(c, vec3(1.0), glint);
+    gl_FragColor = vec4(c, (0.18 + 0.75 * f + glint) * uFade); }` });
+const SPL = [];
+for (const [i, t0] of DROPS.entries()) for (let k = 0; k < 26; k++) {
+  const m = new THREE.Mesh(new THREE.SphereGeometry(1, 10, 8), dropMat); m.visible = false; m.renderOrder = 4; scene.add(m);
+  const a = (k / 26) * Math.PI * 2 + hash(k + i * 50) * 0.3, sp = 100 + 120 * hash(k * 3 + i), up = 270 + 230 * hash(k * 7 + i * 2);
+  SPL.push({ m, drop: i, a, sp, up, r: 2.4 + 3.2 * hash(k * 11 + i), crown: k < 18 });
+}
+const CROWNS = DROPS.map(() => {
+  const m = new THREE.Mesh(new THREE.CylinderGeometry(1, 0.62, 1, 64, 1, true), dropMat.clone());
+  m.visible = false; m.renderOrder = 4; scene.add(m); return m;
+});
+const bubMat = new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: 0.0, envMapIntensity: 2.4, transparent: true, opacity: 0.55, depthWrite: false });
+const BUB = [];
+for (const [i] of DROPS.entries()) for (let k = 0; k < 16; k++) {
+  const m = new THREE.Mesh(new THREE.SphereGeometry(1, 12, 10), dropMat); m.visible = false; m.renderOrder = 4; scene.add(m);
+  BUB.push({ m, drop: i, dx: (hash(k + i * 9) - 0.5) * 36, dz: (hash(k * 5 + i) - 0.5) * 30, r: 1.8 + 3.0 * hash(k * 13 + i), d: 0.1 + hash(k * 2 + i * 3) * 0.7, v: 90 + 80 * hash(k + 70) });
+}
+
+// ------------------------------------------------------------------ soft contact shadows on the floor
+function blob(w, d, op) {
+  const c = document.createElement('canvas'); c.width = c.height = 256; const g = c.getContext('2d');
+  const gr = g.createRadialGradient(128, 128, 4, 128, 128, 128); gr.addColorStop(0, `rgba(30,34,30,${op})`); gr.addColorStop(0.55, `rgba(30,34,30,${op * 0.45})`); gr.addColorStop(1, 'rgba(30,34,30,0)');
+  g.fillStyle = gr; g.fillRect(0, 0, 256, 256);
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(w, d), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(c), transparent: true, depthWrite: false, toneMapped: false }));
+  m.rotation.x = -Math.PI / 2; scene.add(m); return m;
+}
+const bowlShadow = blob(330, 120, 0.42); bowlShadow.position.set(bowlX + 30, FLOOR + 0.3, AX.z + 10);
+const chairShadow = blob(380, 110, 0.32); { const p = at(790, 1054, AX.z); chairShadow.position.set(p.x + 10, FLOOR + 0.3, AX.z + 20); }
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(4000, 4000), new THREE.ShadowMaterial({ opacity: 0.08 }));
+floor.rotation.x = -Math.PI / 2; floor.position.y = FLOOR; floor.receiveShadow = true; scene.add(floor);
+
+// ------------------------------------------------------------------ timeline
+const ST = { sip: 0, end: 0 };
+const tl = gsap.timeline({ paused: true });
+const TOTAL = 20;
+tl.set({}, {}, TOTAL);
+// opening: slow drift of the camera around the bowl, headline builds like the poster
+tl.fromTo(CAM, { az: -5, elev: 7.5, dist: 1.06 }, { az: 3.5, elev: 5.5, dist: 1.0, duration: 13.4, ease: 'sine.inOut' }, 0);
+tl.fromTo('#l1', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, 0.2);
+tl.fromTo('#l2', { opacity: 0, scale: 0.86, filter: 'blur(10px)' }, { opacity: 1, scale: 1, filter: 'blur(0px)', duration: 0.6, ease: 'power3.out' }, 0.4);
+tl.fromTo('#the', { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.45, ease: 'power3.out' }, 0.75);
+tl.fromTo('#scr', { clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)', duration: 0.7, ease: 'power2.inOut' }, 0.95);
+const ul = document.getElementById('undp').getTotalLength();
+gsap.set('#undp', { strokeDasharray: ul, strokeDashoffset: ul });
+tl.to('#undp', { strokeDashoffset: 0, duration: 0.45, ease: 'power2.out' }, 1.5);
+tl.fromTo('#sub', { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, 1.7);
+tl.fromTo('.sv', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.45, stagger: 0.09, ease: 'back.out(1.8)' }, 1.9);
+tl.fromTo('#rule', { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: 'power2.inOut' }, 2.3);
+tl.fromTo('.si', { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, duration: 0.35, stagger: 0.06, ease: 'back.out(2.2)' }, 2.5);
+tl.fromTo('#bar', { scaleY: 0 }, { scaleY: 1, duration: 0.3 }, 2.85);
+tl.fromTo('#logo', { opacity: 0, x: 20 }, { opacity: 1, x: 0, duration: 0.45, ease: 'power2.out' }, 2.95);
+// crow 1: dip, release, straighten, next pebble
+DROPS.forEach((t, i) => {
+  tl.to(crow1.rotation, { z: deg(-5), duration: 0.35, ease: 'power2.inOut' }, t - 0.35);
+  tl.to(crow1.rotation, { z: 0, duration: 0.6, ease: 'power2.inOut' }, t + 0.1);
+  tl.set(held, { visible: false }, t);
+  if (i < DROPS.length - 1) {
+    tl.set(held, { visible: true }, t + 1.3);
+    tl.fromTo(held.scale, { x: 0.2, y: 0.2, z: 0.2 }, { x: 1, y: 1, z: 1, duration: 0.35, ease: 'back.out(2)' }, t + 1.3);
+    tl.to(crow1.position, { y: '+=5', duration: 0.18, yoyo: true, repeat: 1, ease: 'sine.inOut' }, t + 1.2);
+  }
+});
+// crow 2: continuous lazy sipping (tiny bob) + water going up the straw
+tl.to(ST, { sip: 13.5, duration: 13.5, ease: 'none' }, 0);
+// ending: the scene darkens into the brand black, the logo travels to the centre, spins and grows
+const E0 = 13.6;
+tl.to(['#head', '#und', '#sub', '#svc', '#rule', '#soc', '#bar'], { opacity: 0, duration: 0.6, ease: 'power2.in' }, E0);
+tl.to('#dark', { opacity: 1, duration: 0.9, ease: 'power2.inOut' }, E0 + 0.1);
+tl.to(CAM, { dist: 0.9, elev: 9, duration: 1.0, ease: 'power2.in' }, E0);
+tl.to(ST, { end: 1, duration: 0.9, ease: 'power2.inOut' }, E0 + 0.1);
+tl.to('#logo', { left: 540 - 115, top: 760 - 40, scale: 3.6, rotationY: 360, duration: 1.7, ease: 'power3.inOut' }, E0 + 0.2);
+tl.to('#logo .plate', { opacity: 0, duration: 1.0, ease: 'power2.inOut' }, E0 + 0.5);
+tl.fromTo('#glow', { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 1.2, ease: 'power2.out' }, E0 + 1.2);
+tl.fromTo('#cline', { scaleX: 0, opacity: 1 }, { scaleX: 1, duration: 0.6, ease: 'power2.out' }, E0 + 1.95);
+tl.fromTo('#c1', { opacity: 0, y: 40, filter: 'blur(10px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.5, ease: 'power3.out' }, E0 + 2.1);
+tl.fromTo('#c2', { opacity: 0, y: 40, filter: 'blur(10px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.5, ease: 'power3.out' }, E0 + 2.3);
+tl.fromTo('.crow .ic', { scale: 0.3 }, { scale: 1, duration: 0.45, stagger: 0.08, ease: 'back.out(2.4)' }, E0 + 2.1);
+tl.fromTo('#logo', { y: 0 }, { y: -8, duration: 3.6, ease: 'sine.inOut' }, E0 + 2.0);
+gsap.set(['#dark', '#glow', '#cline', '#contact'], { opacity: 0 });
+tl.set('#contact', { opacity: 1 }, E0 + 2.0);
+gsap.set(['#c1', '#c2'], { opacity: 0 });
+
+// icons
+const PHONE = '<svg viewBox="0 0 24 24"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1z"/></svg>';
+const GLOBE = '<svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm6.9 6h-3a15.6 15.6 0 0 0-1.4-3.6A8 8 0 0 1 18.9 8zM12 4a14 14 0 0 1 1.9 4h-3.8A14 14 0 0 1 12 4zM4.3 14a8.2 8.2 0 0 1 0-4h3.4a16.5 16.5 0 0 0 0 4zm.8 2h3a15.6 15.6 0 0 0 1.4 3.6A8 8 0 0 1 5.1 16zm3-8h-3a8 8 0 0 1 4.4-3.6A15.6 15.6 0 0 0 8.1 8zM12 20a14 14 0 0 1-1.9-4h3.8A14 14 0 0 1 12 20zm2.3-6H9.7a14.7 14.7 0 0 1 0-4h4.6a14.7 14.7 0 0 1 0 4zm.3 5.6a15.6 15.6 0 0 0 1.4-3.6h3a8 8 0 0 1-4.4 3.6zm1.7-5.6a16.5 16.5 0 0 0 0-4h3.4a8.2 8.2 0 0 1 0 4z"/></svg>';
+document.querySelectorAll('.ic.ph').forEach(e => e.innerHTML = PHONE);
+document.querySelectorAll('.ic.gl').forEach(e => e.innerHTML = GLOBE);
+const svgs = {};
+for (const n of ['facebook', 'instagram', 'whatsapp', 'tiktok', 'youtube', 'x']) svgs[n] = (await (await fetch(`assets/${n}.svg`)).text()).replace(/<title>.*?<\/title>/, '').replace(/role="img"/, '');
+document.querySelectorAll('.si').forEach(e => e.innerHTML = svgs[e.dataset.i]);
+document.querySelectorAll('.ic.wa').forEach(e => e.innerHTML = svgs.whatsapp);
+
+// ------------------------------------------------------------------ per-frame state
+const G = 1500;                                               // px/s^2 (stylised gravity)
+const tmp = new THREE.Vector3();
+function frame(t) {
+  // water level: rises a little after each pebble lands
+  let lvl = wy(826);
+  for (const p of PEB) lvl += 8.5 * gsap.parseEase('power2.out')(THREE.MathUtils.clamp((t - p.userData.t - 0.45) / 1.2, 0, 1));
+  W.level = lvl;
+  // pebbles: fall from the beak, splash, sink with drag, settle on the stones
+  W.ripples.length = 0;
+  for (const [i, p] of PEB.entries()) {
+    const u = p.userData, a = t - u.t;
+    const start = crow1.localToWorld(tmp.copy(BEAK));
+    if (a < 0) { p.visible = false; continue; }
+    p.visible = true;
+    const hitT = Math.sqrt(2 * Math.max(start.y - W.level, 1) / G);
+    if (a < hitT) {
+      p.position.set(start.x + (u.rest.x - start.x) * 0.08 * a / hitT, start.y - 0.5 * G * a * a, start.z);
+    } else {
+      const b = a - hitT, sinkT = 0.95;
+      const k = THREE.MathUtils.clamp(b / sinkT, 0, 1), e = 1 - Math.pow(1 - k, 2.2);
+      const sx = start.x + (u.rest.x - start.x) * 0.08;
+      p.position.set(sx + (u.rest.x - sx) * e, W.level + (u.rest.y - W.level) * e, start.z + (u.rest.z - start.z) * e);
+    }
+    p.rotation.set(a * 2.2 + u.spin, a * 1.3, a * 0.7);
+    const sx = start.x - bowlX, sz = start.z - AX.z;
+    W.ripples.push({ t: u.t + hitT, x: sx, z: sz, a: 4.2 });
+    u.hit = u.t + hitT; u.hx = start.x; u.hz = start.z;
+  }
+  updateSurface(t);
+  // splash droplets (crown + a few tall jets)
+  for (const s of SPL) {
+    const u = PEB[s.drop].userData, a = t - (u.hit ?? 99);
+    const life = s.crown ? 0.7 : 0.9;
+    if (a < 0 || a > life) { s.m.visible = false; continue; }
+    s.m.visible = true;
+    const sp = s.crown ? s.sp : s.sp * 0.3, up = s.crown ? s.up * 0.75 : s.up * 1.25;
+    const y = W.level + up * a - 0.5 * G * 1.1 * a * a;
+    if (y < W.level - 1) { s.m.visible = false; continue; }
+    s.m.position.set(u.hx + Math.cos(s.a) * sp * a * 0.9, y, u.hz + Math.sin(s.a) * sp * a * 0.6);
+    const r = s.r * (1 - 0.4 * a / life); s.m.scale.set(r, r * 1.25, r);
+  }
+  // crown sheet: a short-lived thin water wall rising and opening up around the entry point
+  CROWNS.forEach((m, i) => {
+    const u = PEB[i].userData, a = t - (u.hit ?? 99), life = 0.5;
+    if (a < 0 || a > life) { m.visible = false; return; }
+    m.visible = true; const k = a / life;
+    const r = 12 + 38 * Math.sqrt(k), hgt = 52 * Math.sin(Math.PI * Math.min(k * 1.25, 1));
+    m.scale.set(r, Math.max(hgt, 0.1), r);
+    m.position.set(u.hx, W.level + hgt / 2, u.hz);
+    m.material.uniforms.uFade.value = 1 - k * k;
+  });
+  // bubbles rising behind the sinking pebble
+  for (const b of BUB) {
+    const u = PEB[b.drop].userData, a = t - (u.hit ?? 99) - b.d * 0.6;
+    if (a < 0 || a > 2.2) { b.m.visible = false; continue; }
+    const y0 = W.level - 30 - b.d * 80, y = y0 + b.v * a;
+    if (y > W.level - 2) { b.m.visible = false; continue; }
+    b.m.visible = true;
+    b.m.position.set(u.hx + b.dx + Math.sin(a * 7 + b.dx) * 2.5, y, u.hz + b.dz);
+    b.m.scale.setScalar(b.r);
+  }
+  // crow 2 sipping: a gentle bob of the whole character and water slugs running up the straw
+  const sp = ST.sip;
+  crow2.rotation.z = deg(0.5) * Math.sin(sp * 1.6);
+  crow2.position.y += 0;
+  SIPS.forEach((m, k) => {
+    const ph = ((sp * 0.42 + k / 3) % 1);
+    const u = 0.04 + ph * 0.9;
+    m.position.copy(strawCurve.getPointAt(u));
+    const inWater = m.position.y < W.level;
+    m.material.opacity = sp > 0.3 && sp < 13.4 && !inWater ? 0.55 * Math.sin(Math.PI * ph) : 0;
+  });
+  // fade the 3D scene into the brand black during the ending
+  const e = ST.end;
+  scene.background.setRGB(0.95 * (1 - e) + 0.008 * e, 0.953 * (1 - e) + 0.047 * e, 0.95 * (1 - e) + 0.024 * e).convertSRGBToLinear();
+}
+const bgBase = new THREE.Color(0xf2f3f2);
+const crow2Home = crow2.position.clone(), crow1Home = crow1.position.clone();
+function draw(t) {
+  frame(t);
+  placeCamera();
+  renderer.render(scene, camera);
+}
+window.renderAt = t => { tl.seek(t, false); draw(t); return true; };
+await document.fonts.ready;
+window.renderAt(0);
+window.HITS = () => { window.renderAt(13); return PEB.map(p => p.userData.hit); };
+window.ready = true;
+</script></body></html>
