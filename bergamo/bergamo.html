@@ -1,0 +1,186 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- University of Bergamo - Admissions 2027-28 (OrbisNexa Consultancy).
+     A clean admission poster that builds itself up: header (logo, name, Italy flag) -> announcement ->
+     five programme fields one by one -> dates (deadline highlighted) -> MOI -> OrbisNexa contact footer.
+     Ends as a complete, readable poster. -->
+<style>
+  @font-face { font-family: P; font-weight: 400; src: url(assets/poppins-latin-400-normal.woff2); }
+  @font-face { font-family: P; font-weight: 500; src: url(assets/poppins-latin-500-normal.woff2); }
+  @font-face { font-family: P; font-weight: 600; src: url(assets/poppins-latin-600-normal.woff2); }
+  @font-face { font-family: P; font-weight: 700; src: url(assets/poppins-latin-700-normal.woff2); }
+  @font-face { font-family: P; font-weight: 800; src: url(assets/poppins-latin-800-normal.woff2); }
+  @font-face { font-family: M; font-weight: 800; src: url(assets/montserrat-latin-800-normal.woff2); }
+  @font-face { font-family: M; font-weight: 900; src: url(assets/montserrat-latin-900-normal.woff2); }
+  :root { --navy: #0d2147; --navy2: #14336b; --green: #009246; --red: #ce2b37; --ink: #1f2b45; --soft: #5b6782; }
+  html, body { margin: 0; background: #fff; }
+  #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; font-family: P, sans-serif; color: var(--ink);
+           background: linear-gradient(180deg, #eaf3fd 0%, #f7fafe 22%, #ffffff 48%, #f8fafd 100%); }
+  .abs { position: absolute; }
+  /* faint tricolour ribbon at the very bottom and a thin one under the header */
+  #rib { left: -40px; bottom: 0; width: 1160px; height: 356px; }
+  /* header */
+  #ulogo { left: 70px; top: 86px; width: 168px; height: 168px; }
+  #ulogo img { width: 100%; height: 100%; object-fit: contain; }
+  #uname { left: 262px; top: 108px; }
+  #uname .a { font-family: M; font-weight: 800; font-size: 60px; line-height: 1; color: var(--navy); letter-spacing: .5px; }
+  #uname .b { font-family: M; font-weight: 800; font-size: 60px; line-height: 1.12; color: var(--navy); }
+  #uname .c { margin-top: 10px; font-size: 28px; font-weight: 600; letter-spacing: 9px; color: var(--soft); }
+  #flag { left: 852px; top: 96px; width: 170px; height: 114px; }
+  #hline { left: 70px; top: 300px; width: 940px; height: 6px; border-radius: 3px; overflow: hidden; display: flex; transform-origin: 0 50%; }
+  #hline i { flex: 1; } #hline i:nth-child(1) { background: var(--green); } #hline i:nth-child(2) { background: #e8ecf2; } #hline i:nth-child(3) { background: var(--red); }
+  /* announcement */
+  #adm { left: 0; width: 1080px; top: 350px; text-align: center; font-family: M; font-weight: 900; font-size: 92px; color: var(--navy); letter-spacing: 0px; white-space: nowrap; line-height: 1; }
+  #year { left: 540px; top: 470px; transform: translateX(-50%); padding: 14px 42px; border-radius: 40px; background: linear-gradient(90deg, #0d2147, #1b4a96);
+          color: #fff; font-size: 42px; font-weight: 700; letter-spacing: 2px; white-space: nowrap; box-shadow: 0 14px 30px rgba(13,33,71,.22); }
+  #year span { color: #ffd15c; }
+  /* programmes */
+  #prog { left: 70px; top: 600px; width: 940px; }
+  #ptitle { font-size: 34px; font-weight: 700; color: var(--navy); letter-spacing: 5px; display: flex; align-items: center; gap: 16px; }
+  #ptitle svg { width: 46px; height: 46px; }
+  .row { margin-top: 14px; height: 78px; border-radius: 22px; background: #fff; display: flex; align-items: center; gap: 22px; padding: 0 28px;
+         box-shadow: 0 6px 20px rgba(13,33,71,.08), 0 0 0 1.5px rgba(13,33,71,.06); }
+  .row .n { width: 50px; height: 50px; border-radius: 50%; background: var(--navy); color: #fff; font-weight: 700; font-size: 26px; display: grid; place-items: center; flex: 0 0 50px; }
+  .row .t { font-size: 40px; font-weight: 600; color: var(--ink); }
+  .row .bar { margin-left: auto; width: 8px; height: 42px; border-radius: 4px; }
+  /* dates + MOI */
+  #dates { left: 70px; top: 1166px; width: 940px; height: 220px; border-radius: 28px; background: #fff;
+           box-shadow: 0 10px 28px rgba(13,33,71,.10), 0 0 0 1.5px rgba(13,33,71,.06); }
+  .dcol { position: absolute; top: 0; width: 470px; height: 220px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+  .dcol .l { font-size: 27px; font-weight: 600; letter-spacing: 3px; color: var(--soft); }
+  .dcol .d { margin-top: 10px; font-family: M; font-weight: 800; font-size: 54px; color: var(--navy); line-height: 1; }
+  .dcol .y { margin-top: 6px; font-size: 34px; font-weight: 600; color: var(--navy); }
+  #d2 .d, #d2 .y { color: var(--red); }
+  #dsep { left: 469px; top: 40px; width: 2px; height: 150px; background: #e3e8f0; }
+  #dicon { left: 445px; top: -26px; width: 52px; height: 52px; border-radius: 50%; background: var(--navy); display: grid; place-items: center; }
+  #dicon svg { width: 28px; height: 28px; }
+  #moi { left: 70px; top: 1414px; width: 940px; height: 90px; border-radius: 45px; background: linear-gradient(90deg, #e9f6ef, #f6fbf8);
+         box-shadow: 0 0 0 2px rgba(0,146,70,.25); display: flex; align-items: center; justify-content: center; gap: 18px; }
+  #moi svg { width: 52px; height: 52px; }
+  #moi .t { font-size: 36px; font-weight: 600; color: var(--ink); }
+  #moi b { color: var(--green); font-weight: 800; }
+  /* contact */
+  #foot { left: 0; top: 1570px; width: 1080px; height: 350px; }
+  #olog { left: 84px; top: 1684px; width: 206px; }
+  #fdiv { left: 322px; top: 1680px; width: 2px; height: 206px; background: #d5dcea; }
+  #cap { left: 356px; top: 1672px; font-size: 26px; font-weight: 600; letter-spacing: 5px; color: var(--green); }
+  .num { left: 356px; display: flex; align-items: center; gap: 12px; }
+  .num b { font-size: 48px; font-weight: 700; color: var(--navy); letter-spacing: .5px; line-height: 1; margin-left: 6px; }
+  .ic { width: 50px; height: 50px; border-radius: 50%; position: relative; flex: 0 0 50px; background: linear-gradient(145deg, #1b4a96, #0d2147); }
+  .ic svg { position: absolute; left: 13px; top: 13px; width: 24px; height: 24px; fill: #fff; }
+  .ic.wa { background: #25d366; box-shadow: none; }
+  #n1 { top: 1712px; } #n2 { top: 1776px; }
+  #addr { left: 356px; top: 1842px; display: flex; align-items: center; gap: 14px; }
+  #addr .t { font-size: 24px; white-space: nowrap; font-weight: 500; color: var(--soft); }
+  .ch { display: inline-block; white-space: pre; }
+</style></head>
+<body><div id="stage">
+  <svg id="rib" class="abs" viewBox="0 0 1160 330" preserveAspectRatio="none">
+    <defs><linearGradient id="fg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#14336b"/><stop offset="1" stop-color="#0a1a3a"/></linearGradient></defs>
+    <path id="rg" d="M0 34 C 300 -6, 760 70, 1160 18 L 1160 48 C 760 100, 300 24, 0 64 Z" fill="#009246"/>
+    <path id="rw" d="M0 64 C 300 24, 760 100, 1160 48 L 1160 64 C 760 116, 300 40, 0 80 Z" fill="#ffffff"/>
+    <path id="rr" d="M0 80 C 300 40, 760 116, 1160 64 L 1160 92 C 760 144, 300 68, 0 108 Z" fill="#ce2b37"/>
+    <path id="rn" d="M0 108 C 300 68, 760 144, 1160 92 L 1160 330 L 0 330 Z" fill="#f1f5fb"/>
+  </svg>
+  <div id="ulogo" class="abs"><img id="uimg" src="assets/unibg_logo.png"></div>
+  <div id="uname" class="abs"><div class="a">UNIVERSITY</div><div class="b">OF BERGAMO</div><div class="c">ITALY</div></div>
+  <canvas id="flag" class="abs" width="340" height="228"></canvas>
+  <div id="hline" class="abs"><i></i><i></i><i></i></div>
+  <div id="adm" class="abs split">ADMISSIONS OPEN</div>
+  <div id="year" class="abs">ACADEMIC YEAR <span>2027–28</span></div>
+  <div id="prog" class="abs">
+    <div id="ptitle"><svg viewBox="0 0 24 24"><path d="M12 3 1 9l11 6 9-4.9V17h2V9L12 3zm-6.8 9.2v4.1L12 20l6.8-3.7v-4.1L12 16l-6.8-3.8z" fill="#0d2147"/></svg>MASTER'S PROGRAMMES</div>
+    <div class="row"><span class="n">1</span><span class="t">Business Programs</span><i class="bar" style="background:#009246"></i></div>
+    <div class="row"><span class="n">2</span><span class="t">Psychology Programs</span><i class="bar" style="background:#cfd6e2"></i></div>
+    <div class="row"><span class="n">3</span><span class="t">International Programs</span><i class="bar" style="background:#ce2b37"></i></div>
+    <div class="row"><span class="n">4</span><span class="t">Tourism Programs</span><i class="bar" style="background:#009246"></i></div>
+    <div class="row"><span class="n">5</span><span class="t">Engineering Programs</span><i class="bar" style="background:#ce2b37"></i></div>
+  </div>
+  <div id="dates" class="abs">
+    <div id="dicon" class="abs"><svg viewBox="0 0 24 24"><path d="M7 2v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7zm-2 8h14v10H5V10zm2 2v2h2v-2H7zm4 0v2h2v-2h-2zm4 0v2h2v-2h-2z" fill="#fff"/></svg></div>
+    <div id="d1" class="dcol" style="left:0"><div class="l">APPLICATIONS OPEN</div><div class="d">26 NOV</div><div class="y">2026</div></div>
+    <div id="dsep" class="abs"></div>
+    <div id="d2" class="dcol" style="left:470px"><div class="l">APPLICATION DEADLINE</div><div class="d">15 JAN</div><div class="y">2027</div></div>
+  </div>
+  <div id="moi" class="abs"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#009246"/><path d="M6.8 12.4l3.4 3.4 7-7.3" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span class="t"><b>MOI</b> (Medium of Instruction) Accepted</span></div>
+  <img id="olog" class="abs" src="assets/logo.png">
+  <div id="fdiv" class="abs"></div>
+  <div id="cap" class="abs">CALL / WHATSAPP</div>
+  <div id="n1" class="abs num"><span class="ic ph"></span><span class="ic wa"></span><b>+92 370 0035896</b></div>
+  <div id="n2" class="abs num"><span class="ic ph"></span><span class="ic wa"></span><b>+92 312 4222204</b></div>
+  <div id="addr" class="abs"><span class="ic pin"></span><span class="t">Iqbal, 8 Allama, Raza Block Town, Lahore, Pakistan</span></div>
+</div>
+<script src="assets/gsap.min.js"></script>
+<script>
+const $ = s => document.querySelector(s);
+const PHONE = '<svg viewBox="0 0 24 24"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1z"/></svg>';
+const PIN = '<svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>';
+const WA = `<svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>`;
+document.querySelectorAll('.ic.ph').forEach(e => e.innerHTML = PHONE);
+document.querySelectorAll('.ic.pin').forEach(e => e.innerHTML = PIN);
+document.querySelectorAll('.ic.wa').forEach(e => e.innerHTML = WA);
+document.querySelectorAll('.split').forEach(el => { const t = el.textContent; el.textContent = ''; for (const c of t) { const s = document.createElement('span'); s.className = 'ch'; s.textContent = c; el.appendChild(s); } });
+
+// waving Italy flag (canvas, vertical strips displaced by a travelling sine)
+const fc = $('#flag').getContext('2d');
+let wave = 0;
+function drawFlag(t) {
+  const W = 340, H = 228, cols = ['#009246', '#f4f5f0', '#ce2b37'];
+  fc.clearRect(0, 0, W, H);
+  const n = 85, pw = 300 / n;
+  for (let i = 0; i < n; i++) {
+    const x = 20 + i * pw, u = i / n;
+    const amp = 9 * u * wave, dy = Math.sin(u * 5.2 - t * 5.0) * amp;
+    const shade = 1 - 0.09 * Math.cos(u * 5.2 - t * 5.0) * u * wave;
+    fc.fillStyle = cols[Math.min(2, Math.floor(u * 3))];
+    fc.save(); fc.globalAlpha = 1;
+    fc.fillRect(x, 24 + dy, pw + 0.6, 180);
+    fc.fillStyle = `rgba(0,0,0,${(1 - shade) * 1.3})`; fc.fillRect(x, 24 + dy, pw + 0.6, 180);
+    fc.restore();
+  }
+}
+
+const tl = gsap.timeline({ paused: true });
+const DUR = 21.5;
+tl.set({}, {}, DUR);
+const F = { w: 0 };
+// 1. header (0 - 2.6)
+tl.fromTo('#rib', { y: 260 }, { y: 0, duration: 1.1, ease: 'power3.out' }, 0);
+tl.fromTo('#ulogo', { opacity: 0, scale: 0.6, rotation: -12 }, { opacity: 1, scale: 1, rotation: 0, duration: 0.8, ease: 'back.out(1.6)' }, 0.25);
+tl.fromTo('#uname > div', { opacity: 0, x: -40, filter: 'blur(8px)' }, { opacity: 1, x: 0, filter: 'blur(0px)', duration: 0.55, stagger: 0.14, ease: 'power3.out' }, 0.55);
+tl.fromTo('#flag', { opacity: 0, scale: 0.4, transformOrigin: '0% 50%' }, { opacity: 1, scale: 1, duration: 0.6, ease: 'power3.out' }, 1.0);
+tl.fromTo(F, { w: 0 }, { w: 1, duration: 1.2, ease: 'power1.out' }, 1.0);
+tl.fromTo('#hline', { scaleX: 0 }, { scaleX: 1, duration: 0.8, ease: 'power3.inOut' }, 1.5);
+// 2. announcement (2.4 - 4.6)
+tl.fromTo('#adm .ch', { opacity: 0, y: 50, filter: 'blur(10px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.4, stagger: 0.04, ease: 'power3.out' }, 2.4);
+tl.fromTo('#year', { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.55, ease: 'back.out(1.8)' }, 3.3);
+// 3. programmes (4.8 - 8.6)
+tl.fromTo('#ptitle', { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.45, ease: 'power2.out' }, 4.8);
+document.querySelectorAll('.row').forEach((r, k) => {
+  const t = 5.3 + k * 0.62;
+  tl.fromTo(r, { opacity: 0, x: 120 }, { opacity: 1, x: 0, duration: 0.5, ease: 'power3.out' }, t);
+  tl.fromTo(r.querySelector('.n'), { scale: 0 }, { scale: 1, duration: 0.45, ease: 'back.out(2.4)' }, t + 0.12);
+});
+// 4. dates (9.0 - 11.4): deadline gets a soft pulse
+tl.fromTo('#dates', { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.55, ease: 'power3.out' }, 9.0);
+tl.fromTo('#dicon', { scale: 0 }, { scale: 1, duration: 0.45, ease: 'back.out(2.4)' }, 9.25);
+tl.fromTo('#d1 > *', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.35, stagger: 0.1 }, 9.4);
+tl.fromTo('#d2 > *', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.35, stagger: 0.1 }, 9.9);
+tl.fromTo('#d2 .d', { scale: 1 }, { scale: 1.08, duration: 0.35, yoyo: true, repeat: 1, ease: 'sine.inOut' }, 10.6);
+// 5. MOI (11.4 - 12.6)
+tl.fromTo('#moi', { opacity: 0, scale: 0.85 }, { opacity: 1, scale: 1, duration: 0.5, ease: 'back.out(1.8)' }, 11.4);
+tl.fromTo('#moi svg', { scale: 0, rotation: -90 }, { scale: 1, rotation: 0, duration: 0.5, ease: 'back.out(2.4)' }, 11.6);
+// 6. contact (12.8 - 15)
+tl.fromTo('#olog', { opacity: 0, scale: 0.7, rotation: -10 }, { opacity: 1, scale: 1, rotation: 0, duration: 0.7, ease: 'back.out(1.6)' }, 12.8);
+tl.fromTo('#fdiv', { scaleY: 0 }, { scaleY: 1, duration: 0.5, ease: 'power2.out' }, 13.1);
+tl.fromTo('#cap', { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.4 }, 13.3);
+tl.fromTo('.num', { opacity: 0, x: -30, filter: 'blur(8px)' }, { opacity: 1, x: 0, filter: 'blur(0px)', duration: 0.45, stagger: 0.16, ease: 'power3.out' }, 13.5);
+tl.fromTo('.num .ic', { scale: 0.3 }, { scale: 1, duration: 0.45, stagger: 0.06, ease: 'back.out(2.2)' }, 13.5);
+tl.fromTo('#addr', { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.45, ease: 'power3.out' }, 13.95);
+// gentle life while holding: slow breathing on the deadline
+tl.fromTo('#d2 .d', { scale: 1 }, { scale: 1.04, duration: 1.2, yoyo: true, repeat: 4, ease: 'sine.inOut' }, 15.5);
+
+window.renderAt = t => { tl.seek(t, false); wave = F.w; drawFlag(t); return true; };
+window.ready = (async () => { await document.fonts.ready; await Promise.all([...document.images].map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; }))); return true; })();
+</script></body></html>
