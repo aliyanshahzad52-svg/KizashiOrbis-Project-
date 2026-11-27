@@ -23,26 +23,26 @@
   #spill { right: 46px; top: 64px; padding: 10px 34px; border-radius: 16px; background: linear-gradient(90deg, #ee7c70, #e2665c);
            color: #fff; font-family: A; font-size: 50px; letter-spacing: 1px; box-shadow: 0 10px 24px rgba(226,102,92,.25); }
   /* left headline */
-  #mbbs { left: 40px; top: 238px; font-family: A; font-size: 172px; line-height: 1; }
+  #mbbs { left: 44px; top: 250px; font-family: A; font-size: 150px; line-height: 1; }
   #mbbs .ch { background: linear-gradient(180deg, #5d9cf5, #2b6ae6 70%); -webkit-background-clip: text; background-clip: text; color: transparent; }
-  #in { left: 64px; top: 376px; font-family: S; font-size: 136px; color: var(--navy); line-height: 1; }
-  #china { left: 40px; top: 444px; font-family: A; font-size: 160px; line-height: 1; }
+  #in { left: 70px; top: 372px; font-family: S; font-size: 118px; color: var(--navy); line-height: 1; }
+  #china { left: 44px; top: 432px; font-family: A; font-size: 138px; line-height: 1; }
   #china .ch { background: linear-gradient(180deg, #f08a80, #dd5a50 70%); -webkit-background-clip: text; background-clip: text; color: transparent; }
-  #star { left: 278px; top: 436px; width: 52px; }
+  #star { left: 250px; top: 424px; width: 46px; }
   /* right headline */
-  #your { right: 40px; top: 238px; font-family: A; font-size: 152px; line-height: 1; color: var(--navy); text-align: right; }
-  #global { right: 40px; top: 394px; font-family: A; font-size: 152px; line-height: 1; text-align: right; }
+  #your { right: 44px; top: 250px; font-family: A; font-size: 132px; line-height: 1; color: var(--navy); text-align: right; }
+  #global { right: 44px; top: 392px; font-family: A; font-size: 120px; line-height: 1; text-align: right; }
   #global .ch { background: linear-gradient(180deg, #f6cd78, #eaa93d 75%); -webkit-background-clip: text; background-clip: text; color: transparent; }
-  #gate { right: 34px; top: 520px; font-family: S; font-size: 118px; color: var(--navy); line-height: 1; }
+  #gate { right: 40px; top: 498px; font-family: S; font-size: 104px; color: var(--navy); line-height: 1; }
   /* centre */
-  #flag { left: 600px; top: 640px; width: 440px; height: 270px; }
+  #flag { left: 610px; top: 628px; width: 400px; height: 245px; opacity: .88; }
   #land { left: 0; top: 800px; width: 1080px; height: 260px; }
-  #grad { left: 300px; top: 250px; width: 480px; height: 790px; object-fit: cover; object-position: 50% 0;
-          -webkit-mask-image: linear-gradient(180deg, #000 68%, transparent 92%); mask-image: linear-gradient(180deg, #000 68%, transparent 92%); }
+  #grad { left: 366px; top: 300px; width: 348px; height: 720px; object-fit: cover; object-position: 50% 0;
+          -webkit-mask-image: linear-gradient(180deg, #000 68%, transparent 92%), linear-gradient(90deg, transparent 0%, #000 12%, #000 88%, transparent 100%); -webkit-mask-composite: source-in; mask-image: linear-gradient(180deg, #000 68%, transparent 92%), linear-gradient(90deg, transparent 0%, #000 12%, #000 88%, transparent 100%); mask-composite: intersect; }
   #veil { left: 0; top: 820px; width: 1080px; height: 260px; background: linear-gradient(180deg, rgba(246,248,253,0), rgba(246,248,253,.9) 55%, #f6f8fd); }
-  #glow { left: 270px; top: 300px; width: 540px; height: 700px; border-radius: 50%;
+  #glow { left: 300px; top: 330px; width: 480px; height: 640px; border-radius: 50%;
           background: radial-gradient(closest-side, rgba(93,156,245,.18), rgba(93,156,245,0)); }
-  #plane { left: 0; top: 0; width: 230px; }
+  #plane { left: 0; top: 0; width: 200px; }
   /* bottom */
   #world { left: 0; width: 1080px; top: 1066px; text-align: center; font-size: 42px; font-weight: 600; letter-spacing: 4px; color: var(--navy); }
   #jpill { left: 540px; top: 1124px; transform: translateX(-50%); padding: 10px 40px; border-radius: 34px; white-space: nowrap;
@@ -146,14 +146,14 @@ tl.fromTo('#land, #veil', { opacity: 0, y: 80 }, { opacity: 1, y: 0, duration: .
 tl.fromTo(FL, { p: 0, w: 0 }, { p: 1, w: 1, duration: 1.1, ease: 'power2.out' }, 4.2);
 tl.fromTo('#glow', { opacity: 0, scale: .6 }, { opacity: 1, scale: 1, duration: .9, ease: 'power2.out' }, 4.5);
 tl.fromTo('#grad', { opacity: 0, y: 90, filter: 'blur(10px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.0, ease: 'power3.out' }, 4.6);
-tl.fromTo(P, { x: 1120, y: 1000 }, { x: 600, y: 900, duration: 1.4, ease: 'power2.out' }, 5.3);
+tl.fromTo(P, { x: 1120, y: 920 }, { x: 790, y: 846, duration: 1.4, ease: 'power2.out' }, 5.3);
 tl.fromTo('#world .ch', { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: .3, stagger: .03, ease: 'power2.out' }, 6.0);
 tl.fromTo('#jpill', { opacity: 0, scale: .7 }, { opacity: 1, scale: 1, duration: .5, ease: 'back.out(1.8)' }, 6.7);
 tl.fromTo('#foot, #fdiv', { opacity: 0 }, { opacity: 1, duration: .4 }, 7.1);
 tl.fromTo('#fl, #fr', { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: .5, stagger: .14, ease: 'power3.out' }, 7.2);
 // gentle life while the finished poster holds
 tl.fromTo('#jpill', { scale: 1 }, { scale: 1.04, duration: .8, yoyo: true, repeat: 5, ease: 'sine.inOut' }, 8.2);
-tl.to(P, { y: 892, duration: 2, yoyo: true, repeat: 2, ease: 'sine.inOut' }, 6.7);
+tl.to(P, { y: 838, duration: 2, yoyo: true, repeat: 2, ease: 'sine.inOut' }, 6.7);
 
 window.renderAt = t => {
   tl.seek(t, false); drawFlag(t);
