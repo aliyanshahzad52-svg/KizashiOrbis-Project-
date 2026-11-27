@@ -1,0 +1,164 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- OrbisNexa "MBBS in China" animated poster (1080x1350). Soft, light palette; elements arrive one by one
+     and assemble into the complete poster, in the same build-up style as the Study in Italy / France posts. -->
+<style>
+  @font-face { font-family: P; font-weight: 400; src: url(assets/poppins-latin-400-normal.woff2); }
+  @font-face { font-family: P; font-weight: 500; src: url(assets/poppins-latin-500-normal.woff2); }
+  @font-face { font-family: P; font-weight: 600; src: url(assets/poppins-latin-600-normal.woff2); }
+  @font-face { font-family: P; font-weight: 700; src: url(assets/poppins-latin-700-normal.woff2); }
+  @font-face { font-family: A; src: url(assets/anton-latin-400-normal.woff2); }
+  @font-face { font-family: S; src: url(assets/great-vibes-latin-400-normal.woff2); }
+  :root { --navy: #1b2350; --blue: #2b6ae6; --sky: #5d9cf5; --coral: #e2665c; --gold: #f2bd57; --soft: #5a6481; }
+  html, body { margin: 0; background: #f5f8fd; }
+  #stage { position: relative; width: 1080px; height: 1350px; overflow: hidden; font-family: P, sans-serif; color: var(--navy);
+           background-color: #f6f8fd;
+           background-image: radial-gradient(900px 700px at 50% 40%, rgba(255,255,255,.95), rgba(255,255,255,0) 70%),
+             linear-gradient(rgba(43,106,230,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(43,106,230,.05) 1px, transparent 1px);
+           background-size: auto, 40px 40px, 40px 40px; }
+  .abs { position: absolute; }
+  .ch { display: inline-block; white-space: pre; }
+  /* top bar */
+  #logo { left: 46px; top: 30px; width: 178px; }
+  #spill { right: 46px; top: 64px; padding: 10px 34px; border-radius: 16px; background: linear-gradient(90deg, #ee7c70, #e2665c);
+           color: #fff; font-family: A; font-size: 50px; letter-spacing: 1px; box-shadow: 0 10px 24px rgba(226,102,92,.25); }
+  /* left headline */
+  #mbbs { left: 40px; top: 238px; font-family: A; font-size: 172px; line-height: 1; }
+  #mbbs .ch { background: linear-gradient(180deg, #5d9cf5, #2b6ae6 70%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  #in { left: 64px; top: 376px; font-family: S; font-size: 136px; color: var(--navy); line-height: 1; }
+  #china { left: 40px; top: 444px; font-family: A; font-size: 160px; line-height: 1; }
+  #china .ch { background: linear-gradient(180deg, #f08a80, #dd5a50 70%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  #star { left: 278px; top: 436px; width: 52px; }
+  /* right headline */
+  #your { right: 40px; top: 238px; font-family: A; font-size: 152px; line-height: 1; color: var(--navy); text-align: right; }
+  #global { right: 40px; top: 394px; font-family: A; font-size: 152px; line-height: 1; text-align: right; }
+  #global .ch { background: linear-gradient(180deg, #f6cd78, #eaa93d 75%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  #gate { right: 34px; top: 520px; font-family: S; font-size: 118px; color: var(--navy); line-height: 1; }
+  /* centre */
+  #flag { left: 600px; top: 640px; width: 440px; height: 270px; }
+  #land { left: 0; top: 800px; width: 1080px; height: 260px; }
+  #grad { left: 300px; top: 250px; width: 480px; height: 790px; object-fit: cover; object-position: 50% 0;
+          -webkit-mask-image: linear-gradient(180deg, #000 68%, transparent 92%); mask-image: linear-gradient(180deg, #000 68%, transparent 92%); }
+  #veil { left: 0; top: 820px; width: 1080px; height: 260px; background: linear-gradient(180deg, rgba(246,248,253,0), rgba(246,248,253,.9) 55%, #f6f8fd); }
+  #glow { left: 270px; top: 300px; width: 540px; height: 700px; border-radius: 50%;
+          background: radial-gradient(closest-side, rgba(93,156,245,.18), rgba(93,156,245,0)); }
+  #plane { left: 0; top: 0; width: 230px; }
+  /* bottom */
+  #world { left: 0; width: 1080px; top: 1066px; text-align: center; font-size: 42px; font-weight: 600; letter-spacing: 4px; color: var(--navy); }
+  #jpill { left: 540px; top: 1124px; transform: translateX(-50%); padding: 10px 40px; border-radius: 34px; white-space: nowrap;
+           background: linear-gradient(90deg, #3f7ff0, #2b6ae6); color: #fff; font-size: 34px; font-weight: 700; letter-spacing: 1px;
+           box-shadow: 0 10px 24px rgba(43,106,230,.22); }
+  #foot { left: 0; top: 1206px; width: 1080px; height: 144px; background: rgba(255,255,255,.92); }
+  #foot::before { content: ''; position: absolute; left: 0; top: 0; width: 100%; height: 3px; background: linear-gradient(90deg, #5d9cf5, #2b6ae6); }
+  .fic { width: 74px; height: 74px; border-radius: 50%; background: linear-gradient(145deg, #3f7ff0, #1b2350); display: grid; place-items: center; flex: 0 0 74px; }
+  .fic svg { width: 34px; height: 34px; fill: #fff; }
+  #fl { left: 60px; top: 1236px; display: flex; align-items: center; gap: 18px; }
+  #fl .s { font-size: 19px; font-weight: 500; color: var(--soft); }
+  #fl .n { font-size: 32px; font-weight: 700; color: var(--navy); line-height: 1.14; }
+  #fdiv { left: 540px; top: 1232px; width: 1.5px; height: 92px; background: #d9dee9; }
+  #fr { left: 578px; top: 1236px; display: flex; align-items: center; gap: 18px; }
+  #fr .a { font-size: 24px; font-weight: 600; color: var(--soft); line-height: 1.32; }
+</style></head>
+<body><div id="stage">
+  <div id="glow" class="abs"></div>
+  <canvas id="flag" class="abs" width="880" height="540"></canvas>
+  <img id="grad" class="abs" src="assets/graduate.png">
+  <div id="veil" class="abs"></div>
+  <svg id="land" class="abs" viewBox="0 0 1080 260" stroke-linejoin="round" stroke-linecap="round"><path d="M0 230C60 214 110 200 160 206S250 226 300 214" fill="none" stroke="#2a3160" stroke-width="2"/><path d="M0 246C60 230 110 216 160 222S250 242 300 230V258H0z" fill="#eef0fb" stroke="#2a3160" stroke-width="2"/><rect x="6" y="220.8" width="6" height="7" fill="#eef0fb" stroke="#2a3160" stroke-width="1.3"/><rect x="18" y="218.6" width="6" height="7" fill="#eef0fb" stroke="#2a3160" stroke-width="1.3"/><rect x="30" y="216.6" width="6" height="7" fill="#eef0fb" stroke="#2a3160" stroke-width="1.3"/><rect x="42" y="214.7" width="6" height="7" fill="#eef0fb" stroke="#2a3160" stroke-width="1.3"/><rect x="54" y="213.0" width="6" height="7" fill="#eef0fb" stroke="#2a3160" stroke-width="1.3"/><rect x="66" y="211.5" width="6" height="7" fill="#eef0fb" stroke="#2a3160" stroke-width="1.3"/><rect x="78" y="210.2" width="6" height="7" fill="#eef0fb" stroke="#2a3160" stroke-width="1.3"/><rect x="90" y="209.1" width="6" height="7" fill="#eef0fb" stroke="#2a3160" stroke-width="1.3"/><rect x="102" y="208.1" width="6" height="7" fill="#eef0fb" stroke="#2a3160" stroke-width="1.3"/><rect x="114" y="207.3" width="6" height="7" fill="#eef0fb" stroke="#2a3160" stroke-width="1.3"/><rect x="126" y="206.7" width="6" height="7" fill="#eef0fb" stroke="#2a3160" stroke-width="1.3"/><rect x="138" y="206.3" width="6" height="7" fill="#eef0fb" stroke="#2a3160" stroke-width="1.3"/><rect x="150" y="206.1" width="6" height="7" fill="#eef0fb" stroke="#2a3160" stroke-width="1.3"/><rect x="162" y="206.0" width="6" height="7" fill="#eef0fb" stroke="#2a3160" stroke-width="1.3"/><rect x="174" y="206.1" width="6" height="7" fill="#eef0fb" stroke="#2a3160" stroke-width="1.3"/><rect x="186" y="206.4" width="6" height="7" fill="#eef0fb" stroke="#2a3160" stroke-width="1.3"/><rect x="198" y="206.9" width="6" height="7" fill="#eef0fb" stroke="#2a3160" stroke-width="1.3"/><rect x="210" y="207.6" width="6" height="7" fill="#eef0fb" stroke="#2a3160" stroke-width="1.3"/><rect x="222" y="208.4" width="6" height="7" fill="#eef0fb" stroke="#2a3160" stroke-width="1.3"/><rect x="234" y="209.4" width="6" height="7" fill="#eef0fb" stroke="#2a3160" stroke-width="1.3"/><rect x="246" y="210.6" width="6" height="7" fill="#eef0fb" stroke="#2a3160" stroke-width="1.3"/><rect x="258" y="212.0" width="6" height="7" fill="#eef0fb" stroke="#2a3160" stroke-width="1.3"/><rect x="270" y="213.6" width="6" height="7" fill="#eef0fb" stroke="#2a3160" stroke-width="1.3"/><rect x="282" y="215.3" width="6" height="7" fill="#eef0fb" stroke="#2a3160" stroke-width="1.3"/><rect x="294" y="217.2" width="6" height="7" fill="#eef0fb" stroke="#2a3160" stroke-width="1.3"/><ellipse cx="70" cy="258" rx="30.0" ry="4" fill="#cdd3f0" opacity=".55"/><rect x="48" y="170" width="44" height="88" fill="#eef0fb" stroke="#2a3160" stroke-width="2.2"/><rect x="49" y="162" width="7" height="8" fill="#eef0fb" stroke="#2a3160" stroke-width="1.4"/><rect x="61" y="162" width="7" height="8" fill="#eef0fb" stroke="#2a3160" stroke-width="1.4"/><rect x="73" y="162" width="7" height="8" fill="#eef0fb" stroke="#2a3160" stroke-width="1.4"/><rect x="85" y="162" width="7" height="8" fill="#eef0fb" stroke="#2a3160" stroke-width="1.4"/><path d="M63 214v-12a7 7 0 0 1 14 0v12z" fill="#f8f9fe" stroke="#2a3160" stroke-width="1.5"/><ellipse cx="232" cy="258" rx="30.0" ry="4" fill="#cdd3f0" opacity=".55"/><rect x="210" y="176" width="44" height="82" fill="#eef0fb" stroke="#2a3160" stroke-width="2.2"/><rect x="211" y="168" width="7" height="8" fill="#eef0fb" stroke="#2a3160" stroke-width="1.4"/><rect x="223" y="168" width="7" height="8" fill="#eef0fb" stroke="#2a3160" stroke-width="1.4"/><rect x="235" y="168" width="7" height="8" fill="#eef0fb" stroke="#2a3160" stroke-width="1.4"/><rect x="247" y="168" width="7" height="8" fill="#eef0fb" stroke="#2a3160" stroke-width="1.4"/><path d="M225 220v-12a7 7 0 0 1 14 0v12z" fill="#f8f9fe" stroke="#2a3160" stroke-width="1.5"/><path d="M304.0 244.0L330.0 202.0L356.0 244.0z" fill="#d3d9f3" stroke="#2a3160" stroke-width="1.8"/><path d="M310.0 230.0L330.0 199.2L350.0 230.0z" fill="#d3d9f3" stroke="#2a3160" stroke-width="1.8"/><path d="M317.0 217.0L330.0 196.6L343.0 217.0z" fill="#d3d9f3" stroke="#2a3160" stroke-width="1.8"/><path d="M330.0 258.0L330.0 244.0" stroke="#2a3160" stroke-width="2.2" fill="none"/><ellipse cx="450" cy="258" rx="100.0" ry="4" fill="#cdd3f0" opacity=".55"/><path d="M350 258v-12h200v12zM364 246v-10h172v10z" fill="#eef0fb" stroke="#2a3160" stroke-width="2"/><rect x="392" y="196" width="116" height="40" fill="#eef0fb" stroke="#2a3160" stroke-width="2.2"/><path d="M398.0 198.0L398.0 234.0" stroke="#f0a39a" stroke-width="1.4" fill="none"/><path d="M411.0 198.0L411.0 234.0" stroke="#f0a39a" stroke-width="1.4" fill="none"/><path d="M424.0 198.0L424.0 234.0" stroke="#f0a39a" stroke-width="1.4" fill="none"/><path d="M437.0 198.0L437.0 234.0" stroke="#f0a39a" stroke-width="1.4" fill="none"/><path d="M450.0 198.0L450.0 234.0" stroke="#f0a39a" stroke-width="1.4" fill="none"/><path d="M463.0 198.0L463.0 234.0" stroke="#f0a39a" stroke-width="1.4" fill="none"/><path d="M476.0 198.0L476.0 234.0" stroke="#f0a39a" stroke-width="1.4" fill="none"/><path d="M489.0 198.0L489.0 234.0" stroke="#f0a39a" stroke-width="1.4" fill="none"/><path d="M502.0 198.0L502.0 234.0" stroke="#f0a39a" stroke-width="1.4" fill="none"/><path d="M370.0 190.0Q380.0 198.0 394.0 196.0H506.0Q520.0 198.0 530.0 190.0Q488.5 179.5 450.0 166.0Q411.5 179.5 370.0 190.0z" fill="#dfe3f6" stroke="#2a3160" stroke-width="2.2"/><rect x="406" y="150" width="88" height="22" fill="#eef0fb" stroke="#2a3160" stroke-width="2"/><path d="M410.0 152.0L410.0 170.0" stroke="#f0a39a" stroke-width="1.3" fill="none"/><path d="M421.0 152.0L421.0 170.0" stroke="#f0a39a" stroke-width="1.3" fill="none"/><path d="M432.0 152.0L432.0 170.0" stroke="#f0a39a" stroke-width="1.3" fill="none"/><path d="M443.0 152.0L443.0 170.0" stroke="#f0a39a" stroke-width="1.3" fill="none"/><path d="M454.0 152.0L454.0 170.0" stroke="#f0a39a" stroke-width="1.3" fill="none"/><path d="M465.0 152.0L465.0 170.0" stroke="#f0a39a" stroke-width="1.3" fill="none"/><path d="M476.0 152.0L476.0 170.0" stroke="#f0a39a" stroke-width="1.3" fill="none"/><path d="M487.0 152.0L487.0 170.0" stroke="#f0a39a" stroke-width="1.3" fill="none"/><path d="M385.0 144.0Q395.0 152.0 409.0 150.0H491.0Q505.0 152.0 515.0 144.0Q480.2 134.6 450.0 122.0Q419.8 134.6 385.0 144.0z" fill="#dfe3f6" stroke="#2a3160" stroke-width="2.2"/><rect x="420" y="108" width="60" height="18" fill="#eef0fb" stroke="#2a3160" stroke-width="2"/><path d="M400.0 102.0Q410.0 110.0 424.0 108.0H476.0Q490.0 110.0 500.0 102.0Q472.0 91.5 450.0 78.0Q428.0 91.5 400.0 102.0z" fill="#dfe3f6" stroke="#2a3160" stroke-width="2.2"/><path d="M450 78v-12" stroke="#2a3160" stroke-width="2.2"/><circle cx="450" cy="62" r="5" fill="#f3cf7a" stroke="#2a3160" stroke-width="1.6"/><path d="M560.0 245.5L586.0 208.0L612.0 245.5z" fill="#d3d9f3" stroke="#2a3160" stroke-width="1.8"/><path d="M566.0 231.5L586.0 205.2L606.0 231.5z" fill="#d3d9f3" stroke="#2a3160" stroke-width="1.8"/><path d="M573.0 218.5L586.0 202.6L599.0 218.5z" fill="#d3d9f3" stroke="#2a3160" stroke-width="1.8"/><path d="M586.0 258.0L586.0 245.5" stroke="#2a3160" stroke-width="2.2" fill="none"/><ellipse cx="690" cy="258" rx="55.0" ry="4" fill="#cdd3f0" opacity=".55"/><rect x="650" y="236" width="80" height="22" fill="#eef0fb" stroke="#2a3160" stroke-width="2"/><path d="M625.0 230.0Q635.0 238.0 649.0 236.0H731.0Q745.0 238.0 755.0 230.0Q720.2 228.3 690.0 222.0Q659.8 228.3 625.0 230.0z" fill="#dfe3f6" stroke="#2a3160" stroke-width="2"/><rect x="654.0" y="196.0" width="72.0" height="26.0" fill="#eef0fb" stroke="#2a3160" stroke-width="2"/><path d="M684 222.0v-18.0a6 6 0 0 1 12 0v18.0z" fill="#f8f9fe" stroke="#2a3160" stroke-width="1.3"/><path d="M631.0 190.0Q641.0 198.0 655.0 196.0H725.0Q739.0 198.0 749.0 190.0Q717.0 188.3 690.0 182.0Q663.0 188.3 631.0 190.0z" fill="#dfe3f6" stroke="#2a3160" stroke-width="2"/><rect x="660.0" y="158.0" width="60.0" height="24.0" fill="#eef0fb" stroke="#2a3160" stroke-width="2"/><path d="M684 182.0v-16.0a6 6 0 0 1 12 0v16.0z" fill="#f8f9fe" stroke="#2a3160" stroke-width="1.3"/><path d="M637.0 152.0Q647.0 160.0 661.0 158.0H719.0Q733.0 160.0 743.0 152.0Q713.6 150.3 690.0 144.0Q666.4 150.3 637.0 152.0z" fill="#dfe3f6" stroke="#2a3160" stroke-width="2"/><rect x="666.0" y="122.0" width="48.0" height="22.0" fill="#eef0fb" stroke="#2a3160" stroke-width="2"/><path d="M684 144.0v-14.0a6 6 0 0 1 12 0v14.0z" fill="#f8f9fe" stroke="#2a3160" stroke-width="1.3"/><path d="M643.0 116.0Q653.0 124.0 667.0 122.0H713.0Q727.0 124.0 737.0 116.0Q710.4 114.3 690.0 108.0Q669.6 114.3 643.0 116.0z" fill="#dfe3f6" stroke="#2a3160" stroke-width="2"/><rect x="672.0" y="88.0" width="36.0" height="20.0" fill="#eef0fb" stroke="#2a3160" stroke-width="2"/><path d="M684 108.0v-12.0a6 6 0 0 1 12 0v12.0z" fill="#f8f9fe" stroke="#2a3160" stroke-width="1.3"/><path d="M649.0 82.0Q659.0 90.0 673.0 88.0H707.0Q721.0 90.0 731.0 82.0Q707.0 80.3 690.0 74.0Q673.0 80.3 649.0 82.0z" fill="#dfe3f6" stroke="#2a3160" stroke-width="2"/><rect x="678.0" y="56.0" width="24.0" height="18.0" fill="#eef0fb" stroke="#2a3160" stroke-width="2"/><path d="M684 74.0v-10.0a6 6 0 0 1 12 0v10.0z" fill="#f8f9fe" stroke="#2a3160" stroke-width="1.3"/><path d="M655.0 50.0Q665.0 58.0 679.0 56.0H701.0Q715.0 58.0 725.0 50.0Q703.8 48.3 690.0 42.0Q676.2 48.3 655.0 50.0z" fill="#dfe3f6" stroke="#2a3160" stroke-width="2"/><path d="M690 42v-26" stroke="#2a3160" stroke-width="2.2"/><circle cx="690" cy="36" r="3.6" fill="#f3cf7a" stroke="#2a3160" stroke-width="1.2"/><circle cx="690" cy="29" r="2.9" fill="#f3cf7a" stroke="#2a3160" stroke-width="1.2"/><circle cx="690" cy="22" r="2.2" fill="#f3cf7a" stroke="#2a3160" stroke-width="1.2"/><path d="M764.0 244.5L790.0 204.0L816.0 244.5z" fill="#d3d9f3" stroke="#2a3160" stroke-width="1.8"/><path d="M770.0 230.5L790.0 201.2L810.0 230.5z" fill="#d3d9f3" stroke="#2a3160" stroke-width="1.8"/><path d="M777.0 217.5L790.0 198.6L803.0 217.5z" fill="#d3d9f3" stroke="#2a3160" stroke-width="1.8"/><path d="M790.0 258.0L790.0 244.5" stroke="#2a3160" stroke-width="2.2" fill="none"/><ellipse cx="930" cy="258" rx="95.0" ry="4" fill="#cdd3f0" opacity=".55"/><rect x="850" y="150" width="9" height="108" fill="#f0a39a" stroke="#2a3160" stroke-width="1.8"/><rect x="900" y="150" width="9" height="108" fill="#f0a39a" stroke="#2a3160" stroke-width="1.8"/><rect x="952" y="150" width="9" height="108" fill="#f0a39a" stroke="#2a3160" stroke-width="1.8"/><rect x="1002" y="150" width="9" height="108" fill="#f0a39a" stroke="#2a3160" stroke-width="1.8"/><rect x="842" y="150" width="176" height="16" fill="#eef0fb" stroke="#2a3160" stroke-width="2"/><rect x="894" y="118" width="72" height="20" fill="#eef0fb" stroke="#2a3160" stroke-width="2"/><path d="M827.0 144.0Q837.0 152.0 851.0 150.0H1009.0Q1023.0 152.0 1033.0 144.0Q981.1 137.9 930.0 128.0Q878.9 137.9 827.0 144.0z" fill="#dfe3f6" stroke="#2a3160" stroke-width="2.2"/><path d="M872.0 112.0Q882.0 120.0 896.0 118.0H964.0Q978.0 120.0 988.0 112.0Q956.4 105.9 930.0 96.0Q903.6 105.9 872.0 112.0z" fill="#dfe3f6" stroke="#2a3160" stroke-width="2.2"/><rect x="912" y="172" width="36" height="14" fill="#f3cf7a" stroke="#2a3160" stroke-width="1.4"/><path d="M1024.0 246.0L1050.0 210.0L1076.0 246.0z" fill="#d3d9f3" stroke="#2a3160" stroke-width="1.8"/><path d="M1030.0 232.0L1050.0 207.2L1070.0 232.0z" fill="#d3d9f3" stroke="#2a3160" stroke-width="1.8"/><path d="M1037.0 219.0L1050.0 204.6L1063.0 219.0z" fill="#d3d9f3" stroke="#2a3160" stroke-width="1.8"/><path d="M1050.0 258.0L1050.0 246.0" stroke="#2a3160" stroke-width="2.2" fill="none"/><path d="M0.0 258.0L1080.0 258.0" stroke="#2a3160" stroke-width="2.6" fill="none"/></svg>
+  <svg id="plane" class="abs" viewBox="0 0 230 90">
+    <path d="M8 52 C 60 44, 150 34, 210 30 C 224 29, 228 36, 214 40 C 160 52, 80 62, 18 64 Z" fill="#fdfdff" stroke="#2a3160" stroke-width="2"/>
+    <path d="M96 46 L 150 8 L 166 10 L 132 44 Z" fill="#e7ebfa" stroke="#2a3160" stroke-width="2"/>
+    <path d="M90 60 L 132 84 L 146 82 L 120 56 Z" fill="#e7ebfa" stroke="#2a3160" stroke-width="2"/>
+    <path d="M20 52 L 6 30 L 18 30 L 36 50 Z" fill="#e2665c" stroke="#2a3160" stroke-width="2"/>
+    <g fill="#9fb2ec"><circle cx="60" cy="44.0" r="3.2"/><circle cx="73" cy="43.2" r="3.2"/><circle cx="86" cy="42.4" r="3.2"/><circle cx="99" cy="41.7" r="3.2"/><circle cx="112" cy="40.9" r="3.2"/><circle cx="125" cy="40.1" r="3.2"/><circle cx="138" cy="39.3" r="3.2"/><circle cx="151" cy="38.5" r="3.2"/><circle cx="164" cy="37.8" r="3.2"/><circle cx="177" cy="37.0" r="3.2"/><circle cx="190" cy="36.2" r="3.2"/></g>
+  </svg>
+
+  <img id="logo" class="abs" src="assets/logo.png">
+  <div id="spill" class="abs">STUDY IN CHINA</div>
+  <div id="mbbs" class="abs split">MBBS</div>
+  <div id="in" class="abs">in</div>
+  <div id="china" class="abs split">CHINA</div>
+  <svg id="star" class="abs" viewBox="0 0 24 24"><path d="M12 2l2.9 6.2 6.8.7-5.1 4.6 1.5 6.7L12 16.8 5.9 20.2l1.5-6.7L2.3 8.9l6.8-.7z" fill="#f2bd57"/></svg>
+  <div id="your" class="abs split">YOUR</div>
+  <div id="global" class="abs split">GLOBAL</div>
+  <div id="gate" class="abs">Gateway</div>
+
+  <div id="world" class="abs split">CHINA TO THE WORLD</div>
+  <div id="jpill" class="abs">START YOUR MEDICAL JOURNEY</div>
+  <div id="foot" class="abs"></div>
+  <div id="fl" class="abs"><span class="fic"><svg viewBox="0 0 24 24"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1z"/></svg></span>
+    <div><div class="s">For more, just call us now</div><div class="n">0312 4222204</div><div class="n">0370 0035896</div></div></div>
+  <div id="fdiv" class="abs"></div>
+  <div id="fr" class="abs"><span class="fic"><svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg></span>
+    <div class="a">Iqbal, 8 Allama,<br>Raza Block Town,<br>Lahore, 54000</div></div>
+</div>
+<script src="assets/gsap.min.js"></script>
+<script>
+const $ = s => document.querySelector(s), $$ = s => document.querySelectorAll(s);
+$$('.split').forEach(el => { const t = el.textContent; el.textContent = ''; for (const c of t) { const s = document.createElement('span'); s.className = 'ch'; s.textContent = c; el.appendChild(s); } });
+
+// soft waving China flag (lighter, desaturated red; gold stars)
+const fc = $('#flag').getContext('2d');
+const FL = { w: 0, p: 0 };
+function star(x, y, r, rot) {
+  fc.beginPath();
+  for (let i = 0; i < 10; i++) { const a = rot + i * Math.PI / 5 - Math.PI / 2, rr = i % 2 ? r * 0.42 : r; fc.lineTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr); }
+  fc.closePath(); fc.fill();
+}
+function drawFlag(t) {
+  const W = 880, H = 540, n = 110, pw = 760 / n;
+  fc.clearRect(0, 0, W, H);
+  // render flat flag to an offscreen canvas once
+  if (!drawFlag.off) {
+    const o = document.createElement('canvas'); o.width = 760; o.height = 460; const g = o.getContext('2d');
+    const gr = g.createLinearGradient(0, 0, 760, 460); gr.addColorStop(0, '#ef7f72'); gr.addColorStop(1, '#de5d52');
+    g.fillStyle = gr; g.fillRect(0, 0, 760, 460);
+    const prev = fc; g.fillStyle = '#f6cf6b';
+    const st = (x, y, r, rot) => { g.beginPath(); for (let i = 0; i < 10; i++) { const a = rot + i * Math.PI / 5 - Math.PI / 2, rr = i % 2 ? r * .42 : r; g.lineTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr); } g.closePath(); g.fill(); };
+    st(126, 116, 70, 0); st(252, 46, 22, .5); st(300, 92, 22, .9); st(300, 160, 22, .2); st(252, 206, 22, .6);
+    drawFlag.off = o;
+  }
+  const vis = Math.max(0, Math.min(1, FL.p));
+  for (let i = 0; i < n * vis; i++) {
+    const u = i / n, ph = u * 6 - t * 3.2;
+    const dy = Math.sin(ph) * 16 * u * FL.w, shade = Math.cos(ph) * 0.10 * u * FL.w;
+    fc.drawImage(drawFlag.off, u * 760, 0, pw + 1, 460, 40 + u * 760, 30 + dy, pw + 1, 460);
+    fc.fillStyle = shade > 0 ? `rgba(255,255,255,${shade})` : `rgba(0,0,0,${-shade})`;
+    fc.fillRect(40 + u * 760, 30 + dy, pw + 1, 460);
+  }
+}
+
+const tl = gsap.timeline({ paused: true });
+const DUR = 14;
+tl.set({}, {}, DUR);
+const P = { x: 1100, y: 1000 };
+// build-up: one element after another
+tl.fromTo('#logo', { opacity: 0, y: -26, scale: .85 }, { opacity: 1, y: 0, scale: 1, duration: .6, ease: 'back.out(1.6)' }, .2);
+tl.fromTo('#spill', { opacity: 0, x: 120 }, { opacity: 1, x: 0, duration: .6, ease: 'power3.out' }, .55);
+tl.fromTo('#mbbs .ch', { opacity: 0, y: 70, scale: .7 }, { opacity: 1, y: 0, scale: 1, duration: .45, stagger: .08, ease: 'back.out(1.7)' }, 1.0);
+tl.fromTo('#in', { clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)', duration: .7, ease: 'power2.inOut' }, 1.45);
+tl.fromTo('#china .ch', { opacity: 0, y: 70, scale: .7 }, { opacity: 1, y: 0, scale: 1, duration: .45, stagger: .07, ease: 'back.out(1.7)' }, 1.75);
+tl.fromTo('#star', { opacity: 0, scale: 0, rotation: -120 }, { opacity: 1, scale: 1, rotation: 0, duration: .55, ease: 'back.out(2.2)' }, 2.2);
+tl.fromTo('#your .ch', { opacity: 0, x: 60 }, { opacity: 1, x: 0, duration: .4, stagger: .06, ease: 'power3.out' }, 2.5);
+tl.fromTo('#global .ch', { opacity: 0, y: 60, scale: .7 }, { opacity: 1, y: 0, scale: 1, duration: .45, stagger: .06, ease: 'back.out(1.7)' }, 2.85);
+tl.fromTo('#gate', { clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)', duration: .9, ease: 'power2.inOut' }, 3.35);
+tl.fromTo('#land, #veil', { opacity: 0, y: 80 }, { opacity: 1, y: 0, duration: .9, ease: 'power3.out' }, 3.9);
+tl.fromTo(FL, { p: 0, w: 0 }, { p: 1, w: 1, duration: 1.1, ease: 'power2.out' }, 4.2);
+tl.fromTo('#glow', { opacity: 0, scale: .6 }, { opacity: 1, scale: 1, duration: .9, ease: 'power2.out' }, 4.5);
+tl.fromTo('#grad', { opacity: 0, y: 90, filter: 'blur(10px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.0, ease: 'power3.out' }, 4.6);
+tl.fromTo(P, { x: 1120, y: 1000 }, { x: 600, y: 900, duration: 1.4, ease: 'power2.out' }, 5.3);
+tl.fromTo('#world .ch', { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: .3, stagger: .03, ease: 'power2.out' }, 6.0);
+tl.fromTo('#jpill', { opacity: 0, scale: .7 }, { opacity: 1, scale: 1, duration: .5, ease: 'back.out(1.8)' }, 6.7);
+tl.fromTo('#foot, #fdiv', { opacity: 0 }, { opacity: 1, duration: .4 }, 7.1);
+tl.fromTo('#fl, #fr', { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: .5, stagger: .14, ease: 'power3.out' }, 7.2);
+// gentle life while the finished poster holds
+tl.fromTo('#jpill', { scale: 1 }, { scale: 1.04, duration: .8, yoyo: true, repeat: 5, ease: 'sine.inOut' }, 8.2);
+tl.to(P, { y: 892, duration: 2, yoyo: true, repeat: 2, ease: 'sine.inOut' }, 6.7);
+
+window.renderAt = t => {
+  tl.seek(t, false); drawFlag(t);
+  const pl = $('#plane'); pl.style.left = P.x + 'px'; pl.style.top = P.y + 'px'; pl.style.opacity = P.x > 1090 ? 0 : 1;
+  return true;
+};
+window.ready = (async () => { await document.fonts.ready; await Promise.all([...document.images].map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; }))); return true; })();
+</script></body></html>

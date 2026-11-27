@@ -1,0 +1,164 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- OrbisNexa "MBBS in China" animated poster (1080x1350). Soft, light palette; elements arrive one by one
+     and assemble into the complete poster, in the same build-up style as the Study in Italy / France posts. -->
+<style>
+  @font-face { font-family: P; font-weight: 400; src: url(assets/poppins-latin-400-normal.woff2); }
+  @font-face { font-family: P; font-weight: 500; src: url(assets/poppins-latin-500-normal.woff2); }
+  @font-face { font-family: P; font-weight: 600; src: url(assets/poppins-latin-600-normal.woff2); }
+  @font-face { font-family: P; font-weight: 700; src: url(assets/poppins-latin-700-normal.woff2); }
+  @font-face { font-family: A; src: url(assets/anton-latin-400-normal.woff2); }
+  @font-face { font-family: S; src: url(assets/great-vibes-latin-400-normal.woff2); }
+  :root { --navy: #1b2350; --blue: #2b6ae6; --sky: #5d9cf5; --coral: #e2665c; --gold: #f2bd57; --soft: #5a6481; }
+  html, body { margin: 0; background: #f5f8fd; }
+  #stage { position: relative; width: 1080px; height: 1350px; overflow: hidden; font-family: P, sans-serif; color: var(--navy);
+           background-color: #f6f8fd;
+           background-image: radial-gradient(900px 700px at 50% 40%, rgba(255,255,255,.95), rgba(255,255,255,0) 70%),
+             linear-gradient(rgba(43,106,230,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(43,106,230,.05) 1px, transparent 1px);
+           background-size: auto, 40px 40px, 40px 40px; }
+  .abs { position: absolute; }
+  .ch { display: inline-block; white-space: pre; }
+  /* top bar */
+  #logo { left: 46px; top: 30px; width: 178px; }
+  #spill { right: 46px; top: 64px; padding: 10px 34px; border-radius: 16px; background: linear-gradient(90deg, #ee7c70, #e2665c);
+           color: #fff; font-family: A; font-size: 50px; letter-spacing: 1px; box-shadow: 0 10px 24px rgba(226,102,92,.25); }
+  /* left headline */
+  #mbbs { left: 40px; top: 238px; font-family: A; font-size: 172px; line-height: 1; }
+  #mbbs .ch { background: linear-gradient(180deg, #5d9cf5, #2b6ae6 70%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  #in { left: 64px; top: 376px; font-family: S; font-size: 136px; color: var(--navy); line-height: 1; }
+  #china { left: 40px; top: 444px; font-family: A; font-size: 160px; line-height: 1; }
+  #china .ch { background: linear-gradient(180deg, #f08a80, #dd5a50 70%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  #star { left: 278px; top: 436px; width: 52px; }
+  /* right headline */
+  #your { right: 40px; top: 238px; font-family: A; font-size: 152px; line-height: 1; color: var(--navy); text-align: right; }
+  #global { right: 40px; top: 394px; font-family: A; font-size: 152px; line-height: 1; text-align: right; }
+  #global .ch { background: linear-gradient(180deg, #f6cd78, #eaa93d 75%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  #gate { right: 34px; top: 520px; font-family: S; font-size: 118px; color: var(--navy); line-height: 1; }
+  /* centre */
+  #flag { left: 600px; top: 640px; width: 440px; height: 270px; }
+  #land { left: 0; top: 800px; width: 1080px; height: 260px; }
+  #grad { left: 300px; top: 250px; width: 480px; height: 790px; object-fit: cover; object-position: 50% 0;
+          -webkit-mask-image: linear-gradient(180deg, #000 68%, transparent 92%); mask-image: linear-gradient(180deg, #000 68%, transparent 92%); }
+  #veil { left: 0; top: 820px; width: 1080px; height: 260px; background: linear-gradient(180deg, rgba(246,248,253,0), rgba(246,248,253,.9) 55%, #f6f8fd); }
+  #glow { left: 270px; top: 300px; width: 540px; height: 700px; border-radius: 50%;
+          background: radial-gradient(closest-side, rgba(93,156,245,.18), rgba(93,156,245,0)); }
+  #plane { left: 0; top: 0; width: 230px; }
+  /* bottom */
+  #world { left: 0; width: 1080px; top: 1066px; text-align: center; font-size: 42px; font-weight: 600; letter-spacing: 4px; color: var(--navy); }
+  #jpill { left: 540px; top: 1124px; transform: translateX(-50%); padding: 10px 40px; border-radius: 34px; white-space: nowrap;
+           background: linear-gradient(90deg, #3f7ff0, #2b6ae6); color: #fff; font-size: 34px; font-weight: 700; letter-spacing: 1px;
+           box-shadow: 0 10px 24px rgba(43,106,230,.22); }
+  #foot { left: 0; top: 1206px; width: 1080px; height: 144px; background: rgba(255,255,255,.92); }
+  #foot::before { content: ''; position: absolute; left: 0; top: 0; width: 100%; height: 3px; background: linear-gradient(90deg, #5d9cf5, #2b6ae6); }
+  .fic { width: 74px; height: 74px; border-radius: 50%; background: linear-gradient(145deg, #3f7ff0, #1b2350); display: grid; place-items: center; flex: 0 0 74px; }
+  .fic svg { width: 34px; height: 34px; fill: #fff; }
+  #fl { left: 60px; top: 1236px; display: flex; align-items: center; gap: 18px; }
+  #fl .s { font-size: 19px; font-weight: 500; color: var(--soft); }
+  #fl .n { font-size: 32px; font-weight: 700; color: var(--navy); line-height: 1.14; }
+  #fdiv { left: 540px; top: 1232px; width: 1.5px; height: 92px; background: #d9dee9; }
+  #fr { left: 578px; top: 1236px; display: flex; align-items: center; gap: 18px; }
+  #fr .a { font-size: 24px; font-weight: 600; color: var(--soft); line-height: 1.32; }
+</style></head>
+<body><div id="stage">
+  <div id="glow" class="abs"></div>
+  <canvas id="flag" class="abs" width="880" height="540"></canvas>
+  <img id="grad" class="abs" src="assets/graduate.png">
+  <div id="veil" class="abs"></div>
+  {{LAND}}
+  <svg id="plane" class="abs" viewBox="0 0 230 90">
+    <path d="M8 52 C 60 44, 150 34, 210 30 C 224 29, 228 36, 214 40 C 160 52, 80 62, 18 64 Z" fill="#fdfdff" stroke="#2a3160" stroke-width="2"/>
+    <path d="M96 46 L 150 8 L 166 10 L 132 44 Z" fill="#e7ebfa" stroke="#2a3160" stroke-width="2"/>
+    <path d="M90 60 L 132 84 L 146 82 L 120 56 Z" fill="#e7ebfa" stroke="#2a3160" stroke-width="2"/>
+    <path d="M20 52 L 6 30 L 18 30 L 36 50 Z" fill="#e2665c" stroke="#2a3160" stroke-width="2"/>
+    <g fill="#9fb2ec">{{WIN}}</g>
+  </svg>
+
+  <img id="logo" class="abs" src="assets/logo.png">
+  <div id="spill" class="abs">STUDY IN CHINA</div>
+  <div id="mbbs" class="abs split">MBBS</div>
+  <div id="in" class="abs">in</div>
+  <div id="china" class="abs split">CHINA</div>
+  <svg id="star" class="abs" viewBox="0 0 24 24"><path d="M12 2l2.9 6.2 6.8.7-5.1 4.6 1.5 6.7L12 16.8 5.9 20.2l1.5-6.7L2.3 8.9l6.8-.7z" fill="#f2bd57"/></svg>
+  <div id="your" class="abs split">YOUR</div>
+  <div id="global" class="abs split">GLOBAL</div>
+  <div id="gate" class="abs">Gateway</div>
+
+  <div id="world" class="abs split">CHINA TO THE WORLD</div>
+  <div id="jpill" class="abs">START YOUR MEDICAL JOURNEY</div>
+  <div id="foot" class="abs"></div>
+  <div id="fl" class="abs"><span class="fic"><svg viewBox="0 0 24 24"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1z"/></svg></span>
+    <div><div class="s">For more, just call us now</div><div class="n">0312 4222204</div><div class="n">0370 0035896</div></div></div>
+  <div id="fdiv" class="abs"></div>
+  <div id="fr" class="abs"><span class="fic"><svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg></span>
+    <div class="a">Iqbal, 8 Allama,<br>Raza Block Town,<br>Lahore, 54000</div></div>
+</div>
+<script src="assets/gsap.min.js"></script>
+<script>
+const $ = s => document.querySelector(s), $$ = s => document.querySelectorAll(s);
+$$('.split').forEach(el => { const t = el.textContent; el.textContent = ''; for (const c of t) { const s = document.createElement('span'); s.className = 'ch'; s.textContent = c; el.appendChild(s); } });
+
+// soft waving China flag (lighter, desaturated red; gold stars)
+const fc = $('#flag').getContext('2d');
+const FL = { w: 0, p: 0 };
+function star(x, y, r, rot) {
+  fc.beginPath();
+  for (let i = 0; i < 10; i++) { const a = rot + i * Math.PI / 5 - Math.PI / 2, rr = i % 2 ? r * 0.42 : r; fc.lineTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr); }
+  fc.closePath(); fc.fill();
+}
+function drawFlag(t) {
+  const W = 880, H = 540, n = 110, pw = 760 / n;
+  fc.clearRect(0, 0, W, H);
+  // render flat flag to an offscreen canvas once
+  if (!drawFlag.off) {
+    const o = document.createElement('canvas'); o.width = 760; o.height = 460; const g = o.getContext('2d');
+    const gr = g.createLinearGradient(0, 0, 760, 460); gr.addColorStop(0, '#ef7f72'); gr.addColorStop(1, '#de5d52');
+    g.fillStyle = gr; g.fillRect(0, 0, 760, 460);
+    const prev = fc; g.fillStyle = '#f6cf6b';
+    const st = (x, y, r, rot) => { g.beginPath(); for (let i = 0; i < 10; i++) { const a = rot + i * Math.PI / 5 - Math.PI / 2, rr = i % 2 ? r * .42 : r; g.lineTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr); } g.closePath(); g.fill(); };
+    st(126, 116, 70, 0); st(252, 46, 22, .5); st(300, 92, 22, .9); st(300, 160, 22, .2); st(252, 206, 22, .6);
+    drawFlag.off = o;
+  }
+  const vis = Math.max(0, Math.min(1, FL.p));
+  for (let i = 0; i < n * vis; i++) {
+    const u = i / n, ph = u * 6 - t * 3.2;
+    const dy = Math.sin(ph) * 16 * u * FL.w, shade = Math.cos(ph) * 0.10 * u * FL.w;
+    fc.drawImage(drawFlag.off, u * 760, 0, pw + 1, 460, 40 + u * 760, 30 + dy, pw + 1, 460);
+    fc.fillStyle = shade > 0 ? `rgba(255,255,255,${shade})` : `rgba(0,0,0,${-shade})`;
+    fc.fillRect(40 + u * 760, 30 + dy, pw + 1, 460);
+  }
+}
+
+const tl = gsap.timeline({ paused: true });
+const DUR = 14;
+tl.set({}, {}, DUR);
+const P = { x: 1100, y: 1000 };
+// build-up: one element after another
+tl.fromTo('#logo', { opacity: 0, y: -26, scale: .85 }, { opacity: 1, y: 0, scale: 1, duration: .6, ease: 'back.out(1.6)' }, .2);
+tl.fromTo('#spill', { opacity: 0, x: 120 }, { opacity: 1, x: 0, duration: .6, ease: 'power3.out' }, .55);
+tl.fromTo('#mbbs .ch', { opacity: 0, y: 70, scale: .7 }, { opacity: 1, y: 0, scale: 1, duration: .45, stagger: .08, ease: 'back.out(1.7)' }, 1.0);
+tl.fromTo('#in', { clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)', duration: .7, ease: 'power2.inOut' }, 1.45);
+tl.fromTo('#china .ch', { opacity: 0, y: 70, scale: .7 }, { opacity: 1, y: 0, scale: 1, duration: .45, stagger: .07, ease: 'back.out(1.7)' }, 1.75);
+tl.fromTo('#star', { opacity: 0, scale: 0, rotation: -120 }, { opacity: 1, scale: 1, rotation: 0, duration: .55, ease: 'back.out(2.2)' }, 2.2);
+tl.fromTo('#your .ch', { opacity: 0, x: 60 }, { opacity: 1, x: 0, duration: .4, stagger: .06, ease: 'power3.out' }, 2.5);
+tl.fromTo('#global .ch', { opacity: 0, y: 60, scale: .7 }, { opacity: 1, y: 0, scale: 1, duration: .45, stagger: .06, ease: 'back.out(1.7)' }, 2.85);
+tl.fromTo('#gate', { clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)', duration: .9, ease: 'power2.inOut' }, 3.35);
+tl.fromTo('#land, #veil', { opacity: 0, y: 80 }, { opacity: 1, y: 0, duration: .9, ease: 'power3.out' }, 3.9);
+tl.fromTo(FL, { p: 0, w: 0 }, { p: 1, w: 1, duration: 1.1, ease: 'power2.out' }, 4.2);
+tl.fromTo('#glow', { opacity: 0, scale: .6 }, { opacity: 1, scale: 1, duration: .9, ease: 'power2.out' }, 4.5);
+tl.fromTo('#grad', { opacity: 0, y: 90, filter: 'blur(10px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 1.0, ease: 'power3.out' }, 4.6);
+tl.fromTo(P, { x: 1120, y: 1000 }, { x: 600, y: 900, duration: 1.4, ease: 'power2.out' }, 5.3);
+tl.fromTo('#world .ch', { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: .3, stagger: .03, ease: 'power2.out' }, 6.0);
+tl.fromTo('#jpill', { opacity: 0, scale: .7 }, { opacity: 1, scale: 1, duration: .5, ease: 'back.out(1.8)' }, 6.7);
+tl.fromTo('#foot, #fdiv', { opacity: 0 }, { opacity: 1, duration: .4 }, 7.1);
+tl.fromTo('#fl, #fr', { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: .5, stagger: .14, ease: 'power3.out' }, 7.2);
+// gentle life while the finished poster holds
+tl.fromTo('#jpill', { scale: 1 }, { scale: 1.04, duration: .8, yoyo: true, repeat: 5, ease: 'sine.inOut' }, 8.2);
+tl.to(P, { y: 892, duration: 2, yoyo: true, repeat: 2, ease: 'sine.inOut' }, 6.7);
+
+window.renderAt = t => {
+  tl.seek(t, false); drawFlag(t);
+  const pl = $('#plane'); pl.style.left = P.x + 'px'; pl.style.top = P.y + 'px'; pl.style.opacity = P.x > 1090 ? 0 : 1;
+  return true;
+};
+window.ready = (async () => { await document.fonts.ready; await Promise.all([...document.images].map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; }))); return true; })();
+</script></body></html>
